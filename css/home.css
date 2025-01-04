@@ -1,0 +1,124 @@
+@import url("https://fonts.googleapis.com/css?family=Lato:100,300,400");
+@import url("https://fonts.googleapis.com/css?family=Roboto:100");
+@import url("https://fonts.googleapis.com/css?family=Lato:400,700");
+
+
+body {
+    font-family: "Lato", sans-serif;
+    background-color: black;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+
+}
+
+h1 {
+    display: none;
+}
+
+.hidden {
+    display: none;
+}
+
+select,
+option {
+    background-color: black;
+    color: white;
+    font-size: 24px;
+    padding: 0 1em;
+}
+
+select {
+    border: none;
+    outline: none;
+}
+
+
+h2 {
+    color: white;
+}
+
+main {
+    padding: 0 3em;
+}
+
+.header {
+    display: flex;
+    justify-content: space-around;
+    padding: 1em 3em;
+    margin-top: 50px;
+}
+
+.material-symbols-outlined {
+    color: white;
+    font-size: 48px
+}
+
+.lista {
+    list-style-type: none;
+    margin: 1em 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+    gap: 1em;
+}
+
+.lista li img {
+    width: 299px;
+    height: 444px;
+    border-radius: 4px;
+}
+
+.pelicula-container{
+    width: 300px;
+    justify-content: center;
+    text-align: center;
+    background-image: linear-gradient(to right, #2c3e50 0%, #3498db  51%, #2c3e50  100%);
+    border: 1px solid #333; /* Borde de la tarjeta */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+}
+
+.pelicula-container:hover {
+    transform: scale(1.05); /* Escala la tarjeta al pasar el ratón */
+}
+
+.pelicula-container p{
+    font-size: 0.9em;
+    color: #ccc; /* Color de texto secundario */
+}
+
+.titulo{
+    width: 300px;
+    height: 60px;
+}
+
+.informacion{
+    width: 300px;
+    height: 100px;
+}
+
+/* Estilo para el dropdown menu */
+.dropdown-menu {
+    background-image: linear-gradient(to right, #2c3e50 0%, #3498db 51%, #2c3e50 100%);
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: 0.5s;
+    background-size: 200% auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #eee;
+}
+
+.dropdown-menu option {
+    background-color: black;
+    color: white;
+    font-size: 16px;
+}
+
+
+
+
