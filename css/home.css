@@ -108,7 +108,30 @@ main {
     text-align: center;
     text-transform: uppercase;
     transition: 0.5s;
+    background-size: 100% auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #eee;
+}
+
+.search-input {
+    background-image: linear-gradient(to right, #2c3e50 0%, #3498db 51%, #2c3e50 100%);
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: 0.5s;
     background-size: 200% auto;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #eee;
+    
+}
+
+.button {
+    background-image: linear-gradient(to right, #2c3e50 0%, #3498db 51%, #2c3e50 100%); 
+    color: white;
+    padding: 15px 20px;
+    margin-left: 10px;
+    text-align: center;
     border-radius: 10px;
     box-shadow: 0 0 10px #eee;
 }
@@ -119,6 +142,29 @@ main {
     font-size: 16px;
 }
 
+.agregar-btn, .eliminar-btn {
+    margin-top: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: #4CAF50; /* Color verde para "Agregar" */
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.eliminar-btn {
+    background-color: #f44336; /* Color rojo para "Eliminar" */
+}
+
+.agregar-btn:hover {
+    background-color: #45a049; /* Verde más oscuro al pasar el cursor */
+}
+
+.eliminar-btn:hover {
+    background-color: #e53935; /* Rojo más oscuro al pasar el cursor */
+}
 
 
 

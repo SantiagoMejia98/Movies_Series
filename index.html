@@ -22,11 +22,12 @@
             <option value="series">Series</option>
             <option value="pelicula">Película Aleatoria</option>
             <option value="serie">Serie Aleatoria</option>
+            <option value="busqueda">Buscar</option>
         </select>
     </header>
 
     <main>
-        <section data-name="peliculas" class="section" id="peliculas">
+        <section data-name="peliculas" class="section">
             <h2>Películas</h2>
         </section>
 
@@ -40,6 +41,18 @@
 
         <section data-name="serie" class="hidden">
             <h2>Serie aleatoria</h2>
+        </section>
+
+        <section data-name="busqueda" class="hidden">
+            <div class="search-container">
+                <input
+                    type="text"
+                    id="search-input"
+                    class="search-input"
+                    placeholder="películas o series"
+                />
+                <button id="search-button" class="button">BUSCAR</button>
+            </div>
         </section>
     </main>
     <script src="./scripts/index.js" type="module"></script>
