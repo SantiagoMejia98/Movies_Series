@@ -2,169 +2,210 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:100");
 @import url("https://fonts.googleapis.com/css?family=Lato:400,700");
 
-
 body {
-    font-family: "Lato", sans-serif;
-    background-color: black;
-    background-repeat: no-repeat;
-    background-size: cover;
-
-
+  font-family: "Lato", sans-serif;
+  background-color: black;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 h1 {
-    display: none;
+  display: none;
 }
 
 .hidden {
-    display: none;
+  display: none;
 }
 
 select,
 option {
-    background-color: black;
-    color: white;
-    font-size: 24px;
-    padding: 0 1em;
+  background-color: black;
+  color: white;
+  font-size: 24px;
+  padding: 0 1em;
 }
 
 select {
-    border: none;
-    outline: none;
+  border: none;
+  outline: none;
 }
 
-
 h2 {
-    color: white;
+  color: white;
 }
 
 main {
-    padding: 0 3em;
+  padding: 0 3em;
 }
 
 .header {
-    display: flex;
-    justify-content: space-around;
-    padding: 1em 3em;
-    margin-top: 50px;
+  display: flex;
+  justify-content: space-around;
+  padding: 1em 3em;
+  margin-top: 50px;
 }
 
 .material-symbols-outlined {
-    color: white;
-    font-size: 48px
+  color: white;
+  font-size: 48px;
 }
 
 .lista {
-    list-style-type: none;
-    margin: 1em 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  list-style-type: none;
+  margin: 1em 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 
-    gap: 1em;
+  gap: 1em;
 }
 
 .lista li img {
-    width: 299px;
-    height: 444px;
-    border-radius: 4px;
+  width: 299px;
+  height: 444px;
+  border-radius: 4px;
 }
 
-.pelicula-container{
-    width: 300px;
-    justify-content: center;
-    text-align: center;
-    background-image: linear-gradient(to right, #2c3e50 0%, #3498db  51%, #2c3e50  100%);
-    border: 1px solid #333; /* Borde de la tarjeta */
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s;
+.pelicula-container {
+  width: 300px;
+  justify-content: center;
+  text-align: center;
+  background-image: linear-gradient(
+    to right,
+    #2c3e50 0%,
+    #3498db 51%,
+    #2c3e50 100%
+  );
+  border: 1px solid #333; /* Borde de la tarjeta */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
 }
 
 .pelicula-container:hover {
-    transform: scale(1.05); /* Escala la tarjeta al pasar el ratón */
+  transform: scale(1.05); /* Escala la tarjeta al pasar el ratón */
 }
 
-.pelicula-container p{
-    font-size: 0.9em;
-    color: #ccc; /* Color de texto secundario */
+.pelicula-container p {
+  font-size: 0.9em;
+  color: #ccc; /* Color de texto secundario */
 }
 
-.titulo{
-    width: 300px;
-    height: 60px;
+.titulo {
+  width: 300px;
+  height: 60px;
 }
 
-.informacion{
-    width: 300px;
-    height: 100px;
+.informacion {
+  width: 300px;
+  height: 100px;
 }
 
 /* Estilo para el dropdown menu */
 .dropdown-menu {
-    background-image: linear-gradient(to right, #2c3e50 0%, #3498db 51%, #2c3e50 100%);
-    color: white;
-    border: none;
-    padding: 15px 20px;
-    text-align: center;
-    text-transform: uppercase;
-    transition: 0.5s;
-    background-size: 100% auto;
-    border-radius: 10px;
-    box-shadow: 0 0 10px #eee;
+  background-image: linear-gradient(
+    to right,
+    #2c3e50 0%,
+    #3498db 51%,
+    #2c3e50 100%
+  );
+  color: white;
+  border: none;
+  padding: 15px 20px;
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 100% auto;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #eee;
 }
 
 .search-input {
-    background-image: linear-gradient(to right, #2c3e50 0%, #3498db 51%, #2c3e50 100%);
-    color: white;
-    padding: 15px 20px;
-    text-align: center;
-    text-transform: uppercase;
-    transition: 0.5s;
-    background-size: 200% auto;
-    border-radius: 10px;
-    box-shadow: 0 0 10px #eee;
-    
+  background-image: linear-gradient(
+    to right,
+    #2c3e50 0%,
+    #3498db 51%,
+    #2c3e50 100%
+  );
+  color: white;
+  padding: 15px 20px;
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #eee;
 }
 
 .button {
-    background-image: linear-gradient(to right, #2c3e50 0%, #3498db 51%, #2c3e50 100%); 
-    color: white;
-    padding: 15px 20px;
-    margin-left: 10px;
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0 0 10px #eee;
+  background-image: linear-gradient(
+    to right,
+    #2c3e50 0%,
+    #3498db 51%,
+    #2c3e50 100%
+  );
+  color: white;
+  padding: 15px 20px;
+  margin-left: 10px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #eee;
 }
 
 .dropdown-menu option {
-    background-color: black;
-    color: white;
-    font-size: 16px;
+  background-color: black;
+  color: white;
+  font-size: 16px;
 }
 
-.agregar-btn, .eliminar-btn {
-    margin-top: 10px;
-    padding: 8px 12px;
-    font-size: 14px;
-    cursor: pointer;
-    border: none;
-    border-radius: 4px;
-    background-color: #4CAF50; /* Color verde para "Agregar" */
-    color: white;
-    transition: background-color 0.3s ease;
+.agregar-btn,
+.eliminar-btn {
+  margin-top: 10px;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  background-color: #4caf50; /* Color verde para "Agregar" */
+  color: white;
+  transition: background-color 0.3s ease;
 }
 
 .eliminar-btn {
-    background-color: #f44336; /* Color rojo para "Eliminar" */
+  background-color: #f44336; /* Color rojo para "Eliminar" */
 }
 
 .agregar-btn:hover {
-    background-color: #45a049; /* Verde más oscuro al pasar el cursor */
+  background-color: #45a049; /* Verde más oscuro al pasar el cursor */
 }
 
 .eliminar-btn:hover {
-    background-color: #e53935; /* Rojo más oscuro al pasar el cursor */
+  background-color: #e53935; /* Rojo más oscuro al pasar el cursor */
 }
 
+.completo {
+  background-image: linear-gradient(
+    to right,
+    #2c3e50 0%,
+    #3498db 51%,
+    #2c3e50 100%
+  );
+  color: white;
+  padding: 15px 20px;
+  margin-left: 10px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #eee;
+  margin-top: 10px;
+}
 
+.portada {
+  width: 100%; /* Ocupa todo el ancho de la pantalla */
+  height: 100%; /* Ocupa todo el alto de la pantalla */
+  background-size: cover;
+}
 
+.logo {
+  justify-content: center;
+  width: 100%; /* Ocupa todo el ancho de la pantalla */
+  height: 100%;
+}
