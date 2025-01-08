@@ -37,7 +37,6 @@ function crearlistaInicio(elemento, datos) {
                 <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
                 <img src="https://image.tmdb.org/t/p/w500${pelicula.Poster}" alt="${pelicula.Nombre}">
                 <div class="informacion">
-                    <p class="lanzamiento"><strong>Lanzamiento:</strong> ${pelicula.Lanzamiento}</p>
                     <p class="hidden" id="tipo">${pelicula.Tipo}</p>
                     <button class="completo">Completo</button>
                 </div>
@@ -55,7 +54,6 @@ function crearlistaInicio(elemento, datos) {
 
 
 function crearPeliculaDetalles(elemento, datos) {
-  console.log(datos);
   const ulExistente = elemento.querySelector("ul");
 
   if (ulExistente) {
@@ -105,7 +103,7 @@ function crearSerieDetalles(elemento, datos) {
     li.innerHTML = `
             <div class="pelicula-container" id="${pelicula.Id}">
                 <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
-                <img src="https://image.tmdb.org/t/p/w500${pelicula.Poster}" alt="${pelicula.Nombre}">
+                <img src="https://image.tmdb.org/t/p/original${pelicula.Poster}" alt="${pelicula.Nombre}">
                 <div class="informacion">
                     <p class="fecha"><strong>Estreno:</strong> ${pelicula.Lanzamiento}</p>
                     <p class="hidden" id="tipo">${pelicula.Tipo}</p>
@@ -147,27 +145,21 @@ function manejarSeleccion(event) {
   let ruta;
   switch (valorSeleccionado) {
     case "seleccionar":
-      guardarDatos();
       ruta = "index.html";
       break;
     case "peliculas":
-      guardarDatos();
       ruta = "peliculas.html";
       break;
     case "series":
-      guardarDatos();
       ruta = "series.html";
       break;
     case "pelicula":
-      guardarDatos();
       ruta = "pelicula.html";
       break;
     case "serie":
-      guardarDatos();
       ruta = "serie.html";
       break;
     case "busqueda":
-      guardarDatos();
       ruta = "busqueda.html";
       break;
   }

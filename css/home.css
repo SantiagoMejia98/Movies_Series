@@ -199,13 +199,23 @@ main {
 }
 
 .portada {
-  width: 100%; /* Ocupa todo el ancho de la pantalla */
-  height: 100%; /* Ocupa todo el alto de la pantalla */
+  width: 100%;
+  height: auto; 
   background-size: cover;
 }
 
 .logo {
   justify-content: center;
-  width: 100%; /* Ocupa todo el ancho de la pantalla */
-  height: 100%;
+  width: 50%; 
+  height:auto;
+}
+
+.detalles{
+  display: flex;
+  align-content: stretch;
+}
+
+.datos img{
+  display: flex;
+  justify-content: space-around;
 }

@@ -28,30 +28,27 @@
     </header>
 
     <main>
-       
-
         <section data-name="pelicula">
-            <img class="logo" src="https://image.tmdb.org/t/p/original/w6dMatJzyyVtmE8JVGnNjviapnv.png">
-            <img class="logo" src="https://image.tmdb.org/t/p/original/rzNaA2qBQHEi5Kb630VdmweFwXa.png">
-            <img class="logo" src="https://image.tmdb.org/t/p/original/plSzYZQUk1rLAPQxs8XMgTB8lYw.png">
             <img class="portada" src="https://image.tmdb.org/t/p/original/m1aaLpSnmq72jMu5vIbBEdyR508.jpg" alt="topgun">
-            
-            
-            <div class="pelicula-container" id="${pelicula.Id}">
-                <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
-                
-                <div class="informacion">
-                    <img src="https://image.tmdb.org/t/p/w500/nNLPA7tPvyFeMjcCuODH9sKTcXx.jpg" alt="${pelicula.Nombre}">
-                    <p class="fecha"><strong>Estreno:</strong> ${pelicula.Lanzamiento}</p>
-                    <p class="hidden" id="tipo">${pelicula.Tipo}</p>
-                    <button class="agregar-btn">Agregar</button>
+
+
+
+            <div class="detalles">
+                <div class="pelicula-container" id="${pelicula.Id}">
+                    <h2 class="titulo">Top Gun Maverick</h2>
+                    <img src="https://image.tmdb.org/t/p/w300/nNLPA7tPvyFeMjcCuODH9sKTcXx.jpg" alt="${pelicula.Nombre}">
+                    <div class="informacion">
+                        <p class="estreno">Estreno: 2023-01-24</p>
+                        <p class="genero">Géneros: Aventura, Acción, Drama</p>
+                    </div>
+                </div>
+                <div class="datos">
+                    <img class="logo" src="https://image.tmdb.org/t/p/original/plSzYZQUk1rLAPQxs8XMgTB8lYw.png">
                 </div>
             </div>
         </section>
-
-
-        
     </main>
+    <script src="./scripts/pelicula.js" type="module"></script>
 </body>
 
 </html>
