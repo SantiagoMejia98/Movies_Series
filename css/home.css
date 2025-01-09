@@ -165,21 +165,21 @@ main {
   cursor: pointer;
   border: none;
   border-radius: 4px;
-  background-color: #4caf50; /* Color verde para "Agregar" */
+  background-color: #4caf50; 
   color: white;
   transition: background-color 0.3s ease;
 }
 
 .eliminar-btn {
-  background-color: #f44336; /* Color rojo para "Eliminar" */
+  background-color: #f44336; 
 }
 
 .agregar-btn:hover {
-  background-color: #45a049; /* Verde más oscuro al pasar el cursor */
+  background-color: #45a049;
 }
 
 .eliminar-btn:hover {
-  background-color: #e53935; /* Rojo más oscuro al pasar el cursor */
+  background-color: #e53935; 
 }
 
 .completo {
@@ -196,26 +196,4 @@ main {
   border-radius: 10px;
   box-shadow: 0 0 10px #eee;
   margin-top: 10px;
-}
-
-.portada {
-  width: 100%;
-  height: auto; 
-  background-size: cover;
-}
-
-.logo {
-  justify-content: center;
-  width: 50%; 
-  height:auto;
-}
-
-.detalles{
-  display: flex;
-  align-content: stretch;
-}
-
-.datos img{
-  display: flex;
-  justify-content: space-around;
 }

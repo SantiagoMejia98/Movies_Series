@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/pelicula.css">
     <link rel="icon" type="image/png" href="icon.png">
     <title>Películas y series para ver</title>
 </head>
@@ -29,21 +29,49 @@
 
     <main>
         <section data-name="pelicula">
-            <img class="portada" src="https://image.tmdb.org/t/p/original/m1aaLpSnmq72jMu5vIbBEdyR508.jpg" alt="topgun">
 
-
-
-            <div class="detalles">
-                <div class="pelicula-container" id="${pelicula.Id}">
-                    <h2 class="titulo">Top Gun Maverick</h2>
-                    <img src="https://image.tmdb.org/t/p/w300/nNLPA7tPvyFeMjcCuODH9sKTcXx.jpg" alt="${pelicula.Nombre}">
-                    <div class="informacion">
-                        <p class="estreno">Estreno: 2023-01-24</p>
-                        <p class="genero">Géneros: Aventura, Acción, Drama</p>
-                    </div>
+            <div class="container">
+                <div class="background"
+                    style="background-image: url('https://image.tmdb.org/t/p/original/AaV1YIdWKnjAIAOe8UUKBFm327v.jpg');">
                 </div>
-                <div class="datos">
-                    <img class="logo" src="https://image.tmdb.org/t/p/original/plSzYZQUk1rLAPQxs8XMgTB8lYw.png">
+
+                <div class="content">
+                    <div class="movie-card">
+                        <img class="poster" src="https://image.tmdb.org/t/p/original/nNLPA7tPvyFeMjcCuODH9sKTcXx.jpg"
+                            alt="movie-poster">
+                        <div class="details">
+                            <h2 class="titulo">Top Gun Maverick</h2>
+                            <p class="estreno">Estreno: 2023-01-24</p>
+                            <p class="genero">Aventura, Acción, Drama</p>
+                        </div>
+                        <img class="logo" src="https://image.tmdb.org/t/p/original/plSzYZQUk1rLAPQxs8XMgTB8lYw.png">
+
+                    </div>
+
+                    <div class="movie-info">
+                        <h2>Overview</h2>
+                        <p>After more than thirty years of service as one of the Navy’s top aviators, and dodging the
+                            advancement in rank that would ground him, Pete “Maverick” Mitchell finds himself training a
+                            detachment of TOP GUN graduates for a specialized mission the likes of which no living pilot
+                            has ever seen.</p>
+
+                        <h2>Cast</h2>
+                        <ul class="cast-list">
+                            <li>Benedict Cumberbatch as Doctor Stephen Strange</li>
+                            <li>Elizabeth Olsen as Wanda Maximoff / The Scarlet Witch</li>
+                            <li>Chiwetel Ejiofor as Baron Karl Mordo</li>
+                            <li>Benedict Wong as Wong</li>
+                            <li>Xochitl Gomez as America Chavez</li>
+                        </ul>
+                    </div>
+
+                    <div class="streaming-providers">
+                        <h2>Streaming on</h2>
+                        <ul class="providers-list">
+                            <li><img src="https://image.tmdb.org/t/p/w92/pTnn5JwWr4p3pG8H6VrpiQo7Vs0.jpg" alt="Youtube">
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </section>

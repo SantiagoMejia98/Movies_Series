@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Strange - Movie Details</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #fff;
+    }
+
+    .container {
+      position: relative;
+    }
+
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50vh;
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.5);
+      z-index: -1;
+    }
+
+    .content {
+      padding: 20px;
+      margin-top: 50vh;
+      background-color: #222;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+    }
+
+    .movie-card {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .poster {
+      width: 150px;
+      border-radius: 10px;
+    }
+
+    .details {
+      flex-grow: 1;
+    }
+
+    .details h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .details p {
+      margin: 5px 0;
+      color: #ccc;
+    }
+
+    .logo {
+      width: 100px;
+      object-fit: contain;
+    }
+
+    .movie-info {
+      margin-bottom: 20px;
+    }
+
+    .cast-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .cast-list li {
+      margin-bottom: 5px;
+    }
+
+    .providers-list {
+      display: flex;
+      gap: 10px;
+      list-style: none;
+      padding: 0;
+    }
+
+    .providers-list img {
+      width: 50px;
+      height: auto;
+      object-fit: contain;
+      filter: brightness(1.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Background Poster -->
+    <div class="background" style="background-image: url('https://image.tmdb.org/t/p/original/9Gtg2DzBhmYamXBS1hKAhiwbBKS.jpg');">
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+      <!-- Movie Card -->
+      <div class="movie-card">
+        <img class="poster" src="https://image.tmdb.org/t/p/w500/61PVJ06oecwvcBisoAQu6SDfdcS.jpg" alt="Movie Poster">
+        <div class="details">
+          <h1>Doctor Strange in the Multiverse of Madness</h1>
+          <p>Release Date: 2022-05-04</p>
+        </div>
+        <img class="logo" src="https://image.tmdb.org/t/p/w200/8xemj5Gqv2UhcLCLdKz9oJ3D3Lq.png" alt="Movie Logo">
+      </div>
+
+      <!-- Description and Cast -->
+      <div class="movie-info">
+        <h2>Overview</h2>
+        <p>Doctor Strange, with the help of mystical allies both old and new, traverses the mind-bending and dangerous alternate realities of the Multiverse to confront a mysterious new adversary.</p>
+
+        <h2>Cast</h2>
+        <ul class="cast-list">
+          <li>Benedict Cumberbatch as Doctor Stephen Strange</li>
+          <li>Elizabeth Olsen as Wanda Maximoff / The Scarlet Witch</li>
+          <li>Chiwetel Ejiofor as Baron Karl Mordo</li>
+          <li>Benedict Wong as Wong</li>
+          <li>Xochitl Gomez as America Chavez</li>
+        </ul>
+      </div>
+
+      <!-- Streaming Providers -->
+      <div class="streaming-providers">
+        <h2>Streaming on</h2>
+        <ul class="providers-list">
+          <li><img src="https://image.tmdb.org/t/p/w92/qZeq8VPUF3sAUb7C8qNr7QIXp1g.jpg" alt="Disney+"></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
