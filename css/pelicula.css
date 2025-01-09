@@ -9,10 +9,6 @@ body {
   background-size: cover;
 }
 
-h1 {
-  display: none;
-}
-
 .hidden {
   display: none;
 }
@@ -35,14 +31,13 @@ h2 {
 }
 
 main {
-  padding: 0 3em;
+  padding: 0 20px 20px;
 }
 
 .header {
   display: flex;
-  justify-content: space-around;
-  padding: 1em 3em;
-  margin-top: 50px;
+  justify-content: flex-start;
+  padding: 2em 3em;
 }
 
 .material-symbols-outlined {
@@ -113,25 +108,6 @@ main {
   border-radius: 4px;
 }
 
-.pelicula-container:hover {
-  transform: scale(1.05);
-}
-
-.pelicula-container p {
-  font-size: 0.9em;
-  color: #ccc;
-}
-
-.titulo {
-  width: 300px;
-  height: 60px;
-}
-
-.informacion {
-  width: 300px;
-  height: 100px;
-}
-
 .container {
   position: relative;
 }
@@ -140,6 +116,8 @@ main {
   position: fixed;
   top: 0;
   left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
   height: 100%;
   background-size: cover;
@@ -150,6 +128,8 @@ main {
 }
 
 .content {
+  display:flex;
+  flex-direction: column;
   padding: 20px;
   margin-top: 100%;
   background-color: #222;
@@ -157,15 +137,21 @@ main {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
 }
 
+.logo-container{
+  display: flex;
+  justify-content: space-around;
+}
+
 .movie-card {
   display: flex;
-  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
   gap: 20px;
   margin-bottom: 20px;
 }
 
 .poster {
-  width: 300px;
+  width: 400px;
   border-radius: 10px;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
@@ -173,22 +159,31 @@ main {
   -o-border-radius: 10px;
 }
 
-.details {
+.details{
+  width: 320px;
   flex-grow: 1;
+
 }
 
 .details h2 {
   margin: 0;
   font-size: 2rem;
+  font-weight: bold;
 }
 
 .details p {
+  display: block;
   margin: 5px 0;
   color: #ccc;
+  overflow-wrap: break-word;
+}
+
+.descripcon{
+  flex-shrink: 1;
 }
 
 .logo {
-  width: 100px;
+  width: 400px;
   object-fit: contain;
 }
 
@@ -217,4 +212,28 @@ main {
   height: auto;
   object-fit: contain;
   filter: brightness(1.2);
+}
+
+@media(max-width:800px){
+  main{
+    padding: 0 10px 10px;
+  }
+
+  .header{
+    justify-content: center;
+  }
+
+  .dropdown-menu{
+    scale: 0.75;
+  }
+}
+
+@media(max-width:414px){
+  .logo{
+    width: 300px;
+  }
+
+  .poster{
+    width: 350px;
+  }
 }
