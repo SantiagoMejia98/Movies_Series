@@ -128,7 +128,7 @@ main {
 }
 
 .content {
-  display:flex;
+  display: flex;
   flex-direction: column;
   padding: 20px;
   margin-top: 100%;
@@ -137,7 +137,7 @@ main {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
 }
 
-.logo-container{
+.logo-container {
   display: flex;
   justify-content: space-around;
 }
@@ -152,6 +152,7 @@ main {
 
 .poster {
   width: 400px;
+  height: auto;
   border-radius: 10px;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
@@ -159,10 +160,9 @@ main {
   -o-border-radius: 10px;
 }
 
-.details{
+.details {
   width: 320px;
   flex-grow: 1;
-
 }
 
 .details h2 {
@@ -172,19 +172,12 @@ main {
 }
 
 .details p {
-  display: block;
   margin: 5px 0;
   color: #ccc;
-  overflow-wrap: break-word;
-}
-
-.descripcon{
-  flex-shrink: 1;
 }
 
 .logo {
   width: 400px;
-  object-fit: contain;
 }
 
 .movie-info {
@@ -194,10 +187,29 @@ main {
 .cast-list {
   list-style: none;
   padding: 0;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-.cast-list li {
-  margin-bottom: 5px;
+.actor {
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.actor-image {
+  width: 100px;
+  border: 3px solid transparent;
+  border-image: linear-gradient(to right, #ff7e5f, #feb47b);
+  border-image-slice: 1;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
 }
 
 .providers-list {
@@ -214,26 +226,26 @@ main {
   filter: brightness(1.2);
 }
 
-@media(max-width:800px){
-  main{
+@media (max-width: 800px) {
+  main {
     padding: 0 10px 10px;
   }
 
-  .header{
+  .header {
     justify-content: center;
   }
 
-  .dropdown-menu{
+  .dropdown-menu {
     scale: 0.75;
   }
 }
 
-@media(max-width:414px){
-  .logo{
+@media (max-width: 414px) {
+  .logo {
     width: 300px;
   }
 
-  .poster{
+  .poster {
     width: 350px;
   }
 }
