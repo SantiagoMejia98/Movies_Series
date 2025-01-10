@@ -93,21 +93,6 @@ main {
   background-color: #e53935;
 }
 
-.lista {
-  list-style-type: none;
-  margin: 1em 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-
-  gap: 1em;
-}
-
-.lista li img {
-  width: 299px;
-  height: 444px;
-  border-radius: 4px;
-}
-
 .container {
   position: relative;
 }
@@ -145,6 +130,7 @@ main {
 .movie-card {
   display: flex;
   justify-content: flex-start;
+  align-items: flex-start;
   flex-wrap: wrap;
   gap: 20px;
   margin-bottom: 20px;
@@ -152,12 +138,15 @@ main {
 
 .poster {
   width: 400px;
-  height: auto;
+  aspect-ratio: 2 / 3;
   border-radius: 10px;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   -ms-border-radius: 10px;
   -o-border-radius: 10px;
+  border: 3px solid transparent;
+  border-image: linear-gradient(to right, #ff7e5f, #feb47b);
+  border-image-slice: 1;
 }
 
 .details {
@@ -184,7 +173,7 @@ main {
   margin-bottom: 20px;
 }
 
-.cast-list {
+.cast-list, .direct-list {
   list-style: none;
   padding: 0;
   display: flex;
@@ -193,14 +182,14 @@ main {
   gap: 20px;
 }
 
-.actor {
+.actor, .director {
   width: 100px;
   display: flex;
   flex-direction: column;
   text-align: center;
 }
 
-.actor-image {
+.actor-image, .director-image {
   width: 100px;
   border: 3px solid transparent;
   border-image: linear-gradient(to right, #ff7e5f, #feb47b);
@@ -214,16 +203,48 @@ main {
 
 .providers-list {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 20px;
   list-style: none;
   padding: 0;
 }
 
 .providers-list img {
-  width: 50px;
+  width: 70px;
   height: auto;
   object-fit: contain;
   filter: brightness(1.2);
+}
+
+.video{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+@keyframes show{
+  from{
+    opacity: 0;
+    scale: 25%;
+  }
+
+  to{
+    opacity: 1;
+    scale: 100%;
+  }
+}
+
+.content{
+  view-timeline-name: --image;
+  view-timeline-axis: block;
+
+  animation-timeline: --image;
+  animation-name: show;
+
+  animation-range: entry 25% cover 40%;
+  animation-fill-mode: both;
 }
 
 @media (max-width: 800px) {

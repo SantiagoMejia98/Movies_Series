@@ -1,0 +1,24 @@
+.contenedor {
+    display: flex;
+    flex-direction: column; /* Organiza los elementos en columna */
+    height: 100vh; /* Altura del contenedor total */
+    width: 100vw;  /* Ancho del contenedor total */
+  }
+  
+  .div1 {
+    width: 200px; /* Ancho fijo para DIV1 */
+    height: 200px; /* Alto fijo para DIV1 */
+    background-color: lightblue;
+    flex-shrink: 0; /* No permite que este div se reduzca */
+  }
+  
+  .contenido-restante {
+    display: flex;
+    flex: 1; /* Ocupa el resto del espacio */
+  }
+  
+  .div2 {
+    background-color: lightcoral;
+    flex: 1; /* Ocupa todo el espacio disponible */
+  }
+  

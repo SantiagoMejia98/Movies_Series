@@ -1,0 +1,142 @@
+
+0
+: 
+"Disney Plus"
+1
+: 
+"Amazon Prime Video"
+2
+: 
+"Netflix"
+3
+: 
+"Google Play Movies"
+4
+: 
+"Apple TV"
+5
+: 
+"Apple TV Plus"
+6
+: 
+"Max"
+7
+: 
+"Paramount Plus"
+8
+: 
+"MovistarTV"
+9
+: 
+"Claro video"
+10
+: 
+"MUBI"
+11
+: 
+"Curiosity Stream"
+12
+: 
+"VIX "
+13
+: 
+"DIRECTV GO"
+14
+: 
+"DOCSVILLE"
+15
+: 
+"Spamflix"
+16
+: 
+"WOW Presents Plus"
+17
+: 
+"Magellan TV"
+18
+: 
+"BroadwayHD"
+19
+: 
+"Filmzie"
+20
+: 
+"Dekkoo"
+21
+: 
+"True Story"
+22
+: 
+"DocAlliance Films"
+23
+: 
+"Hoichoi"
+24
+: 
+"Pluto TV"
+25
+: 
+"Eventive"
+26
+: 
+"Cultpix"
+27
+: 
+"FilmBox+"
+28
+: 
+"Takflix"
+29
+: 
+"Sun Nxt"
+30
+: 
+"Runtime"
+31
+: 
+"Crunchyroll"
+32
+: 
+"Paramount Plus Apple TV Channel "
+33
+: 
+"Univer Video"
+34
+: 
+"Plex"
+35
+: 
+"Adrenalina Pura Amazon channel"
+36
+: 
+"Adrenalina Pura Apple TV channel"
+37
+: 
+"MGM+ Apple TV Channel"
+38
+: 
+"MGM Plus Amazon Channel"
+39
+: 
+"ViX Premium Amazon Channel"
+40
+: 
+"Cindie Amazon Channel"
+41
+: 
+"MUBI Amazon Channel"
+42
+: 
+"Paramount+ Amazon Channel"
+43
+: 
+"Looke Amazon Channel"
+44
+: 
+"Universal+ Amazon Channel"
+45
+: 
+"JustWatchTV"
+46
+: 
+"Crunchyroll Amazon Channel"
