@@ -104,7 +104,7 @@ main {
   right: 0;
   bottom: 0;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 16 / 9;
   background-size: cover;
   background-position: center;
   filter: brightness(0.5);
@@ -116,10 +116,20 @@ main {
   display: flex;
   flex-direction: column;
   padding: 20px;
-  margin-top: 100%;
+  margin-top: 100vh;
   background-color: #222;
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+}
+
+.poster-providers{
+  width: 400px;
+  background-image: linear-gradient(    to right,    #2c3e50 0%,    #3498db 51%,    #2c3e50 100%  );
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
 }
 
 .logo-container {
@@ -144,9 +154,6 @@ main {
   -moz-border-radius: 10px;
   -ms-border-radius: 10px;
   -o-border-radius: 10px;
-  border: 3px solid transparent;
-  border-image: linear-gradient(to right, #ff7e5f, #feb47b);
-  border-image-slice: 1;
 }
 
 .details {
@@ -171,6 +178,7 @@ main {
 
 .movie-info {
   margin-bottom: 20px;
+  width: 100%;
 }
 
 .cast-list, .direct-list {
@@ -180,6 +188,7 @@ main {
   justify-content: flex-start;
   flex-wrap: wrap;
   gap: 20px;
+  width: 100%;
 }
 
 .actor, .director {
@@ -191,9 +200,16 @@ main {
 
 .actor-image, .director-image {
   width: 100px;
-  border: 3px solid transparent;
-  border-image: linear-gradient(to right, #ff7e5f, #feb47b);
-  border-image-slice: 1;
+  border: 3px solid rgb(67, 72, 83);
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+
+.streaming-providers{
+  padding: 5px;
   border-radius: 5px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -204,27 +220,127 @@ main {
 .providers-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 10px;
   list-style: none;
   padding: 0;
 }
 
 .providers-list img {
-  width: 70px;
+  width: 50px;
   height: auto;
-  object-fit: contain;
-  filter: brightness(1.2);
+  border-radius: 5px;
 }
 
 .video{
   display: flex;
+  width: 100%;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin-top: 20px;
 }
 
-@keyframes show{
+.videoPlayer{
+  width: 50%;
+  aspect-ratio: 16 / 9;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+}
+
+.details ul{
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.bookmark-item {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  font-size: 1.5em;
+}
+
+.bookmark-item i {
+  transition: color 0.3s ease; 
+}
+
+.bookmark-item.filled i {
+  color: #3498db;
+}
+
+.movie-item {
+  cursor: pointer;
+  font-size: 1.5em;
+  margin: 10px;
+}
+
+.movie-item i {
+  margin-right: 10px;
+}
+
+.movie-item {
+  cursor: pointer;
+  font-size: 1.5em;
+  margin: 10px;
+}
+
+.movie-item i {
+  margin-right: 10px;
+}
+
+.video{
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+
+.modal-content {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 25%;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  margin: 10% auto;
+  padding: 20px;
+}
+
+.trailer{
+  width: 100%;
+  justify-self: center;
+  aspect-ratio: 16 / 9;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+}
+
+.close {
+  color: red;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  top: 30px;
+  right: 40px;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/*@keyframes show{
   from{
     opacity: 0;
     scale: 25%;
@@ -243,9 +359,9 @@ main {
   animation-timeline: --image;
   animation-name: show;
 
-  animation-range: entry 25% cover 40%;
+  animation-range: entry 10% cover 20%;
   animation-fill-mode: both;
-}
+}*/
 
 @media (max-width: 800px) {
   main {
@@ -259,11 +375,16 @@ main {
   .dropdown-menu {
     scale: 0.75;
   }
+
+  .videoPlayer{
+    width: 100%;
+  }
+  
 }
 
 @media (max-width: 414px) {
   .logo {
-    width: 300px;
+    width: 350px;
   }
 
   .poster {

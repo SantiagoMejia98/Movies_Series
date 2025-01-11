@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="css/pelicula.css">
     <link rel="icon" type="image/png" href="icon.png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <title>Películas y series para ver</title>
 </head>
 
@@ -40,25 +41,11 @@
                         <img class="logo" src="https://image.tmdb.org/t/p/original/plSzYZQUk1rLAPQxs8XMgTB8lYw.png">
                     </div>
                     <div class="movie-card">
-                        <img class="poster" src="https://image.tmdb.org/t/p/original/nNLPA7tPvyFeMjcCuODH9sKTcXx.jpg"
-                            alt="movie-poster">
-                        <div class="details">
-                            <h2 class="titulo">Top Gun: Maverick</h2>
-                            <p class="tagline"><i>Feel the need... The need for speed.</i></p>
-                            <p class="estreno">Fecha de Lanzamiento: 2022-05-21</p>
-                            <p class="duracion">Duración: 131 min</p>
-                            <p class="genero">Aventura, Acción, Drama</p>
-                            <h2>Sinopsis</h2>
-                            <p>Después de más de treinta años de servicio como uno de los mejores aviadores de la
-                                Armada, Pete \"Maverick\" Mitchell está en donde pertenece, sobresaliendo como un
-                                valiente piloto de pruebas y evitando subir de rango en la armada, que evitaría que
-                                pudiera seguir volando. Cuando se encuentra entrenando a un destacamento de graduados de
-                                Top Gun para una misión especial que ningún piloto vivo ha visto antes, Maverick se
-                                encuentra con el teniente Bradley Bradshaw, señal de llamada: \"Rooster\", el hijo del
-                                difunto amigo de Maverick y el oficial de intercepción de radar, el teniente Nick
-                                Bradshaw, también conocido como \"Goose\".</p>
+                        <div class="poster-providers">
+                            <img class="poster"
+                                src="https://image.tmdb.org/t/p/original/nNLPA7tPvyFeMjcCuODH9sKTcXx.jpg"
+                                alt="movie-poster">
                             <div class="streaming-providers">
-                                <h2>Streaming on</h2>
                                 <ul class="providers-list">
                                     <li>
                                         <img src="https://image.tmdb.org/t/p/w92/pTnn5JwWr4p3pG8H6VrpiQo7Vs0.jpg"
@@ -87,7 +74,34 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="movie-info">
+
+                        <div class="details">
+                            <h2 class="titulo">Top Gun: Maverick (2022)</h2>
+                            <p class="genero">Acción, Drama &bull; 2h 11m</p>
+                            <p class="tagline"><i>Feel the need... The need for speed.</i></p>
+                            
+                            <ul>
+                                <li class="bookmark-item">
+                                    <i class="fa-regular fa-bookmark"></i>
+                                </li>
+                                <li class="movie-item">
+                                  <i class="fa-solid fa-play"></i> Ver tráiler
+                                </li>
+                              </ul>
+                              
+                              <div class="modal-content" id="trailerModal">
+                                <span class="close">&times;</span>
+                                <iframe class="trailer" id="trailerIframe"  frameborder="0" allowfullscreen></iframe>
+                              </div>
+                            <h2>Sinopsis</h2>
+                            <p>Después de más de treinta años de servicio como uno de los mejores aviadores de la
+                                Armada, Pete "Maverick" Mitchell está en donde pertenece, sobresaliendo como un
+                                valiente piloto de pruebas y evitando subir de rango en la armada, que evitaría que
+                                pudiera seguir volando. Cuando se encuentra entrenando a un destacamento de graduados de
+                                Top Gun para una misión especial que ningún piloto vivo ha visto antes, Maverick se
+                                encuentra con el teniente Bradley Bradshaw, señal de llamada: "Rooster", el hijo del
+                                difunto amigo de Maverick y el oficial de intercepción de radar, el teniente Nick
+                                Bradshaw, también conocido como "Goose".</p>
                             <div class="director">
                                 <h2>Director</h2>
                                 <ul class="director-list">
@@ -98,6 +112,9 @@
                                     </li>
                                 </ul>
                             </div>
+                        </div>
+                        <div class="movie-info">
+
                             <h2>Reparto</h2>
                             <ul class="cast-list">
                                 <li class="actor">
@@ -168,9 +185,10 @@
                                 </li>
                             </ul>
                             <div class="video">
-                                <iframe class="videoPlayer" src="https://www.youtube.com/embed/qSqVVswa420" width="560" height="315" frameborder="0" allowfullscreen>
+                                <iframe class="videoPlayer" src="https://www.youtube.com/embed/qSqVVswa420"
+                                    frameborder="0" allowfullscreen>
                                 </iframe>
-                                
+
                             </div>
                         </div>
                     </div>
