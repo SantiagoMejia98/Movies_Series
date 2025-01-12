@@ -292,15 +292,6 @@ main {
   margin-right: 10px;
 }
 
-.video{
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-}
-
 
 .modal-content {
   display: none;
@@ -330,8 +321,8 @@ main {
   font-size: 28px;
   font-weight: bold;
   position: absolute;
-  top: 30px;
-  right: 40px;
+  top: 20px;
+  right: 30px;
 }
 
 .close:hover,
@@ -379,6 +370,13 @@ main {
 
   .videoPlayer{
     width: 100%;
+  }
+
+  .modal-content {
+    left: 2%;
+    top: 0;
+    width: 96%;
+    height: 100%;
   }
   
 }
