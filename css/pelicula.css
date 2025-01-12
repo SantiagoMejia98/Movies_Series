@@ -69,30 +69,6 @@ main {
   font-size: 16px;
 }
 
-.agregar-btn,
-.eliminar-btn {
-  margin-top: 10px;
-  padding: 8px 12px;
-  font-size: 14px;
-  cursor: pointer;
-  border: none;
-  border-radius: 4px;
-  background-color: #4caf50;
-  transition: background-color 0.3s ease;
-}
-
-.eliminar-btn {
-  background-color: #f44336;
-}
-
-.agregar-btn:hover {
-  background-color: #45a049;
-}
-
-.eliminar-btn:hover {
-  background-color: #e53935;
-}
-
 .container {
   position: relative;
 }
@@ -103,8 +79,8 @@ main {
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  aspect-ratio: 16 / 9;
   background-size: cover;
   background-position: center;
   filter: brightness(0.5);
@@ -122,9 +98,14 @@ main {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
 }
 
-.poster-providers{
+.poster-providers {
   width: 400px;
-  background-image: linear-gradient(    to right,    #2c3e50 0%,    #3498db 51%,    #2c3e50 100%  );
+  background-image: linear-gradient(
+    to right,
+    #2c3e50 0%,
+    #3498db 51%,
+    #2c3e50 100%
+  );
   border-radius: 10px;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
@@ -181,7 +162,8 @@ main {
   width: 100%;
 }
 
-.cast-list, .direct-list {
+.cast-list,
+.direct-list {
   list-style: none;
   padding: 0;
   display: flex;
@@ -191,14 +173,16 @@ main {
   width: 100%;
 }
 
-.actor, .director {
+.actor,
+.director {
   width: 100px;
   display: flex;
   flex-direction: column;
   text-align: center;
 }
 
-.actor-image, .director-image {
+.actor-image,
+.director-image {
   width: 100px;
   border: 3px solid rgb(67, 72, 83);
   border-radius: 5px;
@@ -208,7 +192,7 @@ main {
   -o-border-radius: 5px;
 }
 
-.streaming-providers{
+.streaming-providers {
   padding: 5px;
   border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -232,7 +216,7 @@ main {
   border-radius: 5px;
 }
 
-.video{
+.video {
   display: flex;
   width: 100%;
   flex-direction: column;
@@ -241,7 +225,7 @@ main {
   margin-top: 20px;
 }
 
-.videoPlayer{
+.videoPlayer {
   width: 50%;
   aspect-ratio: 16 / 9;
   border-radius: 15px;
@@ -251,7 +235,7 @@ main {
   -o-border-radius: 15px;
 }
 
-.details ul{
+.details ul {
   list-style: none;
   display: flex;
   gap: 20px;
@@ -265,7 +249,7 @@ main {
 }
 
 .bookmark-item i {
-  transition: color 0.3s ease; 
+  transition: color 0.3s ease;
 }
 
 .bookmark-item.filled i {
@@ -292,7 +276,6 @@ main {
   margin-right: 10px;
 }
 
-
 .modal-content {
   display: none;
   position: fixed;
@@ -305,7 +288,7 @@ main {
   padding: 20px;
 }
 
-.trailer{
+.trailer {
   width: 100%;
   justify-self: center;
   aspect-ratio: 16 / 9;
@@ -329,6 +312,42 @@ main {
 .close:focus {
   color: black;
   text-decoration: none;
+  cursor: pointer;
+}
+
+.lista {
+  list-style-type: none;
+  margin: 1em 0;
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.lista li img {
+  width: 299px;
+  height: 444px;
+  border-radius: 4px;
+}
+
+.pelicula-container {
+  width: 300px;
+  justify-content: center;
+  text-align: center;
+  background-image: linear-gradient(
+    to right,
+    #2c3e50 0%,
+    #3498db 51%,
+    #2c3e50 100%
+  );
+  border: 1px solid #333; /* Borde de la tarjeta */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.pelicula-container:hover {
+  transform: scale(1.05);
   cursor: pointer;
 }
 
@@ -368,7 +387,7 @@ main {
     scale: 0.75;
   }
 
-  .videoPlayer{
+  .videoPlayer {
     width: 100%;
   }
 
@@ -378,7 +397,6 @@ main {
     width: 96%;
     height: 100%;
   }
-  
 }
 
 @media (max-width: 414px) {
