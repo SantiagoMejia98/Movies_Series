@@ -198,7 +198,7 @@ function openTrailer(trailerUrl) {
   const modal = document.getElementById('trailerModal');
   const iframe = document.getElementById('trailerIframe');
   iframe.src = trailerUrl;  // Asigna la URL del tráiler al iframe
-  modal.style.display = "block";  // Muestra el modal
+  modal.style.display = "flex";  // Muestra el modal
 }
 
 // Función para cerrar el modal
