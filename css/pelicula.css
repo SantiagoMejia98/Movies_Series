@@ -2,19 +2,21 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:100");
 @import url("https://fonts.googleapis.com/css?family=Lato:400,700");
 
-body {
+html {
+  font-size: 16px;
+  line-height: 1;
+  color: white;
   font-family: "Lato", sans-serif;
-  width: 100%;
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 select,
 option {
   font-size: 24px;
   padding: 0 1em;
-}
-
-h2 {
-  color: white;
 }
 
 main {
@@ -27,9 +29,13 @@ main {
   padding: 2em 3em;
 }
 
-
 .dropdown-menu {
-  background-image: linear-gradient(    to right,    #2c3e50 0%,    #3498db 51%,    #2c3e50 100%  );
+  background-image: linear-gradient(
+    to right,
+    #2c3e50 0%,
+    #3498db 51%,
+    #2c3e50 100%
+  );
   color: white;
   border: none;
   padding: 15px 20px;
@@ -114,7 +120,7 @@ main {
 }
 
 .poster-providers {
-  width: 500px;
+  width: 400px;
   background-image: linear-gradient(
     to right,
     #2c3e50 0%,
@@ -139,12 +145,7 @@ main {
 }
 
 .streaming-providers {
-  padding: 5px;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
+  padding: 10px;
 }
 
 .providers-list {
@@ -153,29 +154,36 @@ main {
   justify-content: flex-start;
   gap: 10px;
   list-style: none;
-  padding: 0;
 }
 
 .providers-list img {
-  width: 50px;
-  height: auto;
+  width: 55px;
+  height: 55px;
   border-radius: 5px;
 }
 
 .details {
-  width: 320px;
+  width: 180px;
   flex-grow: 1;
 }
 
-.details h2 {
-  margin: 0;
+.details h2, .titulo, .section h2 {
+  margin: 10px 0;
   font-size: 3rem;
   font-weight: bold;
 }
 
+
 .details p {
-  margin: 5px 0;
-  color: #ccc;
+  margin: 10px 0;
+  font-size: 1.2rem;
+  color: white;
+}
+
+.details h3{
+  font-size: 2rem;
+  margin: 10px 0;
+  font-weight: bold;
 }
 
 .details p i {
@@ -190,13 +198,18 @@ main {
 
 .bookmark-item {
   cursor: pointer;
-  width: 20px;
-  height: 20px;
+  width: 40px;
+  height: 40px;
   font-size: 1.5em;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .bookmark-item i {
   transition: color 0.3s ease;
+  margin: auto;
 }
 
 .bookmark-item.filled i {
@@ -205,30 +218,33 @@ main {
 
 .movie-item {
   cursor: pointer;
+  width: 200px;
+  height: 40px;
   font-size: 1.5em;
-  margin: 10px;
+  margin-top: 10px;
+  display: flex;
 }
 
-.movie-item i {
-  margin-right: 10px;
+.movie-item img {
+  width: 40px;
+  height: auto;
+  border-radius: 5px;
+}
+
+.movie-item p {
+  color: white;
+  margin-left: 10px;
 }
 
 .modal-content {
-  background-color: black;
-  display: flex;
-  flex-direction: column;
+  display: none;
   position: fixed;
-  border-radius: 15px;
   z-index: 1;
-  left: 20%;
+  left: 15vw;
   top: 0;
-  width: 60%;
+  width: 70vw;
   aspect-ratio: 16 / 9;
-  margin-top: 10%;
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  -ms-border-radius: 15px;
-  -o-border-radius: 15px;
+  margin-top: 10vh;
 }
 
 .trailer {
@@ -243,31 +259,27 @@ main {
   -o-border-radius: 15px;
 }
 
-.modal-header{
-  width: 100%;
-  height: 50px;
-  background-color: black;
-  display: flex;
-  justify-content: flex-end;
-  border-radius: 15px;
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  -ms-border-radius: 15px;
-  -o-border-radius: 15px;
-}
-
 .close {
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
   color: white;
-  height: 100%;
-  aspect-ratio: 1;
-  font-size: 25px;
+  background-color: black;
+  font-size: 20px;
   font-weight: bold;
-  border-radius: 15px;
-  text-align: center;
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  -ms-border-radius: 15px;
-  -o-border-radius: 15px;
+  border: none;
+  outline: none;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
 }
 
 .close:hover,
@@ -293,7 +305,11 @@ main {
   width: 100px;
   display: flex;
   flex-direction: column;
-  text-align: center;
+}
+
+.actor p, .director p{
+  font-size: 1rem;
+  margin: 5px;
 }
 
 .actor-image,
@@ -308,11 +324,15 @@ main {
   -o-border-radius: 5px;
 }
 
-.section{
+.cast {
+  display: none;
+}
+
+.section {
   margin-top: 20px;
 }
 
-.section h2{
+.section h2 {
   font-size: 2rem;
 }
 
@@ -326,7 +346,7 @@ main {
 }
 
 .pelicula-container {
-  width: 348.6px;
+  width: 352px;
   justify-content: center;
   text-align: center;
   background-image: linear-gradient(
@@ -383,9 +403,39 @@ main {
   animation-fill-mode: both;
 }*/
 
+@media (min-width: 801px) and (max-width: 1440px) {
+  .cast-list li:nth-child(n + 9) {
+    display: none;
+  }
+
+  .pelicula-container{
+    width: 325px;
+  }
+
+  .details h2, .titulo, .section h2 {
+    font-size: 2rem;
+    color: white;
+  }
+  
+  .details p {
+    font-size: 1rem;
+    color: white;
+  }
+  
+  .details h3{
+    font-size: 1.5rem;
+    color: white;
+  }
+
+  .actor p, .director p{
+    font-size: 0.8rem;
+    color: white;
+  }
+}
+
 @media (max-width: 800px) {
   main {
-    padding: 0 10px 10px;
+    padding: 0 30px 30px;
   }
 
   .header {
@@ -396,24 +446,79 @@ main {
     scale: 0.75;
   }
 
-  .videoPlayer {
-    width: 100%;
+  .modal-content {
+    left: 5vw;
+    width: 90vw;
   }
 
-  .modal-content {
-    left: 2%;
-    top: 0;
-    width: 96%;
-    height: 100%;
+  .card-cast{
+    display: none;
+  }
+
+  .cast{
+    display: block;
+  }
+
+  .pelicula-container{
+    width: 340px;
+  }
+
+  .details h2, .titulo, .section h2 {
+    font-size: 1.7rem;
+    color: white;
+  }
+  
+  .details p {
+    font-size: 1rem;
+    color: white;
+  }
+  
+  .details h3{
+    font-size: 1.3rem;
+    color: white;
+  }
+
+  .actor p, .director p{
+    font-size: 0.8rem;
+    color: white;
   }
 }
 
 @media (max-width: 414px) {
+  main {
+    padding: 0 17px 17px;
+  }
+  
   .logo {
     width: 350px;
   }
 
-  .poster-providers{
-    width: 350px;
+  .poster-providers {
+    width: 340px;
+  }
+
+  .providers-list img{
+    width: 56px;
+    height: 56px;
+  }
+
+  .details h2, .titulo, .section h2 {
+    font-size: 2rem;
+    color: white;
+  }
+  
+  .details p {
+    font-size: 1rem;
+    color: white;
+  }
+  
+  .details h3{
+    font-size: 1.5rem;
+    color: white;
+  }
+
+  .actor p, .director p{
+    font-size: 0.8rem;
+    color: white;
   }
 }

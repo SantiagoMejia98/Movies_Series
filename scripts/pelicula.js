@@ -166,55 +166,49 @@ function buscarColeccion(id) {
   fetch(`https://api.themoviedb.org/3/collection/${id}`, get)
     .then((res) => res.json())
     .then((res) => {
-      res.parts.forEach((titulo) => {
-        
-      });
+      res.parts.forEach((titulo) => {});
     })
     .catch((err) => console.error(err));
 }
 
-
 dropdownMenu.addEventListener("change", manejarSeleccion);
 
-document.querySelectorAll('.bookmark-item').forEach(item => {
-  item.addEventListener('click', function() {
-    const icon = this.querySelector('i');
-    
+document.querySelectorAll(".bookmark-item").forEach((item) => {
+  item.addEventListener("click", function () {
+    const icon = this.querySelector("i");
+
     // Alternar entre icono vacío y relleno
-    if (icon.classList.contains('fa-regular')) {
-      icon.classList.remove('fa-regular');
-      icon.classList.add('fa-solid');
+    if (icon.classList.contains("fa-regular")) {
+      icon.classList.remove("fa-regular");
+      icon.classList.add("fa-solid");
     } else {
-      icon.classList.remove('fa-solid');
-      icon.classList.add('fa-regular');
+      icon.classList.remove("fa-solid");
+      icon.classList.add("fa-regular");
     }
 
     // Alternar la clase "filled" para cambiar el color
-    this.classList.toggle('filled');
+    this.classList.toggle("filled");
   });
 });
 
-function openTrailer(trailerUrl) {
-  const modal = document.getElementById('trailerModal');
-  const iframe = document.getElementById('trailerIframe');
-  iframe.src = trailerUrl;  // Asigna la URL del tráiler al iframe
-  modal.style.display = "flex";  // Muestra el modal
+function openTrailer() {
+  const modal = document.getElementById("trailerModal");
+  modal.style.display = "block"; // Muestra el modal
 }
 
 // Función para cerrar el modal
 function closeTrailer() {
-  const modal = document.getElementById('trailerModal');
-  const iframe = document.getElementById('trailerIframe');
-  iframe.src = "";  
-  modal.style.display = "none"; 
+  const modal = document.getElementById("trailerModal");
+  modal.style.display = "none";
 }
 
-
-document.addEventListener("DOMContentLoaded", function() {
-  const movieItem = document.querySelector('.movie-item');
-  movieItem.addEventListener('click', function() {
-    openTrailer('https://www.youtube.com/embed/qSqVVswa420');
+document.addEventListener("DOMContentLoaded", function () {
+  const movieItem = document.querySelector(".movie-item");
+  movieItem.addEventListener("click", function () {
+    openTrailer();
   });
-  const closeBtn = document.querySelector('.close');
-  closeBtn.addEventListener('click', closeTrailer);
+  const closeBtn = document.querySelector(".close");
+  closeBtn.addEventListener("click", closeTrailer);
 });
+
+
