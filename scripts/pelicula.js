@@ -10,13 +10,8 @@ const get = {
 const dropdownMenu = document.getElementById("dropdown-menu");
 
 const elementos = {
-  busqueda: document.querySelector('[data-name="busqueda"]'),
-  peliculas_presentes: document.querySelector(
-    '[data-name="peliculas_presentes"]'
-  ),
-  series_presentes: document.querySelector('[data-name="series_presentes"]'),
-  peliculas_nuevas: document.querySelector('[data-name="peliculas_nuevas"]'),
-  series_nuevas: document.querySelector('[data-name="series_nuevas"]'),
+  informacion: document.querySelector('[data-name="informacion"]'),
+  peliculas: document.querySelector('[data-name="peliculas"]')
 };
 
 let todasLasPeliculas = [];
@@ -210,5 +205,3 @@ document.addEventListener("DOMContentLoaded", function () {
   const closeBtn = document.querySelector(".close");
   closeBtn.addEventListener("click", closeTrailer);
 });
-
-

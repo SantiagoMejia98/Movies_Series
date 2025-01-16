@@ -9,7 +9,7 @@ html {
   font-family: "Lato", sans-serif;
 }
 
-main{
+main {
   position: relative;
 }
 
@@ -171,12 +171,13 @@ main {
   flex-grow: 1;
 }
 
-.details h2, .titulo, .section h2 {
+.details h2,
+.titulo,
+.section h2 {
   margin: 10px 0;
   font-size: 3rem;
   font-weight: bold;
 }
-
 
 .details p {
   margin: 10px 0;
@@ -184,7 +185,7 @@ main {
   color: white;
 }
 
-.details h3{
+.details h3 {
   font-size: 2rem;
   margin: 10px 0;
   font-weight: bold;
@@ -311,7 +312,8 @@ main {
   flex-direction: column;
 }
 
-.actor p, .director p{
+.actor p,
+.director p {
   font-size: 1rem;
   margin: 5px;
 }
@@ -384,8 +386,11 @@ main {
   -o-border-radius: 4px;
 }
 
+.hidden{
+  display: none;
+}
+
 .movie {
-  display: block;
   position: absolute;
   left: 0;
   bottom: 0;
@@ -412,7 +417,7 @@ main {
   border: none;
   outline: none;
   position: fixed;
-  top: 10p  x;
+  top: 10p x;
   right: 10px;
   border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -456,26 +461,29 @@ main {
     display: none;
   }
 
-  .pelicula-container{
+  .pelicula-container {
     width: 325px;
   }
 
-  .details h2, .titulo, .section h2 {
+  .details h2,
+  .titulo,
+  .section h2 {
     font-size: 2rem;
     color: white;
   }
-  
+
   .details p {
     font-size: 1rem;
     color: white;
   }
-  
-  .details h3{
+
+  .details h3 {
     font-size: 1.5rem;
     color: white;
   }
 
-  .actor p, .director p{
+  .actor p,
+  .director p {
     font-size: 0.8rem;
     color: white;
   }
@@ -499,34 +507,37 @@ main {
     width: 90vw;
   }
 
-  .card-cast{
+  .card-cast {
     display: none;
   }
 
-  .cast{
+  .cast {
     display: block;
   }
 
-  .pelicula-container{
+  .pelicula-container {
     width: 340px;
   }
 
-  .details h2, .titulo, .section h2 {
+  .details h2,
+  .titulo,
+  .section h2 {
     font-size: 1.7rem;
     color: white;
   }
-  
+
   .details p {
     font-size: 1rem;
     color: white;
   }
-  
-  .details h3{
+
+  .details h3 {
     font-size: 1.3rem;
     color: white;
   }
 
-  .actor p, .director p{
+  .actor p,
+  .director p {
     font-size: 0.8rem;
     color: white;
   }
@@ -536,7 +547,7 @@ main {
   main {
     padding: 0 17px 17px;
   }
-  
+
   .logo {
     width: 340px;
   }
@@ -545,27 +556,30 @@ main {
     width: 340px;
   }
 
-  .providers-list img{
+  .providers-list img {
     width: 56px;
     height: 56px;
   }
 
-  .details h2, .titulo, .section h2 {
+  .details h2,
+  .titulo,
+  .section h2 {
     font-size: 2rem;
     color: white;
   }
-  
+
   .details p {
     font-size: 1rem;
     color: white;
   }
-  
-  .details h3{
+
+  .details h3 {
     font-size: 1.5rem;
     color: white;
   }
 
-  .actor p, .director p{
+  .actor p,
+  .director p {
     font-size: 0.8rem;
     color: white;
   }
