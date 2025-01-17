@@ -10,15 +10,15 @@ const get = {
 const dropdownMenu = document.getElementById("dropdown-menu");
 
 const elementos = {
-  informacion: document.querySelector('[data-name="informacion"]'),
-  peliculas: document.querySelector('[data-name="peliculas"]')
+  coleccion: document.querySelector('[data-name="coleccion"]'),
+  peliculas: document.querySelector('[data-name="peliculas"]'),
+  pelicula: document.querySelector('[data-name="pelicula"]')
 };
 
 let todasLasPeliculas = [];
-let aleatorio = [];
 
-function crearlistaInicio(elemento, datos) {
-  const ulExistente = elemento.querySelector("ul");
+function crearlistaColeccion(elemento, datos) {
+  const ulExistente = elemento.querySelector(".lista");
 
   if (ulExistente) {
     elemento.removeChild(ulExistente);
@@ -33,13 +33,9 @@ function crearlistaInicio(elemento, datos) {
 
     li.innerHTML = `
               <div class="pelicula-container" id="${pelicula.Id}">
+                  <img src="https://image.tmdb.org/t/p/original${pelicula.Poster}" alt="${pelicula.Nombre}">
                   <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
-                  <img src="https://image.tmdb.org/t/p/w500${pelicula.Poster}" alt="${pelicula.Nombre}">
-                  <div class="informacion">
-                      <p class="lanzamiento"><strong>Lanzamiento:</strong> ${pelicula.Lanzamiento}</p>
-                      <p class="hidden" id="tipo">${pelicula.Tipo}</p>
-                      <button class="completo">Completo</button>
-                  </div>
+                  <p class="lanzamiento"><strong>Lanzamiento:</strong> ${pelicula.Lanzamiento}</p>
               </div>
           `;
 
@@ -49,16 +45,15 @@ function crearlistaInicio(elemento, datos) {
   elemento.appendChild(ul);
 }
 
-function seleccionarElementosAleatorios(array, numElementos) {
+function seleccionarElementosAleatorios(array) {
   const resultados = [];
-  const arrayCopia = [...array];
 
-  for (let i = 0; i < numElementos; i++) {
-    const indiceAleatorio = Math.floor(Math.random() * arrayCopia.length);
-    resultados.push(arrayCopia.splice(indiceAleatorio, 1)[0]);
+  for (let i = 0; i < 1; i++) {
+    const indiceAleatorio = Math.floor(Math.random() * array.length);
+    console.log(indiceAleatorio);
+    resultados.push(array[indiceAleatorio]);
   }
-
-  return resultados[0].Id;
+  return resultados[0];
 }
 
 function manejarSeleccion(event) {
@@ -91,20 +86,24 @@ function manejarSeleccion(event) {
   }
 }
 
-function cargarDatos(lista) {
-  fetch(`https://api.themoviedb.org/3/account/21500820/watchlist/movies`, get)
-    .then((res) => res.json())
-    .then((res) => {
-      if (res.results) {
-        lista = res.results.map((item) => item.id);
-      } else {
-        console.error("No se encontraron resultados");
-      }
-    })
-    .catch((err) => console.error(err));
+async function cargarDatos() {
+  try {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/account/21500820/watchlist/movies`,
+      get
+    );
+    const data = await res.json();
+    if (data.results) {
+      todasLasPeliculas = data.results.map((item) => item.id);
+    } else {
+      console.error("No se encontraron resultados");
+    }
+  } catch (err) {
+    console.error("Error al cargar datos:", err);
+  }
 }
 
-cargarDatos(todasLasPeliculas);
+await cargarDatos();
 
 function JSONpelicula(titulo, lista) {
   let resultado = [];
@@ -139,7 +138,7 @@ function JSONpelicula(titulo, lista) {
 
 function buscarDetalles(tipo, id, lista) {
   fetch(
-    `https://api.themoviedb.org/3/${tipo}/${id}?append_to_response=credits,videos,watch/providers`,
+    `https://api.themoviedb.org/3/movie/${id}?append_to_response=credits,videos,watch/providers,translations,images`,
     get
   )
     .then((res) => res.json())
@@ -158,7 +157,10 @@ function buscarDetalles(tipo, id, lista) {
 }
 
 function buscarColeccion(id) {
-  fetch(`https://api.themoviedb.org/3/collection/${id}`, get)
+  fetch(
+    `https://api.themoviedb.org/3/collection/${id}?append_to_response=translations,images`,
+    get
+  )
     .then((res) => res.json())
     .then((res) => {
       res.parts.forEach((titulo) => {});
