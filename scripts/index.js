@@ -275,6 +275,7 @@ function whatchlist(tipo, lista, elemento) {
     .then((res) => {
       if (res.results) {
         const ids = res.results.map((item) => item.id);
+        console.log(ids)
         if (tipo === "tv") {
           generarJSONInicio(lista, res.results, "tv");
           crearlistaInicio(elemento, lista);

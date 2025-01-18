@@ -361,7 +361,7 @@ main {
     #3498db 51%,
     #2c3e50 100%
   );
-  border: 1px solid #333; /* Borde de la tarjeta */
+  border: 1px solid #333; 
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s;

@@ -281,6 +281,7 @@ function buscarDetalles(body, id) {
   fetch(`https://api.themoviedb.org/3/movie/${id}`, get)
     .then((res) => res.json())
     .then((res) => {
+      console.log(res)
       if (res.belongs_to_collection) {
         console.log(res.belongs_to_collection.id);
         let coleccion = res.belongs_to_collection.id;
@@ -299,6 +300,7 @@ function buscarColeccion(id) {
     .then((res) => res.json())
     .then((res) => {
         res.parts.forEach(titulo => {
+          console.log(res.parts)
             const body = {
                 media_id: titulo.id,
                 media_type: "movie",

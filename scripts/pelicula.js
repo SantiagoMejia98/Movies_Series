@@ -12,20 +12,23 @@ const dropdownMenu = document.getElementById("dropdown-menu");
 const elementos = {
   coleccion: document.querySelector('[data-name="coleccion"]'),
   peliculas: document.querySelector('[data-name="peliculas"]'),
-  pelicula: document.querySelector('[data-name="pelicula"]')
+  pelicula: document.querySelector('[data-name="pelicula"]'),
 };
 
-let todasLasPeliculas = [];
+let peliculasID = [];
+let coleccion = {};
+let coleccionID;
+let peliculas = [];
 
-function crearlistaColeccion(elemento, datos) {
-  const ulExistente = elemento.querySelector(".lista");
+function crearColeccion(elemento, datos) {
+  const containerExistente = elemento.querySelector(".container");
 
-  if (ulExistente) {
-    elemento.removeChild(ulExistente);
+  if (containerExistente) {
+    elemento.removeChild(containerExistente);
   }
 
-  const ul = document.createElement("ul");
-  ul.className = "lista";
+  const container = document.createElement("div");
+  ul.className = "container";
 
   datos.forEach((pelicula) => {
     const li = document.createElement("li");
@@ -88,41 +91,73 @@ function manejarSeleccion(event) {
 
 async function cargarDatos() {
   try {
-    const res = await fetch(
-      `https://api.themoviedb.org/3/account/21500820/watchlist/movies`,
-      get
-    );
-    const data = await res.json();
-    if (data.results) {
-      todasLasPeliculas = data.results.map((item) => item.id);
-    } else {
-      console.error("No se encontraron resultados");
-    }
+    let page = 1;
+    let totalPages;
+
+    do {
+      const res = await fetch(
+        `https://api.themoviedb.org/3/account/21500820/watchlist/movies?page=${page}`,
+        get
+      );
+
+      if (!res.ok) {
+        throw new Error(`Error al realizar la solicitud: ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      if (data.results) {
+        peliculasID = peliculasID.concat(data.results.map((item) => item.id));
+        totalPages = data.total_pages;
+      } else {
+        console.error("No se encontraron resultados");
+        break;
+      }
+
+      page++;
+    } while (page <= totalPages);
   } catch (err) {
     console.error("Error al cargar datos:", err);
   }
 }
 
 await cargarDatos();
+console.log(peliculasID);
 
-function JSONpelicula(titulo, lista) {
-  let resultado = [];
+function JSONpelicula(titulo) {
   const pelicula = {
+    Collecion: titulo.belongs_to_collection
+      ? titulo.belongs_to_collection.id
+      : null,
+    Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
+    Id: titulo.id,
     Nombre:
       titulo.title ||
       titulo.name ||
       titulo.original_title ||
       titulo.original_name,
-    Lanzamiento: titulo.release_date || titulo.first_air_date,
-    Poster: titulo.poster_path,
-    Id: titulo.id,
-    Tipo: "movie",
+    Sinopsis:
+      titulo.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
+        .find((item) => item)?.data.overview ||
+      titulo.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
+        .find((item) => item)?.data.overview ||
+      titulo.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
+        .find((item) => item)?.data.overview ||
+      titulo.overview,
+    Lanzamiento: titulo.release_date?.split(/[-/]/).find(part => part.length === 4) || "No hay fecha de estreno",
     Duracion: titulo.runtime,
-    Collecion: titulo.belongs_to_collection
-      ? titulo.belongs_to_collection.id
-      : "no",
-    Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
     Status: titulo.status,
+    Tagline: titulo.tagline,
+    
+
+    Poster: titulo.poster_path,
+
+    Tipo: "movie",
+    
+
     Videos: titulo.videos?.results || [],
     Portada: titulo.backdrop_path,
     Creditos: titulo.credits?.cast || [],
@@ -130,42 +165,79 @@ function JSONpelicula(titulo, lista) {
       titulo["watch/providers"]?.results?.CO?.flatrate || "No disponible",
     Descripcion: titulo.overview,
   };
-  resultado.push(pelicula);
-  lista = resultado;
-  crearPeliculaDetalles(elementos.pelicula, lista);
-  mostrarSoloElemento(elementos.pelicula);
+  peliculas.push(pelicula);
 }
 
-function buscarDetalles(tipo, id, lista) {
-  fetch(
-    `https://api.themoviedb.org/3/movie/${id}?append_to_response=credits,videos,watch/providers,translations,images`,
-    get
-  )
-    .then((res) => res.json())
-    .then((res) => {
-      if (res) {
-        if (tipo === "movie") {
-          JSONpelicula(res, lista);
-        } else {
-          JSONserie(res, lista);
-        }
-      } else {
-        console.error("No se encontraron resultados");
+async function buscarDetalles(id) {
+  try {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/movie/${id}?append_to_response=credits,videos,watch/providers,translations,images`,
+      get
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error al realizar la solicitud: ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (data) {
+      if (data.belongs_to_collection) {
+        coleccionID = data.belongs_to_collection.id;
       }
-    })
-    .catch((err) => console.error(err));
+      JSONpelicula(data);
+    }
+  } catch (err) {
+    console.error("Error al cargar datos:", err);
+  }
 }
 
-function buscarColeccion(id) {
-  fetch(
-    `https://api.themoviedb.org/3/collection/${id}?append_to_response=translations,images`,
-    get
-  )
-    .then((res) => res.json())
-    .then((res) => {
-      res.parts.forEach((titulo) => {});
-    })
-    .catch((err) => console.error(err));
+await buscarDetalles(744);
+console.log(coleccionID);
+console.log(peliculas);
+
+async function buscarColeccion(id) {
+  try {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/collection/${id}?append_to_response=translations,images`,
+      get
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error al realizar la solicitud: ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (data) {
+      await JSONcoleccion(data);
+    }
+  } catch (err) {
+    console.error("Error al cargar datos:", err);
+  }
+}
+
+async function JSONcoleccion(data) {
+  const partesID = data.parts.map((item) => item.id);
+  const detalles = await Promise.all(partesID.map((id) => buscarDetalles(id)));
+  console.log(detalles);
+  coleccion = {
+    Nombre: data.name,
+    Lanzamiento: data.release_date || data.first_air_date,
+    Poster: data.poster_path,
+    Id: data.id,
+    Tipo: "movie",
+    Duracion: data.runtime,
+    Collecion: data.belongs_to_collection
+      ? data.belongs_to_collection.id
+      : "no",
+    Generos: data.genres?.map((genre) => genre.name).join(", ") || "",
+    Status: data.status,
+    Videos: data.videos?.results || [],
+    Portada: data.backdrop_path,
+    Creditos: data.credits?.cast || [],
+    Proveedores:
+      data["watch/providers"]?.results?.CO?.flatrate || "No disponible",
+    Descripcion: data.overview,
+  };
 }
 
 dropdownMenu.addEventListener("change", manejarSeleccion);
