@@ -276,12 +276,11 @@ function modificarWatchlist(body) {
     .catch((err) => console.error(err));
   //location.reload()
 }
-
 function buscarDetalles(body, id) {
   fetch(`https://api.themoviedb.org/3/movie/${id}`, get)
     .then((res) => res.json())
     .then((res) => {
-      console.log(res)
+      console.log(res);
       if (res.belongs_to_collection) {
         console.log(res.belongs_to_collection.id);
         let coleccion = res.belongs_to_collection.id;
@@ -299,15 +298,15 @@ function buscarColeccion(id) {
   fetch(`https://api.themoviedb.org/3/collection/${id}`, get)
     .then((res) => res.json())
     .then((res) => {
-        res.parts.forEach(titulo => {
-          console.log(res.parts)
-            const body = {
-                media_id: titulo.id,
-                media_type: "movie",
-                watchlist: true,
-              };
-              modificarWatchlist(body);
-        })
+      res.parts.forEach((titulo) => {
+        console.log(res.parts);
+        const body = {
+          media_id: titulo.id,
+          media_type: "movie",
+          watchlist: true,
+        };
+        modificarWatchlist(body);
+      });
     })
     .catch((err) => console.error(err));
 }

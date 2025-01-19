@@ -47,7 +47,6 @@ function crearColeccion(elemento, datos) {
 
   elemento.appendChild(ul);
 }
-
 function seleccionarElementosAleatorios(array) {
   const resultados = [];
 
@@ -89,6 +88,8 @@ function manejarSeleccion(event) {
   }
 }
 
+console.log(2);
+
 async function cargarDatos() {
   try {
     let page = 1;
@@ -120,6 +121,9 @@ async function cargarDatos() {
     console.error("Error al cargar datos:", err);
   }
 }
+if (ruta === "index.html") {
+  window.location.href = ruta;
+}
 
 await cargarDatos();
 console.log(peliculasID);
@@ -147,16 +151,16 @@ function JSONpelicula(titulo) {
         .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
         .find((item) => item)?.data.overview ||
       titulo.overview,
-    Lanzamiento: titulo.release_date?.split(/[-/]/).find(part => part.length === 4) || "No hay fecha de estreno",
+    Lanzamiento:
+      titulo.release_date?.split(/[-/]/).find((part) => part.length === 4) ||
+      "No hay fecha de estreno",
     Duracion: titulo.runtime,
     Status: titulo.status,
     Tagline: titulo.tagline,
-    
 
     Poster: titulo.poster_path,
 
     Tipo: "movie",
-    
 
     Videos: titulo.videos?.results || [],
     Portada: titulo.backdrop_path,

@@ -171,7 +171,6 @@ function manejarSeleccion(event) {
 }
 
 
-
 function generarJSONInicio(lista, respuesta, tipo) {
   respuesta.forEach((titulo) => {
     const pelicula = {
