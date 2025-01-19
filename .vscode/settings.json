@@ -42,5 +42,5 @@
   "editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
   "editor.fontLigatures": true,
   "console-ninja.featureSet": "Community",
-  "editor.fontSize": 18
+  "editor.fontSize": 16
 }

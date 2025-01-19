@@ -1,12 +1,11 @@
-@import url("https://fonts.googleapis.com/css?family=Lato:100,300,400");
-@import url("https://fonts.googleapis.com/css?family=Roboto:100");
-@import url("https://fonts.googleapis.com/css?family=Lato:400,700");
-
 html {
   font-size: 16px;
   line-height: 1;
   color: white;
-  font-family: "Lato", sans-serif;
+}
+
+body {
+  font-family: "JetBrains Mono", monospace;
 }
 
 main {
@@ -31,9 +30,11 @@ main {
   display: flex;
   justify-content: flex-start;
   padding: 2em 3em;
+  height: 20vh;
 }
 
 .dropdown-menu {
+  font-family: "JetBrains Mono", monospace;
   background-image: linear-gradient(
     to right,
     #2c3e50 0%,
@@ -44,7 +45,6 @@ main {
   border: none;
   padding: 15px 20px;
   text-align: center;
-  text-transform: uppercase;
   transition: 0.5s;
   background-size: 100% auto;
   border-radius: 10px;
@@ -73,7 +73,7 @@ main {
 .container {
   position: relative;
   width: 100%;
-  margin-top: 100vh;
+  margin-top: 80vh;
 }
 
 .background {
@@ -123,23 +123,8 @@ main {
   margin-bottom: 20px;
 }
 
-.poster-providers {
-  width: 400px;
-  background-image: linear-gradient(
-    to right,
-    #2c3e50 0%,
-    #3498db 51%,
-    #2c3e50 100%
-  );
-  border-radius: 10px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  -ms-border-radius: 10px;
-  -o-border-radius: 10px;
-}
-
 .poster {
-  width: 100%;
+  width: 300px;
   aspect-ratio: 2 / 3;
   border-radius: 10px;
   -webkit-border-radius: 10px;
@@ -175,7 +160,7 @@ main {
 .titulo,
 .section h2 {
   margin: 10px 0;
-  font-size: 3rem;
+  font-size: 100px;
   font-weight: bold;
 }
 
@@ -330,10 +315,6 @@ main {
   -o-border-radius: 5px;
 }
 
-.cast {
-  display: none;
-}
-
 .section {
   margin-top: 20px;
 }
@@ -361,7 +342,7 @@ main {
     #3498db 51%,
     #2c3e50 100%
   );
-  border: 1px solid #333; 
+  border: 1px solid #333;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s;
@@ -386,21 +367,8 @@ main {
   -o-border-radius: 4px;
 }
 
-.hidden{
+.hidden {
   display: none;
-}
-
-.movie {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  z-index: 3;
-}
-
-.container {
-  position: relative;
-  width: 100%;
 }
 
 .close-movie {
@@ -457,9 +425,9 @@ main {
 }*/
 
 @media (min-width: 801px) and (max-width: 1440px) {
-  .cast-list li:nth-child(n + 9) {
+  /*.cast-list li:nth-child(n + 9) {
     display: none;
-  }
+  }*/
 
   .pelicula-container {
     width: 325px;
@@ -468,12 +436,12 @@ main {
   .details h2,
   .titulo,
   .section h2 {
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: white;
   }
 
   .details p {
-    font-size: 1rem;
+    font-size: 1.2rem;
     color: white;
   }
 
@@ -484,7 +452,7 @@ main {
 
   .actor p,
   .director p {
-    font-size: 0.8rem;
+    font-size: 1rem;
     color: white;
   }
 }
@@ -505,14 +473,6 @@ main {
   .modal-content {
     left: 5vw;
     width: 90vw;
-  }
-
-  .card-cast {
-    display: none;
-  }
-
-  .cast {
-    display: block;
   }
 
   .pelicula-container {
@@ -552,7 +512,7 @@ main {
     width: 340px;
   }
 
-  .poster-providers {
+  .poster {
     width: 340px;
   }
 

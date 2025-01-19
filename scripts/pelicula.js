@@ -88,8 +88,6 @@ function manejarSeleccion(event) {
   }
 }
 
-console.log(2);
-
 async function cargarDatos() {
   try {
     let page = 1;
@@ -120,9 +118,6 @@ async function cargarDatos() {
   } catch (err) {
     console.error("Error al cargar datos:", err);
   }
-}
-if (ruta === "index.html") {
-  window.location.href = ruta;
 }
 
 await cargarDatos();
@@ -198,6 +193,7 @@ async function buscarDetalles(id) {
 await buscarDetalles(744);
 console.log(coleccionID);
 console.log(peliculas);
+await buscarColeccion(coleccionID);
 
 async function buscarColeccion(id) {
   try {
@@ -220,28 +216,30 @@ async function buscarColeccion(id) {
 }
 
 async function JSONcoleccion(data) {
-  const partesID = data.parts.map((item) => item.id);
-  const detalles = await Promise.all(partesID.map((id) => buscarDetalles(id)));
-  console.log(detalles);
   coleccion = {
     Nombre: data.name,
     Lanzamiento: data.release_date || data.first_air_date,
     Poster: data.poster_path,
     Id: data.id,
-    Tipo: "movie",
     Duracion: data.runtime,
-    Collecion: data.belongs_to_collection
-      ? data.belongs_to_collection.id
-      : "no",
     Generos: data.genres?.map((genre) => genre.name).join(", ") || "",
-    Status: data.status,
-    Videos: data.videos?.results || [],
     Portada: data.backdrop_path,
-    Creditos: data.credits?.cast || [],
-    Proveedores:
-      data["watch/providers"]?.results?.CO?.flatrate || "No disponible",
-    Descripcion: data.overview,
+    Descripcion:
+      data.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
+        .find((item) => item)
+        ?.data.overview.replace(/\\/g, "") ||
+      data.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
+        .find((item) => item)
+        ?.data.overview.replace(/\\/g, "") ||
+      data.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
+        .find((item) => item)
+        ?.data.overview.replace(/\\/g, "") ||
+      data.overview.replace(/\\/g, ""),
   };
+  console.log(coleccion);
 }
 
 dropdownMenu.addEventListener("change", manejarSeleccion);
