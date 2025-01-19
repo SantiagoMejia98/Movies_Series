@@ -190,7 +190,7 @@ async function buscarDetalles(id) {
   }
 }
 
-await buscarDetalles(744);
+await buscarDetalles(140607);
 console.log(coleccionID);
 console.log(peliculas);
 await buscarColeccion(coleccionID);
@@ -217,13 +217,45 @@ async function buscarColeccion(id) {
 
 async function JSONcoleccion(data) {
   coleccion = {
-    Nombre: data.name,
-    Lanzamiento: data.release_date || data.first_air_date,
-    Poster: data.poster_path,
+    Nombre: data.original_name || data.name,
+    Lanzamiento: [
+      data.parts
+        .map((item) =>
+          item.release_date.split(/[-/]/).find((part) => part.length === 4)
+        )
+        .filter((year) => year)
+        .sort()[0],
+      data.parts
+        .map((item) =>
+          item.release_date.split(/[-/]/).find((part) => part.length === 4)
+        )
+        .filter((year) => year)
+        .sort()[data.parts.length - 1],
+    ].join(" - "),
+    Poster:
+      data.images?.posters
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.height >= 1500 &&
+            item.aspect_ratio === 0.667
+        )
+        .sort((a, b) => b.vote_average - a.vote_average) ||
+      data.poster_path ||
+      null,
     Id: data.id,
-    Duracion: data.runtime,
     Generos: data.genres?.map((genre) => genre.name).join(", ") || "",
-    Portada: data.backdrop_path,
+    Portada:
+      data.images?.backdrops
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.height >= 1080 &&
+            item.aspect_ratio === 1.778
+        )
+        .sort((a, b) => b.vote_average - a.vote_average) ||
+      data.backdrop_path ||
+      null,
     Descripcion:
       data.translations.translations
         .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
@@ -238,6 +270,19 @@ async function JSONcoleccion(data) {
         .find((item) => item)
         ?.data.overview.replace(/\\/g, "") ||
       data.overview.replace(/\\/g, ""),
+    Peliculas: data.parts
+      .sort((a, b) => a.id - b.id)
+      .map((item) => {
+        return {
+          Id: item.id,
+          Nombre: item.original_title || item.title,
+          Poster: item.poster_path,
+          Generos: item.genres?.map((genre) => genre.id) || null,
+          Lanzamiento: item.release_date
+            ?.split(/[-/]/)
+            .find((part) => part.length === 4),
+        };
+      }),
   };
   console.log(coleccion);
 }
