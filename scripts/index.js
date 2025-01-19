@@ -1,6 +1,6 @@
 const elementos = {
   peliculas: document.querySelector('[data-name="peliculas"]'),
-  series: document.querySelector('[data-name="series"]')
+  series: document.querySelector('[data-name="series"]'),
 };
 
 const get = {
@@ -48,10 +48,6 @@ function crearlistaInicio(elemento, datos) {
 
   elemento.appendChild(ul);
 }
-
-
-
-
 
 function crearPeliculaDetalles(elemento, datos) {
   const ulExistente = elemento.querySelector("ul");
@@ -170,7 +166,6 @@ function manejarSeleccion(event) {
   }
 }
 
-
 function generarJSONInicio(lista, respuesta, tipo) {
   respuesta.forEach((titulo) => {
     const pelicula = {
@@ -246,8 +241,6 @@ function JSONserie(titulo, lista) {
   mostrarSoloElemento(elementos.serie);
 }
 
-
-
 function buscarDetalles(tipo, id, lista) {
   fetch(
     `https://api.themoviedb.org/3/${tipo}/${id}?append_to_response=credits,videos,watch/providers`,
@@ -274,7 +267,7 @@ function whatchlist(tipo, lista, elemento) {
     .then((res) => {
       if (res.results) {
         const ids = res.results.map((item) => item.id);
-        console.log(ids)
+        console.log(ids);
         if (tipo === "tv") {
           generarJSONInicio(lista, res.results, "tv");
           crearlistaInicio(elemento, lista);
@@ -335,8 +328,8 @@ document
         } else {
           todasLasSeries.push();
         }
-      }else if(event.target.classList.contains("completo")){
-        console.log(todasLasPeliculas)
+      } else if (event.target.classList.contains("completo")) {
+        console.log(todasLasPeliculas);
       }
     });
   });

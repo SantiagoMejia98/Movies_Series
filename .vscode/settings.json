@@ -1,3 +1,46 @@
 {
-    "editor.fontFamily": "'Cascadia Code', Consolas, 'Courier New', monospace."
+  "files.watcherExclude": {
+    "**/.bloop": true,
+    "**/.metals": true,
+    "**/.ammonite": true
+  },
+  "editor.linkedEditing": true,
+  "editor.guides.bracketPairs": true,
+  "breadcrumbs.enabled": false,
+  "terminal.integrated.stickyScroll.enabled": true,
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+  "cSpell.language": "es-ES",
+  "workbench.settings.applyToAllProfiles": [
+    "cSpell.language",
+    "editor.fontLigatures",
+    "editor.fontFamily"
+  ],
+  "workbench.colorTheme": "SynthWave '84",
+  "liveServer.settings.donotVerifyTags": true,
+  "liveServer.settings.donotShowInfoMsg": true,
+  "git.openRepositoryInParentFolders": "never",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "security.workspace.trust.untrustedFiles": "open",
+  "database-client.autoSync": true,
+  "terminal.integrated.env.windows": {},
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "workbench.productIconTheme": "fluent-icons",
+  "files.autoSave": "onWindowChange",
+  "editor.cursorBlinking": "expand",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "diffEditor.codeLens": true,
+  "workbench.sideBar.location": "right",
+  "editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+  "console-ninja.featureSet": "Community",
+  "editor.fontSize": 18
 }
