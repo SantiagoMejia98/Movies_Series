@@ -11,7 +11,6 @@ const dropdownMenu = document.getElementById("dropdown-menu");
 
 const elementos = {
   coleccion: document.querySelector('[data-name="coleccion"]'),
-  peliculas: document.querySelector('[data-name="peliculas"]'),
   pelicula: document.querySelector('[data-name="pelicula"]'),
 };
 
@@ -28,25 +27,199 @@ function crearColeccion(elemento, datos) {
   }
 
   const container = document.createElement("div");
-  ul.className = "container";
+  container.className = "container";
 
-  datos.forEach((pelicula) => {
+  const content = document.createElement("div");
+  content.className = "content";
+
+  content.innerHTML = `
+    <div class="background" 
+      style="background-image: url('https://image.tmdb.org/t/p/original${
+        datos.Portada[0]
+      }');">
+    </div>
+    <div class="movie-card">
+      <img class="poster" 
+        src="https://image.tmdb.org/t/p/original${datos.Poster[0]}" alt="${
+    datos.Nombre
+  }">
+      <div class="details">
+        <h2>${datos.Nombre}</h2>
+        <p>(${datos.Lanzamiento[0]} - ${
+    datos.Lanzamiento[datos.Lanzamiento.length - 1]
+  }) &bull; ${datos.Duracion}</p>
+        <ul>
+          <li class="bookmark-item">
+            <i class="fa-regular fa-bookmark" id="${datos.Id}"></i>
+          </li>
+        </ul>
+        <h3>Sinopsis</h3>
+        <p>${datos.Descripcion}</p>
+      </div>
+    </div>`;
+
+  const coleccion = document.createElement("div");
+  coleccion.className = "coleccion";
+  coleccion.innerHTML = `<h2>Colección</h2>`;
+  const ul = document.createElement("ul");
+  ul.className = "lista";
+  datos.Peliculas.forEach((pelicula) => {
     const li = document.createElement("li");
     li.className = "card";
 
     li.innerHTML = `
-              <div class="pelicula-container" id="${pelicula.Id}">
-                  <img src="https://image.tmdb.org/t/p/original${pelicula.Poster}" alt="${pelicula.Nombre}">
-                  <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
-                  <p class="lanzamiento"><strong>Lanzamiento:</strong> ${pelicula.Lanzamiento}</p>
-              </div>
-          `;
+      <div class="pelicula-container" id="${pelicula.Id}">
+        <img src="https://image.tmdb.org/t/p/original${pelicula.Poster}" alt="${pelicula.Nombre}">
+        <h2><strong>${pelicula.Nombre}</strong></h2>
+        <p class="lanzamiento">${pelicula.Lanzamiento}</p>
+      </div>
+      `;
 
     ul.appendChild(li);
   });
 
-  elemento.appendChild(ul);
+  coleccion.appendChild(ul);
+  content.appendChild(coleccion);
+  container.appendChild(content);
+  elemento.appendChild(container);
 }
+
+function crearPelicula(elemento, datos) {
+  console.log(datos);
+  const containerExistente = elemento.querySelector(".container");
+
+  if (containerExistente) {
+    elemento.removeChild(containerExistente);
+  }
+
+  const container = document.createElement("div");
+  container.className = "container";
+
+  const content = document.createElement("div");
+  content.className = "content";
+
+  content.innerHTML = `
+    <div class="background"
+        style="background-image: url('https://image.tmdb.org/t/p/original${datos.Portada[0]}');">
+    </div>
+    <div class="logo-container">
+        <img class="logo" src="https://image.tmdb.org/t/p/original/plSzYZQUk1rLAPQxs8XMgTB8lYw.png">
+    </div>
+  `;
+
+  const moviecard = document.createElement("div");
+  moviecard.className = "movie-card";
+
+  moviecard.innerHTML = `
+    <img class="poster" src="https://image.tmdb.org/t/p/original${datos.Poster[0]}" alt="${datos.Nombre}"> 
+    `;
+
+  const details = document.createElement("div");
+  details.className = "details";
+
+  details.innerHTML = `
+    <h2>${datos.Nombre} (${datos.Lanzamiento})</h2>
+    <p>${datos.Generos} &bull; ${datos.Duracion} &bull; ${datos.Status}</p>
+    <p><i>${datos.Tagline}</i></p> 
+    <ul>
+      <li class="movie-item">
+        <img src="https://image.tmdb.org/t/p/original/pTnn5JwWr4p3pG8H6VrpiQo7Vs0.jpg">
+        <p>Ver tráiler</p>
+      </li>
+    </ul>
+    <div class="modal-content" id="trailerModal">
+      <div class="close">&times;</div>
+      <iframe class="trailer" id="trailerIframe"
+        src="https://www.youtube.com/embed${datos.Video[0]}" frameborder="0" allowfullscreen>
+      </iframe>
+    </div>
+    <h3>Sinopsis</h3>
+    <p>${datos.Descripcion}</p>`;
+
+  const proveedores = document.createElement("div");
+  proveedores.className = "streaming-providers";
+
+  proveedores.innerHTML = `
+    <h3>Streaming on</h3>
+  `;
+
+  if (datos.Proveedores === "No disponible") {
+    proveedores.innerHTML += `
+      <p>${datos.Proveedores}</p>
+    `;
+  } else {
+    const ulProvider = document.createElement("ul");
+    ulProvider.className = "providers-list";
+
+    datos.Proveedores.forEach((proveedor) => {
+      const li = document.createElement("li");
+
+      li.innerHTML = `
+        <img src="https://image.tmdb.org/t/p/original${proveedor.logo_path}" alt="${proveedor.provider_name}">
+      `;
+
+      ulProvider.appendChild(li);
+    });
+
+    proveedores.appendChild(ulProvider);
+    details.appendChild(proveedores);
+    moviecard.appendChild(details);
+
+    const cardcast = document.createElement("div");
+    cardcast.className = "card-cast";
+
+    const director = document.createElement("div");
+    director.className = "reparto";
+
+    director.innerHTML = `<h3>Director</h3>`;
+
+    const ulDirector = document.createElement("ul");
+    ulDirector.className = "director-list";
+
+    datos.Directores.forEach((director) => {
+      const li = document.createElement("li");
+      li.className = "director";
+
+      li.innerHTML = `
+        <img src="https://image.tmdb.org/t/p/original${director.Foto}" alt="${director.Nombre}">
+        <p class="director-name">${director.Nombre}</p>
+        `;
+
+      ulDirector.appendChild(li);
+    });
+
+    director.appendChild(ulDirector);
+    cardcast.appendChild(director);
+
+    const cast = document.createElement("div");
+    cast.className = "reparto";
+
+    cast.innerHTML = `<h3>Reparto</h3>`;
+
+    const ulCast = document.createElement("ul");
+    ulCast.className = "cast-list";
+
+    datos.Reparto.forEach((actor) => {
+      const li = document.createElement("li");
+      li.className = "actor";
+
+      li.innerHTML = `
+        <img src="https://image.tmdb.org/t/p/original${actor.Foto}" alt="${actor.Nombre}">
+        <p class="actor-name>${actor.Nombre}</p>
+        <p>${actor.Personaje}</p>
+        `;
+
+      ulCast.appendChild(li);
+    });
+
+    cast.appendChild(ulCast);
+    cardcast.appendChild(cast);
+    moviecard.appendChild(cardcast);
+    content.appendChild(moviecard);
+    container.appendChild(content);
+  }
+}
+
 function seleccionarElementosAleatorios(array) {
   const resultados = [];
 
@@ -125,9 +298,6 @@ console.log(peliculasID);
 
 function JSONpelicula(titulo) {
   const pelicula = {
-    Collecion: titulo.belongs_to_collection
-      ? titulo.belongs_to_collection.id
-      : null,
     Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
     Id: titulo.id,
     Nombre:
@@ -135,7 +305,7 @@ function JSONpelicula(titulo) {
       titulo.name ||
       titulo.original_title ||
       titulo.original_name,
-    Sinopsis:
+    Descripcion:
       titulo.translations.translations
         .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
         .find((item) => item)?.data.overview ||
@@ -149,12 +319,10 @@ function JSONpelicula(titulo) {
     Lanzamiento:
       titulo.release_date?.split(/[-/]/).find((part) => part.length === 4) ||
       "No hay fecha de estreno",
-    Duracion: titulo.runtime,
+    Duracion: `${Math.floor(titulo.runtime / 60)}h ${titulo.runtime % 60}min`,
     Status: titulo.status,
     Tagline: titulo.tagline,
-
     Poster: titulo.poster_path,
-
     Tipo: "movie",
 
     Videos: titulo.videos?.results || [],
@@ -164,7 +332,7 @@ function JSONpelicula(titulo) {
       titulo["watch/providers"]?.results?.CO?.flatrate || "No disponible",
     Descripcion: titulo.overview,
   };
-  peliculas.push(pelicula);
+  return pelicula;
 }
 
 async function buscarDetalles(id) {
@@ -190,7 +358,7 @@ async function buscarDetalles(id) {
   }
 }
 
-await buscarDetalles(140607);
+await buscarDetalles(377);
 console.log(coleccionID);
 console.log(peliculas);
 await buscarColeccion(coleccionID);
@@ -208,30 +376,23 @@ async function buscarColeccion(id) {
 
     const data = await res.json();
     if (data) {
-      await JSONcoleccion(data);
+      coleccion = JSONcoleccion(data);
+      crearColeccion(elementos.coleccion, coleccion);
     }
   } catch (err) {
     console.error("Error al cargar datos:", err);
   }
 }
 
-async function JSONcoleccion(data) {
+function JSONcoleccion(data) {
   coleccion = {
     Nombre: data.original_name || data.name,
-    Lanzamiento: [
-      data.parts
-        .map((item) =>
-          item.release_date.split(/[-/]/).find((part) => part.length === 4)
-        )
-        .filter((year) => year)
-        .sort()[0],
-      data.parts
-        .map((item) =>
-          item.release_date.split(/[-/]/).find((part) => part.length === 4)
-        )
-        .filter((year) => year)
-        .sort()[data.parts.length - 1],
-    ].join(" - "),
+    Lanzamiento: data.parts
+      .map((item) =>
+        item.release_date.split(/[-/]/).find((part) => part.length === 4)
+      )
+      .filter((year) => year)
+      .sort(),
     Poster:
       data.images?.posters
         .filter(
@@ -240,11 +401,12 @@ async function JSONcoleccion(data) {
             item.height >= 1500 &&
             item.aspect_ratio === 0.667
         )
-        .sort((a, b) => b.vote_average - a.vote_average) ||
+        .sort((a, b) => b.vote_average - a.vote_average)
+        .map((item) => item.file_path) ||
       data.poster_path ||
       null,
     Id: data.id,
-    Generos: data.genres?.map((genre) => genre.name).join(", ") || "",
+    Duracion: `${data.parts.length} películas`,
     Portada:
       data.images?.backdrops
         .filter(
@@ -253,38 +415,36 @@ async function JSONcoleccion(data) {
             item.height >= 1080 &&
             item.aspect_ratio === 1.778
         )
-        .sort((a, b) => b.vote_average - a.vote_average) ||
+        .sort((a, b) => b.vote_average - a.vote_average)
+        .map((item) => item.file_path) ||
       data.backdrop_path ||
       null,
     Descripcion:
       data.translations.translations
         .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
-        .find((item) => item)
-        ?.data.overview.replace(/\\/g, "") ||
+        .find((item) => item)?.data.overview ||
       data.translations.translations
         .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
-        .find((item) => item)
-        ?.data.overview.replace(/\\/g, "") ||
+        .find((item) => item)?.data.overview ||
       data.translations.translations
         .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
-        .find((item) => item)
-        ?.data.overview.replace(/\\/g, "") ||
-      data.overview.replace(/\\/g, ""),
+        .find((item) => item)?.data.overview ||
+      data.overview,
     Peliculas: data.parts
-      .sort((a, b) => a.id - b.id)
+      .sort((a, b) => a.release_date - b.release_date)
       .map((item) => {
         return {
           Id: item.id,
           Nombre: item.original_title || item.title,
           Poster: item.poster_path,
-          Generos: item.genres?.map((genre) => genre.id) || null,
-          Lanzamiento: item.release_date
-            ?.split(/[-/]/)
-            .find((part) => part.length === 4),
+          Lanzamiento:
+            item.release_date
+              ?.split(/[-/]/)
+              .find((part) => part.length === 4) || "No hay fecha de estreno",
         };
       }),
   };
-  console.log(coleccion);
+  return coleccion;
 }
 
 dropdownMenu.addEventListener("change", manejarSeleccion);
