@@ -315,23 +315,68 @@ function JSONpelicula(titulo) {
       titulo.translations.translations
         .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
         .find((item) => item)?.data.overview ||
-      titulo.overview,
+      titulo.overview ||
+      null,
     Lanzamiento:
       titulo.release_date?.split(/[-/]/).find((part) => part.length === 4) ||
       "No hay fecha de estreno",
     Duracion: `${Math.floor(titulo.runtime / 60)}h ${titulo.runtime % 60}min`,
-    Status: titulo.status,
-    Tagline: titulo.tagline,
-    Poster: titulo.poster_path,
-    Tipo: "movie",
-
-    Videos: titulo.videos?.results || [],
-    Portada: titulo.backdrop_path,
-    Creditos: titulo.credits?.cast || [],
+    Status: titulo.status || null,
+    Tagline: titulo.tagline || null,
+    Poster:
+      titulo.images?.posters
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.height >= 1500 &&
+            item.aspect_ratio === 0.667
+        )
+        .sort((a, b) => b.vote_average - a.vote_average)
+        .map((item) => item.file_path) ||
+      titulo.poster_path ||
+      null,
+    Videos:
+      titulo.videos?.results.filter((item) => item.type === "Trailer") || null,
+    Portada:
+      titulo.images?.backdrops
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.height >= 1080 &&
+            item.aspect_ratio === 1.778
+        )
+        .sort((a, b) => b.vote_average - a.vote_average)
+        .map((item) => item.file_path) ||
+      titulo.poster_path ||
+      null,
+    Logo:
+      titulo.images?.logos
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.width >= 400
+        )
+        .sort((a, b) => b.vote_average - a.vote_average)
+        .map((item) => item.file_path) || null,
+    Reparto: titulo.credits?.cast || null,
+    Directores:
+      titulo.credits?.crew.filter((item) => item.job === "Director") || null,
     Proveedores:
       titulo["watch/providers"]?.results?.CO?.flatrate || "No disponible",
-    Descripcion: titulo.overview,
+    Descripcion:
+      titulo.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
+        .find((item) => item)?.data.overview ||
+      titulo.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
+        .find((item) => item)?.data.overview ||
+      titulo.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
+        .find((item) => item)?.data.overview ||
+      titulo.overview ||
+      null,
   };
+  console.log(pelicula);
   return pelicula;
 }
 
@@ -358,7 +403,7 @@ async function buscarDetalles(id) {
   }
 }
 
-await buscarDetalles(377);
+await buscarDetalles(299534);
 console.log(coleccionID);
 console.log(peliculas);
 await buscarColeccion(coleccionID);
@@ -429,7 +474,8 @@ function JSONcoleccion(data) {
       data.translations.translations
         .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
         .find((item) => item)?.data.overview ||
-      data.overview,
+      data.overview ||
+      null,
     Peliculas: data.parts
       .sort((a, b) => a.release_date - b.release_date)
       .map((item) => {
