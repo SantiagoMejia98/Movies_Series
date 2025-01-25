@@ -85,7 +85,6 @@ function crearColeccion(elemento, datos) {
 }
 
 function crearPelicula(elemento, datos) {
-  console.log(datos);
   const containerExistente = elemento.querySelector(".container");
 
   if (containerExistente) {
@@ -103,7 +102,7 @@ function crearPelicula(elemento, datos) {
         style="background-image: url('https://image.tmdb.org/t/p/original${datos.Portada[0]}');">
     </div>
     <div class="logo-container">
-        <img class="logo" src="https://image.tmdb.org/t/p/original/plSzYZQUk1rLAPQxs8XMgTB8lYw.png">
+        <img class="logo" src="https://image.tmdb.org/t/p/original${datos.Logo[0]}" alt="${datos.Nombre}">
     </div>
   `;
 
@@ -130,7 +129,7 @@ function crearPelicula(elemento, datos) {
     <div class="modal-content" id="trailerModal">
       <div class="close">&times;</div>
       <iframe class="trailer" id="trailerIframe"
-        src="https://www.youtube.com/embed${datos.Video[0]}" frameborder="0" allowfullscreen>
+        src="https://www.youtube.com/embed/${datos.Videos[0]}" frameborder="0" allowfullscreen>
       </iframe>
     </div>
     <h3>Sinopsis</h3>
@@ -160,64 +159,72 @@ function crearPelicula(elemento, datos) {
 
       ulProvider.appendChild(li);
     });
-
     proveedores.appendChild(ulProvider);
-    details.appendChild(proveedores);
-    moviecard.appendChild(details);
+  }
 
-    const cardcast = document.createElement("div");
-    cardcast.className = "card-cast";
+  details.appendChild(proveedores);
+  moviecard.appendChild(details);
 
-    const director = document.createElement("div");
-    director.className = "reparto";
+  const cardcast = document.createElement("div");
+  cardcast.className = "card-cast";
 
-    director.innerHTML = `<h3>Director</h3>`;
+  const director = document.createElement("div");
+  director.className = "reparto";
 
-    const ulDirector = document.createElement("ul");
-    ulDirector.className = "director-list";
+  director.innerHTML = `<h3>Director</h3>`;
 
-    datos.Directores.forEach((director) => {
-      const li = document.createElement("li");
-      li.className = "director";
+  const ulDirector = document.createElement("ul");
+  ulDirector.className = "director-list";
 
-      li.innerHTML = `
+  datos.Directores.forEach((director) => {
+    const li = document.createElement("li");
+    li.className = "director";
+
+    li.innerHTML = `
         <img src="https://image.tmdb.org/t/p/original${director.Foto}" alt="${director.Nombre}">
         <p class="director-name">${director.Nombre}</p>
         `;
 
-      ulDirector.appendChild(li);
-    });
+    ulDirector.appendChild(li);
+  });
 
-    director.appendChild(ulDirector);
-    cardcast.appendChild(director);
+  director.appendChild(ulDirector);
+  cardcast.appendChild(director);
 
-    const cast = document.createElement("div");
-    cast.className = "reparto";
+  const cast = document.createElement("div");
+  cast.className = "reparto";
 
-    cast.innerHTML = `<h3>Reparto</h3>`;
+  cast.innerHTML = `<h3>Reparto</h3>`;
 
-    const ulCast = document.createElement("ul");
-    ulCast.className = "cast-list";
+  const ulCast = document.createElement("ul");
+  ulCast.className = "cast-list";
 
-    datos.Reparto.forEach((actor) => {
-      const li = document.createElement("li");
-      li.className = "actor";
+  datos.Reparto.forEach((actor) => {
+    const li = document.createElement("li");
+    li.className = "actor";
 
-      li.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/original${actor.Foto}" alt="${actor.Nombre}">
-        <p class="actor-name>${actor.Nombre}</p>
+    li.innerHTML = `
+        <img src="https://image.tmdb.org/t/p/original${actor.Foto}" alt="${director.Nombre}">
+        <p class="actor-name">${actor.Nombre}</p>
         <p>${actor.Personaje}</p>
         `;
 
-      ulCast.appendChild(li);
-    });
+    ulCast.appendChild(li);
+  });
 
-    cast.appendChild(ulCast);
-    cardcast.appendChild(cast);
-    moviecard.appendChild(cardcast);
-    content.appendChild(moviecard);
-    container.appendChild(content);
-  }
+  cast.appendChild(ulCast);
+  cardcast.appendChild(cast);
+  moviecard.appendChild(cardcast);
+  content.appendChild(moviecard);
+  container.appendChild(content);
+  elemento.appendChild(container);
+
+  const movieItem = document.querySelector(".movie-item");
+  movieItem.addEventListener("click", function () {
+    openTrailer();
+  });
+  const closeBtn = document.querySelector(".close");
+  closeBtn.addEventListener("click", closeTrailer);
 }
 
 function seleccionarElementosAleatorios(array) {
@@ -225,7 +232,6 @@ function seleccionarElementosAleatorios(array) {
 
   for (let i = 0; i < 1; i++) {
     const indiceAleatorio = Math.floor(Math.random() * array.length);
-    console.log(indiceAleatorio);
     resultados.push(array[indiceAleatorio]);
   }
   return resultados[0];
@@ -294,7 +300,7 @@ async function cargarDatos() {
 }
 
 await cargarDatos();
-console.log(peliculasID);
+await buscarDetalles(seleccionarElementosAleatorios(peliculasID));
 
 function JSONpelicula(titulo) {
   const pelicula = {
@@ -336,7 +342,9 @@ function JSONpelicula(titulo) {
       titulo.poster_path ||
       null,
     Videos:
-      titulo.videos?.results.filter((item) => item.type === "Trailer") || null,
+      titulo.videos?.results
+        .filter((item) => item.type === "Trailer")
+        .map((item) => item.key) || null,
     Portada:
       titulo.images?.backdrops
         .filter(
@@ -358,25 +366,29 @@ function JSONpelicula(titulo) {
         )
         .sort((a, b) => b.vote_average - a.vote_average)
         .map((item) => item.file_path) || null,
-    Reparto: titulo.credits?.cast || null,
+    Reparto:
+      titulo.credits?.cast
+        .filter((item) => item.profile_path !== null)
+        .slice(0, 15)
+        .map((item) => {
+          return {
+            Nombre: item.name,
+            Foto: item.profile_path,
+            Personaje: item.character,
+          };
+        }) || null,
     Directores:
-      titulo.credits?.crew.filter((item) => item.job === "Director") || null,
+      titulo.credits?.crew
+        .filter((item) => item.job === "Director")
+        .map((item) => {
+          return {
+            Nombre: item.name,
+            Foto: item.profile_path,
+          };
+        }) || null,
     Proveedores:
       titulo["watch/providers"]?.results?.CO?.flatrate || "No disponible",
-    Descripcion:
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
-        .find((item) => item)?.data.overview ||
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
-        .find((item) => item)?.data.overview ||
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
-        .find((item) => item)?.data.overview ||
-      titulo.overview ||
-      null,
   };
-  console.log(pelicula);
   return pelicula;
 }
 
@@ -393,20 +405,14 @@ async function buscarDetalles(id) {
 
     const data = await res.json();
     if (data) {
-      if (data.belongs_to_collection) {
-        coleccionID = data.belongs_to_collection.id;
-      }
-      JSONpelicula(data);
+      const pelicula = JSONpelicula(data);
+      console.log(pelicula);
+      crearPelicula(elementos.pelicula, pelicula);
     }
   } catch (err) {
     console.error("Error al cargar datos:", err);
   }
 }
-
-await buscarDetalles(299534);
-console.log(coleccionID);
-console.log(peliculas);
-await buscarColeccion(coleccionID);
 
 async function buscarColeccion(id) {
   try {
@@ -515,7 +521,7 @@ document.querySelectorAll(".bookmark-item").forEach((item) => {
 
 function openTrailer() {
   const modal = document.getElementById("trailerModal");
-  modal.style.display = "block"; // Muestra el modal
+  modal.style.display = "block";
 }
 
 // Función para cerrar el modal
@@ -523,12 +529,3 @@ function closeTrailer() {
   const modal = document.getElementById("trailerModal");
   modal.style.display = "none";
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-  const movieItem = document.querySelector(".movie-item");
-  movieItem.addEventListener("click", function () {
-    openTrailer();
-  });
-  const closeBtn = document.querySelector(".close");
-  closeBtn.addEventListener("click", closeTrailer);
-});
