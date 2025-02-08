@@ -17,6 +17,8 @@ const dropdownMenu = document.getElementById("dropdown-menu");
 let todasLasPeliculas = [];
 let todasLasSeries = [];
 let aleatorio = [];
+let peliculasID = [];
+let seriesID = [];
 
 function crearlistaInicio(elemento, datos) {
   const ulExistente = elemento.querySelector("ul");
@@ -37,8 +39,8 @@ function crearlistaInicio(elemento, datos) {
                 <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
                 <img src="https://image.tmdb.org/t/p/w500${pelicula.Poster}" alt="${pelicula.Nombre}">
                 <div class="informacion">
+                    <p class="fecha"><strong>Estreno:</strong> ${pelicula.Lanzamiento}</p>
                     <p class="hidden" id="tipo">${pelicula.Tipo}</p>
-                    <button class="completo">Completo</button>
                 </div>
             </div>
         `;
@@ -166,17 +168,21 @@ function manejarSeleccion(event) {
   }
 }
 
-function generarJSONInicio(lista, respuesta, tipo) {
-  respuesta.forEach((titulo) => {
-    const pelicula = {
-      Nombre: titulo.title || titulo.name,
-      Lanzamiento: titulo.release_date || titulo.first_air_date,
-      Poster: titulo.poster_path,
-      Id: titulo.id,
-      Tipo: tipo,
-    };
-    lista.push(pelicula);
-  });
+function generarJSONInicio(titulo, tipo) {
+  return {
+    Nombre:
+      titulo.title ||
+      titulo.name ||
+      titulo.original_title ||
+      titulo.original_name,
+    Lanzamiento:
+      titulo.release_date?.split(/[-/]/).find((part) => part.length === 4) ||
+      titulo.first_air_date?.split(/[-/]/).find((part) => part.length === 4) ||
+      "No hay fecha de estreno",
+    Poster: titulo.poster_path || null,
+    Id: titulo.id,
+    Tipo: tipo,
+  };
 }
 
 function JSONpelicula(titulo, lista) {
@@ -261,33 +267,54 @@ function buscarDetalles(tipo, id, lista) {
     .catch((err) => console.error(err));
 }
 
-function whatchlist(tipo, lista, elemento) {
-  fetch(`https://api.themoviedb.org/3/account/21500820/watchlist/${tipo}`, get)
-    .then((res) => res.json())
-    .then((res) => {
-      if (res.results) {
-        const ids = res.results.map((item) => item.id);
-        console.log(ids);
+async function cargarDatos(tipo) {
+  try {
+    let page = 1;
+    let totalPages;
+
+    do {
+      const res = await fetch(
+        `https://api.themoviedb.org/3/account/21500820/watchlist/${tipo}?page=${page}`,
+        get
+      );
+
+      if (!res.ok) {
+        throw new Error(`Error al realizar la solicitud: ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      if (data.results) {
         if (tipo === "tv") {
-          generarJSONInicio(lista, res.results, "tv");
-          crearlistaInicio(elemento, lista);
+          seriesID = seriesID.concat(data.results.map((item) => item.id));
+          data.results.forEach((titulo) => {
+            todasLasSeries.push(generarJSONInicio(titulo, "tv"));
+            crearlistaInicio(elementos.series, todasLasSeries);
+          });
         } else {
-          generarJSONInicio(lista, res.results, "movie");
-          crearlistaInicio(elemento, lista);
+          peliculasID = peliculasID.concat(data.results.map((item) => item.id));
+          data.results.forEach((titulo) => {
+            todasLasPeliculas.push(generarJSONInicio(titulo, "movie"));
+            crearlistaInicio(elementos.peliculas, todasLasPeliculas);
+          });
         }
+        totalPages = data.total_pages;
       } else {
         console.error("No se encontraron resultados");
+        break;
       }
-    })
-    .catch((err) => console.error(err));
+
+      page++;
+    } while (page <= totalPages);
+  } catch (err) {
+    console.error("Error al cargar datos:", err);
+  }
 }
 
-function generarPrincipal() {
-  whatchlist("movies", todasLasPeliculas, elementos.peliculas);
-  whatchlist("tv", todasLasSeries, elementos.series);
-}
+await cargarDatos("movies");
+await cargarDatos("tv");
 
-generarPrincipal();
+function generarPrincipal() {}
 
 dropdownMenu.addEventListener("change", manejarSeleccion);
 boton.addEventListener("click", buscar);
