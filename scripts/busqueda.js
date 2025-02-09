@@ -276,21 +276,24 @@ function modificarWatchlist(body) {
     .catch((err) => console.error(err));
   //location.reload()
 }
+
 function buscarDetalles(body, id) {
   fetch(`https://api.themoviedb.org/3/movie/${id}`, get)
     .then((res) => res.json())
     .then((res) => {
       console.log(res);
       if (res.belongs_to_collection) {
-        console.log(res.belongs_to_collection.id);
-        let coleccion = res.belongs_to_collection.id;
-        buscarColeccion(coleccion);
+        console.log(
+          `Película pertenece a la colección: ${res.belongs_to_collection.id}`
+        );
+        let coleccionId = res.belongs_to_collection.id;
+        buscarColeccion(coleccionId);
       } else {
         modificarWatchlist(body);
       }
     })
     .catch((err) => {
-      console.error(err);
+      console.error("Error al buscar detalles de la película:", err);
     });
 }
 
@@ -298,17 +301,25 @@ function buscarColeccion(id) {
   fetch(`https://api.themoviedb.org/3/collection/${id}`, get)
     .then((res) => res.json())
     .then((res) => {
-      res.parts.forEach((titulo) => {
-        console.log(res.parts);
-        const body = {
-          media_id: titulo.id,
-          media_type: "movie",
-          watchlist: true,
-        };
-        modificarWatchlist(body);
+      let peliculasOrdenadas = res.parts.sort(
+        (a, b) => new Date(a.release_date) - new Date(b.release_date)
+      );
+
+      peliculasOrdenadas.forEach((titulo, index) => {
+        setTimeout(() => {
+          console.log(
+            `Agregando a watchlist: ${titulo.title} (ID: ${titulo.id})`
+          );
+          const body = {
+            media_id: titulo.id,
+            media_type: "movie",
+            watchlist: true,
+          };
+          modificarWatchlist(body);
+        }, index * 100); // Retraso de 1 segundo entre cada solicitud para evitar límite de API
       });
     })
-    .catch((err) => console.error(err));
+    .catch((err) => console.error("Error al buscar colección:", err));
 }
 
 document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {

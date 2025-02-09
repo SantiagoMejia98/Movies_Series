@@ -185,35 +185,208 @@ function generarJSONInicio(titulo, tipo) {
   };
 }
 
-function JSONpelicula(titulo, lista) {
-  let resultado = [];
+function JSONpelicula(titulo) {
   const pelicula = {
+    Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
+    Id: titulo.id,
     Nombre:
       titulo.title ||
       titulo.name ||
       titulo.original_title ||
       titulo.original_name,
-    Lanzamiento: titulo.release_date || titulo.first_air_date,
-    Poster: titulo.poster_path,
-    Id: titulo.id,
     Tipo: "movie",
-    Duracion: titulo.runtime,
-    Collecion: titulo.belongs_to_collection
-      ? titulo.belongs_to_collection.id
-      : "no",
-    Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
-    Status: titulo.status,
-    Videos: titulo.videos?.results || [],
-    Portada: titulo.backdrop_path,
-    Creditos: titulo.credits?.cast || [],
+    Descripcion:
+      titulo.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
+        .find((item) => item)?.data.overview ||
+      titulo.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
+        .find((item) => item)?.data.overview ||
+      titulo.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
+        .find((item) => item)?.data.overview ||
+      titulo.overview ||
+      null,
+    Lanzamiento:
+      titulo.release_date?.split(/[-/]/).find((part) => part.length === 4) ||
+      "No hay fecha de estreno",
+    Duracion: `${Math.floor(titulo.runtime / 60)}h ${titulo.runtime % 60}min`,
+    Status: titulo.status || null,
+    Tagline: titulo.tagline || null,
+    Poster:
+      titulo.images?.posters
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.height >= 1500 &&
+            item.aspect_ratio === 0.667
+        )
+        .sort((a, b) => b.vote_average - a.vote_average)
+        .map((item) => item.file_path) ||
+      titulo.poster_path ||
+      null,
+    Videos:
+      titulo.videos?.results
+        .filter((item) => item.type === "Trailer")
+        .map((item) => item.key) || null,
+    Portada:
+      titulo.images?.backdrops
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.height >= 1080 &&
+            item.aspect_ratio === 1.778
+        )
+        .sort((a, b) => b.vote_average - a.vote_average)
+        .map((item) => item.file_path) ||
+      titulo.poster_path ||
+      null,
+    Logo:
+      titulo.images?.logos
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.width >= 400
+        )
+        .sort((a, b) => b.vote_average - a.vote_average)
+        .map((item) => item.file_path) || null,
+    Reparto:
+      titulo.credits?.cast
+        .filter((item) => item.profile_path !== null)
+        .slice(0, 15)
+        .map((item) => {
+          return {
+            Nombre: item.name,
+            Foto: item.profile_path,
+            Personaje: item.character,
+          };
+        }) || null,
+    Directores:
+      titulo.credits?.crew
+        .filter((item) => item.job === "Director")
+        .map((item) => {
+          return {
+            Nombre: item.name,
+            Foto: item.profile_path,
+          };
+        }) || null,
     Proveedores:
       titulo["watch/providers"]?.results?.CO?.flatrate || "No disponible",
-    Descripcion: titulo.overview,
   };
-  resultado.push(pelicula);
-  lista = resultado;
-  crearPeliculaDetalles(elementos.pelicula, lista);
-  mostrarSoloElemento(elementos.pelicula);
+  return pelicula;
+}
+
+async function buscarDetalles(id, tipo) {
+  try {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/${tipo}/${id}?append_to_response=credits,videos,watch/providers,translations,images`,
+      get
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error al realizar la solicitud: ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (data) {
+      if (tipo === "movie") {
+        if (data.belongs_to_collection) {
+          await buscarColeccion(data.belongs_to_collection.id);
+        } else {
+          todasLasPeliculas.push(JSONpelicula(data));
+        }
+      } else {
+        todasLasSeries.push(JSONserie(data));
+      }
+    }
+  } catch (err) {
+    console.error("Error al cargar datos:", err);
+  }
+}
+
+async function buscarColeccion(id) {
+  try {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/collection/${id}?append_to_response=translations,images`,
+      get
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error al realizar la solicitud: ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (data) {
+      coleccion = JSONcoleccion(data);
+      crearColeccion(elementos.coleccion, coleccion);
+    }
+  } catch (err) {
+    console.error("Error al cargar datos:", err);
+  }
+}
+
+function JSONcoleccion(data) {
+  coleccion = {
+    Nombre: data.original_name || data.name,
+    Lanzamiento: data.parts
+      .map((item) =>
+        item.release_date.split(/[-/]/).find((part) => part.length === 4)
+      )
+      .filter((year) => year)
+      .sort(),
+    Poster:
+      data.images?.posters
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.height >= 1500 &&
+            item.aspect_ratio === 0.667
+        )
+        .sort((a, b) => b.vote_average - a.vote_average)
+        .map((item) => item.file_path) ||
+      data.poster_path ||
+      null,
+    Id: data.id,
+    Duracion: `${data.parts.length} películas`,
+    Portada:
+      data.images?.backdrops
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.height >= 1080 &&
+            item.aspect_ratio === 1.778
+        )
+        .sort((a, b) => b.vote_average - a.vote_average)
+        .map((item) => item.file_path) ||
+      data.backdrop_path ||
+      null,
+    Descripcion:
+      data.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
+        .find((item) => item)?.data.overview ||
+      data.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
+        .find((item) => item)?.data.overview ||
+      data.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
+        .find((item) => item)?.data.overview ||
+      data.overview ||
+      null,
+    Peliculas: data.parts
+      .sort((a, b) => a.release_date - b.release_date)
+      .map((item) => {
+        return {
+          Id: item.id,
+          Nombre: item.original_title || item.title,
+          Poster: item.poster_path,
+          Lanzamiento:
+            item.release_date
+              ?.split(/[-/]/)
+              .find((part) => part.length === 4) || "No hay fecha de estreno",
+        };
+      }),
+  };
+  return coleccion;
 }
 
 function JSONserie(titulo, lista) {
@@ -245,26 +418,6 @@ function JSONserie(titulo, lista) {
   lista = resultado;
   crearSerieDetalles(elementos.serie, lista);
   mostrarSoloElemento(elementos.serie);
-}
-
-function buscarDetalles(tipo, id, lista) {
-  fetch(
-    `https://api.themoviedb.org/3/${tipo}/${id}?append_to_response=credits,videos,watch/providers`,
-    get
-  )
-    .then((res) => res.json())
-    .then((res) => {
-      if (res) {
-        if (tipo === "movie") {
-          JSONpelicula(res, lista);
-        } else {
-          JSONserie(res, lista);
-        }
-      } else {
-        console.error("No se encontraron resultados");
-      }
-    })
-    .catch((err) => console.error(err));
 }
 
 async function cargarDatos(tipo) {
@@ -313,8 +466,6 @@ async function cargarDatos(tipo) {
 
 await cargarDatos("movies");
 await cargarDatos("tv");
-
-function generarPrincipal() {}
 
 dropdownMenu.addEventListener("change", manejarSeleccion);
 boton.addEventListener("click", buscar);
