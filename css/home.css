@@ -165,13 +165,13 @@ main {
   cursor: pointer;
   border: none;
   border-radius: 4px;
-  background-color: #4caf50; 
+  background-color: #4caf50;
   color: white;
   transition: background-color 0.3s ease;
 }
 
 .eliminar-btn {
-  background-color: #f44336; 
+  background-color: #f44336;
 }
 
 .agregar-btn:hover {
@@ -179,7 +179,7 @@ main {
 }
 
 .eliminar-btn:hover {
-  background-color: #e53935; 
+  background-color: #e53935;
 }
 
 .completo {
@@ -198,19 +198,19 @@ main {
   margin-top: 10px;
 }
 
-@keyframes show{
-  from{
+@keyframes show {
+  from {
     opacity: 0;
     scale: 25%;
   }
 
-  to{
+  to {
     opacity: 1;
     scale: 100%;
   }
 }
 
-.pelicula-container{
+.pelicula-container {
   view-timeline-name: --image;
   view-timeline-axis: block;
 

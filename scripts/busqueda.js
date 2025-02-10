@@ -316,7 +316,7 @@ function buscarColeccion(id) {
             watchlist: true,
           };
           modificarWatchlist(body);
-        }, index * 100); // Retraso de 1 segundo entre cada solicitud para evitar límite de API
+        }, index * 100);
       });
     })
     .catch((err) => console.error("Error al buscar colección:", err));
