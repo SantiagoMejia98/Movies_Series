@@ -19,6 +19,8 @@ let todasLasSeries = [];
 let aleatorio = [];
 let peliculasID = [];
 let seriesID = [];
+let peliculas = [];
+let series = [];
 
 function crearlistaInicio(elemento, datos) {
   const ulExistente = elemento.querySelector("ul");
@@ -49,83 +51,6 @@ function crearlistaInicio(elemento, datos) {
   });
 
   elemento.appendChild(ul);
-}
-
-function crearPeliculaDetalles(elemento, datos) {
-  const ulExistente = elemento.querySelector("ul");
-
-  if (ulExistente) {
-    elemento.removeChild(ulExistente);
-  }
-
-  const ul = document.createElement("ul");
-  ul.className = "lista";
-
-  datos.forEach((pelicula) => {
-    const li = document.createElement("li");
-    li.className = "card";
-
-    li.innerHTML = `
-            <div class="pelicula-container" id="${pelicula.Id}">
-                <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
-                <img src="https://image.tmdb.org/t/p/w500${pelicula.Poster}" alt="${pelicula.Nombre}">
-                <div class="informacion">
-                    <p class="fecha"><strong>Estreno:</strong> ${pelicula.Lanzamiento}</p>
-                    <p class="hidden" id="tipo">${pelicula.Tipo}</p>
-                    <button class="eliminar-btn">Eliminar</button>
-                </div>
-            </div>
-        `;
-
-    ul.appendChild(li);
-  });
-
-  elemento.appendChild(ul);
-}
-
-function crearSerieDetalles(elemento, datos) {
-  console.log(datos);
-  const ulExistente = elemento.querySelector("ul");
-
-  if (ulExistente) {
-    elemento.removeChild(ulExistente);
-  }
-
-  const ul = document.createElement("ul");
-  ul.className = "lista";
-
-  datos.forEach((pelicula) => {
-    const li = document.createElement("li");
-    li.className = "card";
-
-    li.innerHTML = `
-            <div class="pelicula-container" id="${pelicula.Id}">
-                <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
-                <img src="https://image.tmdb.org/t/p/original${pelicula.Poster}" alt="${pelicula.Nombre}">
-                <div class="informacion">
-                    <p class="fecha"><strong>Estreno:</strong> ${pelicula.Lanzamiento}</p>
-                    <p class="hidden" id="tipo">${pelicula.Tipo}</p>
-                    <button class="eliminar-btn">Eliminar</button>
-                </div>
-            </div>
-        `;
-
-    ul.appendChild(li);
-  });
-
-  elemento.appendChild(ul);
-}
-
-function seleccionarElementosAleatorios(array, numElementos) {
-  const resultados = [];
-  const arrayCopia = [...array];
-
-  for (let i = 0; i < numElementos; i++) {
-    const indiceAleatorio = Math.floor(Math.random() * arrayCopia.length);
-    resultados.push(arrayCopia.splice(indiceAleatorio, 1)[0]);
-  }
-
-  return resultados[0].Id;
 }
 
 function mostrarSoloElemento(elementoAMostrar) {
@@ -168,23 +93,6 @@ function manejarSeleccion(event) {
   }
 }
 
-function generarJSONInicio(titulo, tipo) {
-  return {
-    Nombre:
-      titulo.title ||
-      titulo.name ||
-      titulo.original_title ||
-      titulo.original_name,
-    Lanzamiento:
-      titulo.release_date?.split(/[-/]/).find((part) => part.length === 4) ||
-      titulo.first_air_date?.split(/[-/]/).find((part) => part.length === 4) ||
-      "No hay fecha de estreno",
-    Poster: titulo.poster_path || null,
-    Id: titulo.id,
-    Tipo: tipo,
-  };
-}
-
 function JSONpelicula(titulo) {
   const pelicula = {
     Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
@@ -194,7 +102,6 @@ function JSONpelicula(titulo) {
       titulo.name ||
       titulo.original_title ||
       titulo.original_name,
-    Tipo: "movie",
     Descripcion:
       titulo.translations.translations
         .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
@@ -274,55 +181,6 @@ function JSONpelicula(titulo) {
       titulo["watch/providers"]?.results?.CO?.flatrate || "No disponible",
   };
   return pelicula;
-}
-
-async function buscarDetalles(id, tipo) {
-  try {
-    const res = await fetch(
-      `https://api.themoviedb.org/3/${tipo}/${id}?append_to_response=credits,videos,watch/providers,translations,images`,
-      get
-    );
-
-    if (!res.ok) {
-      throw new Error(`Error al realizar la solicitud: ${res.status}`);
-    }
-
-    const data = await res.json();
-    if (data) {
-      if (tipo === "movie") {
-        if (data.belongs_to_collection) {
-          await buscarColeccion(data.belongs_to_collection.id);
-        } else {
-          todasLasPeliculas.push(JSONpelicula(data));
-        }
-      } else {
-        todasLasSeries.push(JSONserie(data));
-      }
-    }
-  } catch (err) {
-    console.error("Error al cargar datos:", err);
-  }
-}
-
-async function buscarColeccion(id) {
-  try {
-    const res = await fetch(
-      `https://api.themoviedb.org/3/collection/${id}?append_to_response=translations,images`,
-      get
-    );
-
-    if (!res.ok) {
-      throw new Error(`Error al realizar la solicitud: ${res.status}`);
-    }
-
-    const data = await res.json();
-    if (data) {
-      coleccion = JSONcoleccion(data);
-      crearColeccion(elementos.coleccion, coleccion);
-    }
-  } catch (err) {
-    console.error("Error al cargar datos:", err);
-  }
 }
 
 function JSONcoleccion(data) {
@@ -420,6 +278,23 @@ function JSONserie(titulo, lista) {
   mostrarSoloElemento(elementos.serie);
 }
 
+function generarJSONInicio(titulo, tipo) {
+  return {
+    Nombre:
+      titulo.title ||
+      titulo.name ||
+      titulo.original_title ||
+      titulo.original_name,
+    Lanzamiento:
+      titulo.release_date?.split(/[-/]/).find((part) => part.length === 4) ||
+      titulo.first_air_date?.split(/[-/]/).find((part) => part.length === 4) ||
+      "No hay fecha de estreno",
+    Poster: titulo.poster_path || null,
+    Id: titulo.id,
+    Tipo: tipo,
+  };
+}
+
 async function cargarDatos(tipo) {
   try {
     let page = 1;
@@ -464,8 +339,60 @@ async function cargarDatos(tipo) {
   }
 }
 
+async function buscarDetalles(id, tipo) {
+  try {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/${tipo}/${id}?append_to_response=credits,videos,watch/providers,translations,images`,
+      get
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error al realizar la solicitud: ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (data) {
+      if (tipo === "movie") {
+        if (data.belongs_to_collection) {
+          await buscarColeccion(data.belongs_to_collection.id);
+        } else {
+          peliculas.push(JSONpelicula(data));
+        }
+      } else {
+        todasLasSeries.push(JSONserie(data));
+      }
+    }
+  } catch (err) {
+    console.error("Error al cargar datos:", err);
+  }
+}
+
+async function buscarColeccion(id) {
+  try {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/collection/${id}?append_to_response=translations,images`,
+      get
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error al realizar la solicitud: ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (data) {
+      coleccion = JSONcoleccion(data);
+      peliculas.push(coleccion);
+    }
+  } catch (err) {
+    console.error("Error al cargar datos:", err);
+  }
+}
+
 await cargarDatos("movies");
 await cargarDatos("tv");
+
+peliculasID.forEach((id) => await buscarDetalles(id, "movie"));
+console.log(peliculas);
 
 dropdownMenu.addEventListener("change", manejarSeleccion);
 boton.addEventListener("click", buscar);
