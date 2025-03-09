@@ -21,6 +21,7 @@ let peliculasID = [];
 let seriesID = [];
 let peliculas = [];
 let series = [];
+let coleccionId = new Set();
 
 function crearlistaInicio(elemento, datos) {
   const ulExistente = elemento.querySelector("ul");
@@ -37,15 +38,15 @@ function crearlistaInicio(elemento, datos) {
     li.className = "card";
 
     li.innerHTML = `
-            <div class="pelicula-container" id="${pelicula.Id}">
-                <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
-                <img src="https://image.tmdb.org/t/p/w500${pelicula.Poster}" alt="${pelicula.Nombre}">
-                <div class="informacion">
-                    <p class="fecha"><strong>Estreno:</strong> ${pelicula.Lanzamiento}</p>
-                    <p class="hidden" id="tipo">${pelicula.Tipo}</p>
+                <div class="pelicula-container" id="${pelicula.Id}">
+                    <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
+                    <img src="https://image.tmdb.org/t/p/w500${pelicula.Poster}" alt="${pelicula.Nombre}">
+                    <div class="informacion">
+                        <p class="fecha"><strong>Estreno:</strong> ${pelicula.Lanzamiento}</p>
+                        <p class="hidden" id="tipo">${pelicula.Tipo}</p>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
 
     ul.appendChild(li);
   });
@@ -94,7 +95,7 @@ function manejarSeleccion(event) {
 }
 
 function JSONpelicula(titulo) {
-  const pelicula = {
+  return {
     Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
     Id: titulo.id,
     Nombre:
@@ -180,18 +181,16 @@ function JSONpelicula(titulo) {
     Proveedores:
       titulo["watch/providers"]?.results?.CO?.flatrate || "No disponible",
   };
-  return pelicula;
 }
 
 function JSONcoleccion(data) {
-  coleccion = {
+  return {
     Nombre: data.original_name || data.name,
-    Lanzamiento: data.parts
-      .map((item) =>
-        item.release_date.split(/[-/]/).find((part) => part.length === 4)
-      )
-      .filter((year) => year)
-      .sort(),
+    Lanzamiento: data.parts.map((item) =>
+      item.release_date
+        ? item.release_date.split(/[-/]/).find((part) => part.length === 4)
+        : "Presente"
+    ),
     Poster:
       data.images?.posters
         .filter(
@@ -231,20 +230,9 @@ function JSONcoleccion(data) {
       data.overview ||
       null,
     Peliculas: data.parts
-      .sort((a, b) => a.release_date - b.release_date)
-      .map((item) => {
-        return {
-          Id: item.id,
-          Nombre: item.original_title || item.title,
-          Poster: item.poster_path,
-          Lanzamiento:
-            item.release_date
-              ?.split(/[-/]/)
-              .find((part) => part.length === 4) || "No hay fecha de estreno",
-        };
-      }),
+      .sort((a, b) => new Date(a.release_date) - new Date(b.release_date))
+      .map((item) => item.id),
   };
-  return coleccion;
 }
 
 function JSONserie(titulo, lista) {
@@ -354,7 +342,10 @@ async function buscarDetalles(id, tipo) {
     if (data) {
       if (tipo === "movie") {
         if (data.belongs_to_collection) {
-          await buscarColeccion(data.belongs_to_collection.id);
+          if (!coleccionId.has(data.belongs_to_collection.id)) {
+            coleccionId.add(data.belongs_to_collection.id);
+            await buscarColeccion(data.belongs_to_collection.id);
+          }
         } else {
           peliculas.push(JSONpelicula(data));
         }
@@ -380,7 +371,7 @@ async function buscarColeccion(id) {
 
     const data = await res.json();
     if (data) {
-      coleccion = JSONcoleccion(data);
+      let coleccion = JSONcoleccion(data);
       peliculas.push(coleccion);
     }
   } catch (err) {
@@ -391,7 +382,9 @@ async function buscarColeccion(id) {
 await cargarDatos("movies");
 await cargarDatos("tv");
 
-peliculasID.forEach((id) => await buscarDetalles(id, "movie"));
+console.log(todasLasPeliculas);
+
+peliculasID.forEach(async (id) => await buscarDetalles(id, "movie"));
 console.log(peliculas);
 
 dropdownMenu.addEventListener("change", manejarSeleccion);
