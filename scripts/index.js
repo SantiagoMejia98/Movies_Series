@@ -19,8 +19,9 @@ let todasLasSeries = [];
 let aleatorio = [];
 let peliculasID = [];
 let seriesID = [];
-let peliculas = [];
-let series = [];
+let peliculas = {};
+let series = {};
+let colecciones = {};
 let coleccionId = new Set();
 
 function crearlistaInicio(elemento, datos) {
@@ -40,9 +41,9 @@ function crearlistaInicio(elemento, datos) {
     li.innerHTML = `
                 <div class="pelicula-container" id="${pelicula.Id}">
                     <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
-                    <img src="https://image.tmdb.org/t/p/w500${pelicula.Poster}" alt="${pelicula.Nombre}">
+                    <img src="https://image.tmdb.org/t/p/original${pelicula.Poster[0]}" alt="${pelicula.Nombre}">
                     <div class="informacion">
-                        <p class="fecha"><strong>Estreno:</strong> ${pelicula.Lanzamiento}</p>
+                        <p class="fecha"><strong></strong> ${pelicula.Lanzamiento}</p>
                         <p class="hidden" id="tipo">${pelicula.Tipo}</p>
                     </div>
                 </div>
@@ -103,6 +104,7 @@ function JSONpelicula(titulo) {
       titulo.name ||
       titulo.original_title ||
       titulo.original_name,
+    Coleccion: titulo.belongs_to_collection?.id || null,
     Descripcion:
       titulo.translations.translations
         .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
@@ -186,11 +188,17 @@ function JSONpelicula(titulo) {
 function JSONcoleccion(data) {
   return {
     Nombre: data.original_name || data.name,
-    Lanzamiento: data.parts.map((item) =>
-      item.release_date
-        ? item.release_date.split(/[-/]/).find((part) => part.length === 4)
-        : "Presente"
-    ),
+    Lanzamiento: (() => {
+      let y = data.parts
+        .map(
+          (i) => i.release_date?.split(/[-/]/).find((p) => p.length === 4) || ""
+        )
+        .filter(Boolean)
+        .sort((a, b) => a - b);
+      return y.length
+        ? `${y[0]} - ${y[y.length - 1] ? y[y.length - 1] : "Presente"}`
+        : "Desconocido";
+    })(),
     Poster:
       data.images?.posters
         .filter(
@@ -235,16 +243,31 @@ function JSONcoleccion(data) {
   };
 }
 
-function JSONserie(titulo, lista) {
-  let resultado = [];
-  const serie = {
+function JSONserie(titulo) {
+  return {
     Nombre:
       titulo.title ||
       titulo.name ||
       titulo.original_title ||
       titulo.original.name,
-    Lanzamiento: titulo.release_date || titulo.first_air_date,
-    Poster: titulo.poster_path,
+    Lanzamiento: titulo.first_air_date
+      ? `${titulo.first_air_date.split(/[-/]/).find((p) => p.length === 4)} - ${
+          titulo.last_air_date?.split(/[-/]/).find((p) => p.length === 4) ||
+          "Presente"
+        }`
+      : "Desconocido",
+    Poster:
+      titulo.images?.posters
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.height >= 1500 &&
+            item.aspect_ratio === 0.667
+        )
+        .sort((a, b) => b.vote_average - a.vote_average)
+        .map((item) => item.file_path) ||
+      titulo.poster_path ||
+      null,
     Id: titulo.id,
     Tipo: "tv",
     Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
@@ -260,10 +283,6 @@ function JSONserie(titulo, lista) {
     Descripcion: titulo.overview,
     Season: titulo.seasons,
   };
-  resultado.push(serie);
-  lista = resultado;
-  crearSerieDetalles(elementos.serie, lista);
-  mostrarSoloElemento(elementos.serie);
 }
 
 function generarJSONInicio(titulo, tipo) {
@@ -302,17 +321,30 @@ async function cargarDatos(tipo) {
 
       if (data.results) {
         if (tipo === "tv") {
-          seriesID = seriesID.concat(data.results.map((item) => item.id));
-          data.results.forEach((titulo) => {
-            todasLasSeries.push(generarJSONInicio(titulo, "tv"));
-            crearlistaInicio(elementos.series, todasLasSeries);
+          seriesID = [...seriesID, ...data.results.map((item) => item.id)];
+
+          const detalles = data.results.map(async (titulo) => {
+            const jsonSerie = generarJSONInicio(titulo, "tv");
+            //todasLasSeries.push(jsonSerie);
+            //crearlistaInicio(elementos.series, todasLasSeries);
+            await buscarDetalles(titulo.id, "tv");
           });
+
+          await Promise.all(detalles);
         } else {
-          peliculasID = peliculasID.concat(data.results.map((item) => item.id));
-          data.results.forEach((titulo) => {
-            todasLasPeliculas.push(generarJSONInicio(titulo, "movie"));
-            crearlistaInicio(elementos.peliculas, todasLasPeliculas);
+          peliculasID = [
+            ...peliculasID,
+            ...data.results.map((item) => item.id),
+          ];
+
+          const detalles = data.results.map(async (titulo) => {
+            const jsonPelicula = generarJSONInicio(titulo, "movie");
+            //todasLasPeliculas.push(jsonPelicula);
+            //crearlistaInicio(elementos.peliculas, todasLasPeliculas);
+            await buscarDetalles(titulo.id, "movie");
           });
+
+          await Promise.all(detalles);
         }
         totalPages = data.total_pages;
       } else {
@@ -340,17 +372,17 @@ async function buscarDetalles(id, tipo) {
 
     const data = await res.json();
     if (data) {
-      if (tipo === "movie") {
+      if (tipo === "tv") {
+        series[id] = JSONserie(data);
+        todasLasSeries.push(series[id]);
+      } else {
+        peliculas[id] = JSONpelicula(data);
         if (data.belongs_to_collection) {
-          if (!coleccionId.has(data.belongs_to_collection.id)) {
-            coleccionId.add(data.belongs_to_collection.id);
+          coleccionId.add(data.belongs_to_collection.id);
+          if (!colecciones[data.belongs_to_collection.id]) {
             await buscarColeccion(data.belongs_to_collection.id);
           }
-        } else {
-          peliculas.push(JSONpelicula(data));
         }
-      } else {
-        todasLasSeries.push(JSONserie(data));
       }
     }
   } catch (err) {
@@ -371,8 +403,8 @@ async function buscarColeccion(id) {
 
     const data = await res.json();
     if (data) {
-      let coleccion = JSONcoleccion(data);
-      peliculas.push(coleccion);
+      coleccionId.add(data.id);
+      colecciones[data.id] = JSONcoleccion(data);
     }
   } catch (err) {
     console.error("Error al cargar datos:", err);
@@ -382,10 +414,31 @@ async function buscarColeccion(id) {
 await cargarDatos("movies");
 await cargarDatos("tv");
 
-console.log(todasLasPeliculas);
-
-peliculasID.forEach(async (id) => await buscarDetalles(id, "movie"));
+console.log(peliculasID);
 console.log(peliculas);
+console.log(Object.keys(peliculas).length);
+console.log(coleccionId);
+console.log(colecciones);
+console.log(Object.keys(colecciones).length);
+console.log(seriesID);
+console.log(series);
+console.log(Object.keys(series).length);
+
+for (const id in colecciones) {
+  todasLasPeliculas.push(colecciones[id]);
+}
+
+for (const id in peliculas) {
+  if (!peliculas[id].Coleccion) {
+    todasLasPeliculas.push(peliculas[id]);
+  }
+}
+
+console.log(todasLasPeliculas);
+console.log(todasLasSeries);
+
+crearlistaInicio(elementos.peliculas, todasLasPeliculas);
+crearlistaInicio(elementos.series, todasLasSeries);
 
 dropdownMenu.addEventListener("change", manejarSeleccion);
 boton.addEventListener("click", buscar);
