@@ -392,6 +392,9 @@ async function buscarColeccion(id) {
     console.error("Error al cargar datos:", err);
   }
 }
++function guardarDatos() {
+  localStorage.setItem("datos", JSON.stringify(data));
+};
 
 await cargarDatos("movies");
 await cargarDatos("tv");
@@ -409,7 +412,8 @@ data["series"] = series;
 data["colecciones"] = colecciones;
 data["peliculasCard"] = [...todasLasPeliculas];
 data["seriesCard"] = [...todasLasSeries];
-console.log(data);
+
+guardarDatos();
 
 crearlistaInicio(elementos.peliculas, todasLasPeliculas);
 crearlistaInicio(elementos.series, todasLasSeries);
