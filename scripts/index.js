@@ -14,15 +14,12 @@ const get = {
 
 const dropdownMenu = document.getElementById("dropdown-menu");
 
-let todasLasPeliculas = [];
-let todasLasSeries = [];
-let aleatorio = [];
-let peliculasID = [];
-let seriesID = [];
+let todasLasPeliculas = new Set();
+let todasLasSeries = new Set();
 let peliculas = {};
 let series = {};
 let colecciones = {};
-let coleccionId = new Set();
+let data = {};
 
 function crearlistaInicio(elemento, datos) {
   const ulExistente = elemento.querySelector("ul");
@@ -321,26 +318,13 @@ async function cargarDatos(tipo) {
 
       if (data.results) {
         if (tipo === "tv") {
-          seriesID = [...seriesID, ...data.results.map((item) => item.id)];
-
           const detalles = data.results.map(async (titulo) => {
-            const jsonSerie = generarJSONInicio(titulo, "tv");
-            //todasLasSeries.push(jsonSerie);
-            //crearlistaInicio(elementos.series, todasLasSeries);
             await buscarDetalles(titulo.id, "tv");
           });
 
           await Promise.all(detalles);
         } else {
-          peliculasID = [
-            ...peliculasID,
-            ...data.results.map((item) => item.id),
-          ];
-
           const detalles = data.results.map(async (titulo) => {
-            const jsonPelicula = generarJSONInicio(titulo, "movie");
-            //todasLasPeliculas.push(jsonPelicula);
-            //crearlistaInicio(elementos.peliculas, todasLasPeliculas);
             await buscarDetalles(titulo.id, "movie");
           });
 
@@ -374,11 +358,10 @@ async function buscarDetalles(id, tipo) {
     if (data) {
       if (tipo === "tv") {
         series[id] = JSONserie(data);
-        todasLasSeries.push(series[id]);
+        todasLasSeries.add(series[id]);
       } else {
         peliculas[id] = JSONpelicula(data);
         if (data.belongs_to_collection) {
-          coleccionId.add(data.belongs_to_collection.id);
           if (!colecciones[data.belongs_to_collection.id]) {
             await buscarColeccion(data.belongs_to_collection.id);
           }
@@ -403,7 +386,6 @@ async function buscarColeccion(id) {
 
     const data = await res.json();
     if (data) {
-      coleccionId.add(data.id);
       colecciones[data.id] = JSONcoleccion(data);
     }
   } catch (err) {
@@ -414,73 +396,22 @@ async function buscarColeccion(id) {
 await cargarDatos("movies");
 await cargarDatos("tv");
 
-console.log(peliculasID);
-console.log(peliculas);
-console.log(Object.keys(peliculas).length);
-console.log(coleccionId);
-console.log(colecciones);
-console.log(Object.keys(colecciones).length);
-console.log(seriesID);
-console.log(series);
-console.log(Object.keys(series).length);
-
-for (const id in colecciones) {
-  todasLasPeliculas.push(colecciones[id]);
-}
-
 for (const id in peliculas) {
-  if (!peliculas[id].Coleccion) {
-    todasLasPeliculas.push(peliculas[id]);
+  if (peliculas[id].Coleccion) {
+    todasLasPeliculas.add(colecciones[peliculas[id].Coleccion]);
+  } else {
+    todasLasPeliculas.add(peliculas[id]);
   }
 }
 
-console.log(todasLasPeliculas);
-console.log(todasLasSeries);
+data["peliculas"] = peliculas;
+data["series"] = series;
+data["colecciones"] = colecciones;
+data["peliculasCard"] = [...todasLasPeliculas];
+data["seriesCard"] = [...todasLasSeries];
+console.log(data);
 
 crearlistaInicio(elementos.peliculas, todasLasPeliculas);
 crearlistaInicio(elementos.series, todasLasSeries);
 
 dropdownMenu.addEventListener("change", manejarSeleccion);
-boton.addEventListener("click", buscar);
-
-document
-  .querySelectorAll(
-    '[data-name="busqueda"], [data-name="peliculas"], [data-name="series"], [data-name="pelicula"], [data-name="serie"]'
-  )
-  .forEach((contenedor) => {
-    contenedor.addEventListener("click", function (event) {
-      if (event.target.classList.contains("agregar-btn")) {
-        let id = event.target.closest(".pelicula-container").id;
-        let tipo = event.target
-          .closest(".pelicula-container")
-          .querySelector("#tipo").textContent;
-        const body = {
-          media_id: id,
-          media_type: tipo,
-          watchlist: true,
-        };
-        modificarWatchlist(body);
-        if (tipo === "movie") {
-        } else {
-          todasLasSeries.push();
-        }
-      } else if (event.target.classList.contains("eliminar-btn")) {
-        let id = event.target.closest(".pelicula-container").id;
-        let tipo = event.target
-          .closest(".pelicula-container")
-          .querySelector("#tipo").textContent;
-        const body = {
-          media_id: id,
-          media_type: tipo,
-          watchlist: false,
-        };
-        modificarWatchlist(body);
-        if (tipo === "movie") {
-        } else {
-          todasLasSeries.push();
-        }
-      } else if (event.target.classList.contains("completo")) {
-        console.log(todasLasPeliculas);
-      }
-    });
-  });
