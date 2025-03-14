@@ -12,6 +12,8 @@ const get = {
   },
 };
 
+const EXPIRATION_DAYS = 7;
+
 const dropdownMenu = document.getElementById("dropdown-menu");
 
 let todasLasPeliculas = new Set();
@@ -40,7 +42,8 @@ function crearlistaInicio(elemento, datos) {
                     <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
                     <img src="https://image.tmdb.org/t/p/original${pelicula.Poster[0]}" alt="${pelicula.Nombre}">
                     <div class="informacion">
-                        <p class="fecha"><strong></strong> ${pelicula.Lanzamiento}</p>
+                        <p class="fecha">${pelicula.Lanzamiento}</p>
+                        <p class="duracion">${pelicula.Duracion}</p>
                         <p class="hidden" id="tipo">${pelicula.Tipo}</p>
                     </div>
                 </div>
@@ -186,14 +189,19 @@ function JSONcoleccion(data) {
   return {
     Nombre: data.original_name || data.name,
     Lanzamiento: (() => {
-      let y = data.parts
+      let years = data.parts
         .map(
           (i) => i.release_date?.split(/[-/]/).find((p) => p.length === 4) || ""
         )
         .filter(Boolean)
         .sort((a, b) => a - b);
-      return y.length
-        ? `${y[0]} - ${y[y.length - 1] ? y[y.length - 1] : "Presente"}`
+
+      return years.length
+        ? `${years[0]} - ${
+            data.parts.some((p) => !p.release_date)
+              ? "Presente"
+              : years[years.length - 1]
+          }`
         : "Desconocido";
     })(),
     Poster:
@@ -248,9 +256,14 @@ function JSONserie(titulo) {
       titulo.original_title ||
       titulo.original.name,
     Lanzamiento: titulo.first_air_date
-      ? `${titulo.first_air_date.split(/[-/]/).find((p) => p.length === 4)} - ${
-          titulo.last_air_date?.split(/[-/]/).find((p) => p.length === 4) ||
-          "Presente"
+      ? `${titulo.first_air_date.split(/[-/]/).find((p) => p.length === 4)}${
+          titulo.status !== "Ended" && titulo.status !== "Canceled"
+            ? " - Presente"
+            : titulo.last_air_date
+            ? ` - ${titulo.last_air_date
+                .split(/[-/]/)
+                .find((p) => p.length === 4)}`
+            : ""
         }`
       : "Desconocido",
     Poster:
@@ -274,28 +287,12 @@ function JSONserie(titulo) {
     Creditos: titulo.credits?.cast || [],
     Proveedores:
       titulo["watch/providers"]?.results?.CO?.flatrate || "No disponible",
-    Creador: titulo.created_by,
-    Capitulos: titulo.number_of_episodes,
-    Temporadas: titulo.number_of_seasons,
+    Director: titulo.created_by,
+    Duracion: `${titulo.number_of_seasons} ${
+      titulo.number_of_seasons === 1 ? "temporada" : "temporadas"
+    }<br>${titulo.number_of_episodes} capítulos`,
     Descripcion: titulo.overview,
     Season: titulo.seasons,
-  };
-}
-
-function generarJSONInicio(titulo, tipo) {
-  return {
-    Nombre:
-      titulo.title ||
-      titulo.name ||
-      titulo.original_title ||
-      titulo.original_name,
-    Lanzamiento:
-      titulo.release_date?.split(/[-/]/).find((part) => part.length === 4) ||
-      titulo.first_air_date?.split(/[-/]/).find((part) => part.length === 4) ||
-      "No hay fecha de estreno",
-    Poster: titulo.poster_path || null,
-    Id: titulo.id,
-    Tipo: tipo,
   };
 }
 
@@ -392,28 +389,45 @@ async function buscarColeccion(id) {
     console.error("Error al cargar datos:", err);
   }
 }
-+function guardarDatos() {
+function guardarDatos() {
+  const expirationDate = new Date();
+  expirationDate.setDate(expirationDate.getDate() + EXPIRATION_DAYS);
+  data["expirationDate"] = expirationDate;
   localStorage.setItem("datos", JSON.stringify(data));
-};
+}
 
-await cargarDatos("movies");
-await cargarDatos("tv");
-
-for (const id in peliculas) {
-  if (peliculas[id].Coleccion) {
-    todasLasPeliculas.add(colecciones[peliculas[id].Coleccion]);
+async function cargarDatosGuardados() {
+  const datos = localStorage.getItem("datos");
+  if (datos && new Date(JSON.parse(datos)["expirationDate"]) > new Date()) {
+    data = JSON.parse(datos);
+    console.log(data);
+    peliculas = data["peliculas"];
+    series = data["series"];
+    colecciones = data["colecciones"];
+    todasLasPeliculas = new Set(data["peliculasCard"]);
+    todasLasSeries = new Set(data["seriesCard"]);
   } else {
-    todasLasPeliculas.add(peliculas[id]);
+    await cargarDatos("movies");
+    await cargarDatos("tv");
+    for (const id in peliculas) {
+      if (peliculas[id].Coleccion) {
+        todasLasPeliculas.add(colecciones[peliculas[id].Coleccion]);
+      } else {
+        todasLasPeliculas.add(peliculas[id]);
+      }
+    }
+
+    data["peliculas"] = peliculas;
+    data["series"] = series;
+    data["colecciones"] = colecciones;
+    data["peliculasCard"] = [...todasLasPeliculas];
+    data["seriesCard"] = [...todasLasSeries];
+
+    guardarDatos();
   }
 }
 
-data["peliculas"] = peliculas;
-data["series"] = series;
-data["colecciones"] = colecciones;
-data["peliculasCard"] = [...todasLasPeliculas];
-data["seriesCard"] = [...todasLasSeries];
-
-guardarDatos();
+await cargarDatosGuardados();
 
 crearlistaInicio(elementos.peliculas, todasLasPeliculas);
 crearlistaInicio(elementos.series, todasLasSeries);
