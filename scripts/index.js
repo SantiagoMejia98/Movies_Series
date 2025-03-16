@@ -185,6 +185,105 @@ function JSONpelicula(titulo) {
   };
 }
 
+function JSONserie(titulo) {
+  return {
+    Nombre:
+      titulo.title ||
+      titulo.name ||
+      titulo.original_title ||
+      titulo.original.name,
+    Lanzamiento: titulo.first_air_date
+      ? `${titulo.first_air_date.split(/[-/]/).find((p) => p.length === 4)}${
+          titulo.status !== "Ended" && titulo.status !== "Canceled"
+            ? " - Presente"
+            : titulo.last_air_date
+            ? ` - ${titulo.last_air_date
+                .split(/[-/]/)
+                .find((p) => p.length === 4)}`
+            : ""
+        }`
+      : "Desconocido",
+    Poster:
+      titulo.images?.posters
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.height >= 1500 &&
+            item.aspect_ratio === 0.667
+        )
+        .sort((a, b) => b.vote_average - a.vote_average)
+        .map((item) => item.file_path) ||
+      titulo.poster_path ||
+      null,
+    Id: titulo.id,
+    Tipo: "tv",
+    Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
+    Status: titulo.status || null,
+    Tagline: titulo.tagline || null,
+    Videos:
+      titulo.videos?.results
+        .filter((item) => item.type === "Trailer")
+        .map((item) => item.key) || null,
+    Portada:
+      titulo.images?.backdrops
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.height >= 1080 &&
+            item.aspect_ratio === 1.778
+        )
+        .sort((a, b) => b.vote_average - a.vote_average)
+        .map((item) => item.file_path) ||
+      titulo.poster_path ||
+      null,
+    Logo:
+      titulo.images?.logos
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.width >= 400
+        )
+        .sort((a, b) => b.vote_average - a.vote_average)
+        .map((item) => item.file_path) || null,
+    Directores:
+      titulo.created_by.map((item) => {
+        return {
+          Nombre: item.name,
+          Foto: item.profile_path,
+        };
+      }) || null,
+    Reparto:
+      titulo.aggregate_credits?.cast
+        .filter((item) => item.profile_path !== null)
+        .slice(0, 15)
+        .map((item) => {
+          return {
+            Nombre: item.name,
+            Foto: item.profile_path,
+            Personaje: item.roles.map((item) => item.character).join(", "),
+          };
+        }) || null,
+    Proveedores:
+      titulo["watch/providers"]?.results?.CO?.flatrate || "No disponible",
+    Duracion: `${titulo.number_of_seasons} ${
+      titulo.number_of_seasons === 1 ? "temporada" : "temporadas"
+    }<br>${titulo.number_of_episodes} capítulos`,
+    Descripcion:
+      titulo.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
+        .find((item) => item)?.data.overview ||
+      titulo.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
+        .find((item) => item)?.data.overview ||
+      titulo.translations.translations
+        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
+        .find((item) => item)?.data.overview ||
+      titulo.overview ||
+      null,
+    Season: titulo.seasons,
+  };
+}
+
 function JSONcoleccion(data) {
   return {
     Nombre: data.original_name || data.name,
@@ -245,54 +344,6 @@ function JSONcoleccion(data) {
     Peliculas: data.parts
       .sort((a, b) => new Date(a.release_date) - new Date(b.release_date))
       .map((item) => item.id),
-  };
-}
-
-function JSONserie(titulo) {
-  return {
-    Nombre:
-      titulo.title ||
-      titulo.name ||
-      titulo.original_title ||
-      titulo.original.name,
-    Lanzamiento: titulo.first_air_date
-      ? `${titulo.first_air_date.split(/[-/]/).find((p) => p.length === 4)}${
-          titulo.status !== "Ended" && titulo.status !== "Canceled"
-            ? " - Presente"
-            : titulo.last_air_date
-            ? ` - ${titulo.last_air_date
-                .split(/[-/]/)
-                .find((p) => p.length === 4)}`
-            : ""
-        }`
-      : "Desconocido",
-    Poster:
-      titulo.images?.posters
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1500 &&
-            item.aspect_ratio === 0.667
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)
-        .map((item) => item.file_path) ||
-      titulo.poster_path ||
-      null,
-    Id: titulo.id,
-    Tipo: "tv",
-    Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
-    Status: titulo.status,
-    Videos: titulo.videos?.results || [],
-    Portada: titulo.backdrop_path,
-    Creditos: titulo.credits?.cast || [],
-    Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate || "No disponible",
-    Director: titulo.created_by,
-    Duracion: `${titulo.number_of_seasons} ${
-      titulo.number_of_seasons === 1 ? "temporada" : "temporadas"
-    }<br>${titulo.number_of_episodes} capítulos`,
-    Descripcion: titulo.overview,
-    Season: titulo.seasons,
   };
 }
 
@@ -366,27 +417,6 @@ async function buscarDetallesPeliculas(id) {
 }
 
 async function buscarDetallesSeries(id) {
-  try {
-    const res = await fetch(
-      `https://api.themoviedb.org/3/tv/${id}?append_to_response=aggregate_credits,videos,watch/providers,translations,images`,
-      get
-    );
-
-    if (!res.ok) {
-      throw new Error(`Error al realizar la solicitud: ${res.status}`);
-    }
-
-    const data = await res.json();
-    if (data) {
-      series[id] = JSONserie(data);
-      todasLasSeries.add(series[id]);
-    }
-  } catch (err) {
-    console.error("Error al cargar datos:", err);
-  }
-}
-
-async function buscarDetallesTemporadas(id, temporada) {
   try {
     const res = await fetch(
       `https://api.themoviedb.org/3/tv/${id}?append_to_response=aggregate_credits,videos,watch/providers,translations,images`,
