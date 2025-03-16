@@ -316,13 +316,13 @@ async function cargarDatos(tipo) {
       if (data.results) {
         if (tipo === "tv") {
           const detalles = data.results.map(async (titulo) => {
-            await buscarDetalles(titulo.id, "tv");
+            await buscarDetallesSeries(titulo.id);
           });
 
           await Promise.all(detalles);
         } else {
           const detalles = data.results.map(async (titulo) => {
-            await buscarDetalles(titulo.id, "movie");
+            await buscarDetallesPeliculas(titulo.id);
           });
 
           await Promise.all(detalles);
@@ -340,10 +340,10 @@ async function cargarDatos(tipo) {
   }
 }
 
-async function buscarDetalles(id, tipo) {
+async function buscarDetallesPeliculas(id) {
   try {
     const res = await fetch(
-      `https://api.themoviedb.org/3/${tipo}/${id}?append_to_response=credits,videos,watch/providers,translations,images`,
+      `https://api.themoviedb.org/3/movie/${id}?append_to_response=credits,videos,watch/providers,translations,images`,
       get
     );
 
@@ -353,17 +353,54 @@ async function buscarDetalles(id, tipo) {
 
     const data = await res.json();
     if (data) {
-      if (tipo === "tv") {
-        series[id] = JSONserie(data);
-        todasLasSeries.add(series[id]);
-      } else {
-        peliculas[id] = JSONpelicula(data);
-        if (data.belongs_to_collection) {
-          if (!colecciones[data.belongs_to_collection.id]) {
-            await buscarColeccion(data.belongs_to_collection.id);
-          }
+      peliculas[id] = JSONpelicula(data);
+      if (data.belongs_to_collection) {
+        if (!colecciones[data.belongs_to_collection.id]) {
+          await buscarColeccion(data.belongs_to_collection.id);
         }
       }
+    }
+  } catch (err) {
+    console.error("Error al cargar datos:", err);
+  }
+}
+
+async function buscarDetallesSeries(id) {
+  try {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/tv/${id}?append_to_response=aggregate_credits,videos,watch/providers,translations,images`,
+      get
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error al realizar la solicitud: ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (data) {
+      series[id] = JSONserie(data);
+      todasLasSeries.add(series[id]);
+    }
+  } catch (err) {
+    console.error("Error al cargar datos:", err);
+  }
+}
+
+async function buscarDetallesTemporadas(id, temporada) {
+  try {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/tv/${id}?append_to_response=aggregate_credits,videos,watch/providers,translations,images`,
+      get
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error al realizar la solicitud: ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (data) {
+      series[id] = JSONserie(data);
+      todasLasSeries.add(series[id]);
     }
   } catch (err) {
     console.error("Error al cargar datos:", err);
