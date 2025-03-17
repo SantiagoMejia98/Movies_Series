@@ -123,6 +123,7 @@ function JSONpelicula(titulo) {
     Duracion: `${Math.floor(titulo.runtime / 60)}h ${titulo.runtime % 60}min`,
     Status: titulo.status || null,
     Tagline: titulo.tagline || null,
+    Tipo: "movie",
     Poster:
       titulo.images?.posters
         .filter(
@@ -260,7 +261,7 @@ function JSONserie(titulo) {
           return {
             Nombre: item.name,
             Foto: item.profile_path,
-            Personaje: item.roles.map((item) => item.character).join(", "),
+            Personaje: item.roles.map((item) => item.character).join("<br>"),
           };
         }) || null,
     Proveedores:
@@ -317,6 +318,7 @@ function JSONcoleccion(data) {
       null,
     Id: data.id,
     Duracion: `${data.parts.length} películas`,
+    Tipo: "collection",
     Portada:
       data.images?.backdrops
         .filter(
@@ -456,6 +458,7 @@ async function buscarColeccion(id) {
     console.error("Error al cargar datos:", err);
   }
 }
+
 function guardarDatos() {
   const expirationDate = new Date();
   expirationDate.setDate(expirationDate.getDate() + EXPIRATION_DAYS);

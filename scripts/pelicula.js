@@ -14,10 +14,41 @@ const elementos = {
   pelicula: document.querySelector('[data-name="pelicula"]'),
 };
 
-let peliculasID = [];
-let coleccion = {};
-let coleccionID;
-let peliculas = [];
+let todasLasPeliculas = new Set();
+let todasLasSeries = new Set();
+let peliculas = {};
+let series = {};
+let colecciones = {};
+let data = {};
+let aleatorio;
+
+async function cargarDatosGuardados() {
+  const datos = localStorage.getItem("datos");
+  data = JSON.parse(datos);
+  console.log(data);
+  peliculas = data["peliculas"];
+  colecciones = data["colecciones"];
+  todasLasPeliculas = data["peliculasCard"];
+  aleatorio = data["aleatorio"];
+  let titulo;
+  if (!aleatorio) {
+    aleatorio = seleccionarElementosAleatorios(todasLasPeliculas.length);
+    titulo = todasLasPeliculas[aleatorio];
+  } else {
+    if (aleatorio.Tipo === "movie") {
+      titulo = peliculas[aleatorio.Id];
+    } else {
+      titulo = colecciones[aleatorio.Id];
+    }
+  }
+  if (titulo.Tipo === "movie") {
+    crearPelicula(elementos.pelicula, titulo);
+  } else {
+    crearColeccion(elementos.coleccion, titulo);
+  }
+}
+
+await cargarDatosGuardados();
 
 function crearColeccion(elemento, datos) {
   const containerExistente = elemento.querySelector(".container");
@@ -63,15 +94,14 @@ function crearColeccion(elemento, datos) {
   coleccion.innerHTML = `<h2>Colección</h2>`;
   const ul = document.createElement("ul");
   ul.className = "lista";
-  datos.Peliculas.forEach((pelicula) => {
+  datos.Peliculas.forEach((id) => {
     const li = document.createElement("li");
     li.className = "card";
 
     li.innerHTML = `
-      <div class="pelicula-container" id="${pelicula.Id}">
-        <img src="https://image.tmdb.org/t/p/original${pelicula.Poster}" alt="${pelicula.Nombre}">
-        <h2><strong>${pelicula.Nombre}</strong></h2>
-        <p class="lanzamiento">${pelicula.Lanzamiento}</p>
+      <div class="pelicula-container" id="${peliculas[id].Id}">
+        <img src="https://image.tmdb.org/t/p/original${peliculas[id].Poster[0]}" alt="${peliculas[id].Nombre}">
+        <h2><strong>${peliculas[id].Nombre} (${peliculas[id].Lanzamiento})</strong></h2>
       </div>
       `;
 
@@ -227,14 +257,8 @@ function crearPelicula(elemento, datos) {
   closeBtn.addEventListener("click", closeTrailer);
 }
 
-function seleccionarElementosAleatorios(array) {
-  const resultados = [];
-
-  for (let i = 0; i < 1; i++) {
-    const indiceAleatorio = Math.floor(Math.random() * array.length);
-    resultados.push(array[indiceAleatorio]);
-  }
-  return resultados[0];
+function seleccionarElementosAleatorios(tamaño) {
+  return Math.floor(Math.random() * tamaño);
 }
 
 function manejarSeleccion(event) {
@@ -265,238 +289,6 @@ function manejarSeleccion(event) {
   } else {
     console.error("No se definió una ruta para la selección.");
   }
-}
-
-async function cargarDatos() {
-  try {
-    let page = 1;
-    let totalPages;
-
-    do {
-      const res = await fetch(
-        `https://api.themoviedb.org/3/account/21500820/watchlist/movies?page=${page}`,
-        get
-      );
-
-      if (!res.ok) {
-        throw new Error(`Error al realizar la solicitud: ${res.status}`);
-      }
-
-      const data = await res.json();
-
-      if (data.results) {
-        peliculasID = peliculasID.concat(data.results.map((item) => item.id));
-        totalPages = data.total_pages;
-      } else {
-        console.error("No se encontraron resultados");
-        break;
-      }
-
-      page++;
-    } while (page <= totalPages);
-  } catch (err) {
-    console.error("Error al cargar datos:", err);
-  }
-}
-
-await cargarDatos();
-await buscarDetalles(seleccionarElementosAleatorios(peliculasID));
-
-function JSONpelicula(titulo) {
-  const pelicula = {
-    Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
-    Id: titulo.id,
-    Nombre:
-      titulo.title ||
-      titulo.name ||
-      titulo.original_title ||
-      titulo.original_name,
-    Descripcion:
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
-        .find((item) => item)?.data.overview ||
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
-        .find((item) => item)?.data.overview ||
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
-        .find((item) => item)?.data.overview ||
-      titulo.overview ||
-      null,
-    Lanzamiento:
-      titulo.release_date?.split(/[-/]/).find((part) => part.length === 4) ||
-      "No hay fecha de estreno",
-    Duracion: `${Math.floor(titulo.runtime / 60)}h ${titulo.runtime % 60}min`,
-    Status: titulo.status || null,
-    Tagline: titulo.tagline || null,
-    Poster:
-      titulo.images?.posters
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1500 &&
-            item.aspect_ratio === 0.667
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)
-        .map((item) => item.file_path) ||
-      titulo.poster_path ||
-      null,
-    Videos:
-      titulo.videos?.results
-        .filter((item) => item.type === "Trailer")
-        .map((item) => item.key) || null,
-    Portada:
-      titulo.images?.backdrops
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1080 &&
-            item.aspect_ratio === 1.778
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)
-        .map((item) => item.file_path) ||
-      titulo.poster_path ||
-      null,
-    Logo:
-      titulo.images?.logos
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.width >= 400
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)
-        .map((item) => item.file_path) || null,
-    Reparto:
-      titulo.credits?.cast
-        .filter((item) => item.profile_path !== null)
-        .slice(0, 15)
-        .map((item) => {
-          return {
-            Nombre: item.name,
-            Foto: item.profile_path,
-            Personaje: item.character,
-          };
-        }) || null,
-    Directores:
-      titulo.credits?.crew
-        .filter((item) => item.job === "Director")
-        .map((item) => {
-          return {
-            Nombre: item.name,
-            Foto: item.profile_path,
-          };
-        }) || null,
-    Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate || "No disponible",
-  };
-  return pelicula;
-}
-
-async function buscarDetalles(id) {
-  try {
-    const res = await fetch(
-      `https://api.themoviedb.org/3/movie/${id}?append_to_response=credits,videos,watch/providers,translations,images`,
-      get
-    );
-
-    if (!res.ok) {
-      throw new Error(`Error al realizar la solicitud: ${res.status}`);
-    }
-
-    const data = await res.json();
-    if (data) {
-      const pelicula = JSONpelicula(data);
-      console.log(pelicula);
-      crearPelicula(elementos.pelicula, pelicula);
-    }
-  } catch (err) {
-    console.error("Error al cargar datos:", err);
-  }
-}
-
-async function buscarColeccion(id) {
-  try {
-    const res = await fetch(
-      `https://api.themoviedb.org/3/collection/${id}?append_to_response=translations,images`,
-      get
-    );
-
-    if (!res.ok) {
-      throw new Error(`Error al realizar la solicitud: ${res.status}`);
-    }
-
-    const data = await res.json();
-    if (data) {
-      coleccion = JSONcoleccion(data);
-      crearColeccion(elementos.coleccion, coleccion);
-    }
-  } catch (err) {
-    console.error("Error al cargar datos:", err);
-  }
-}
-
-function JSONcoleccion(data) {
-  coleccion = {
-    Nombre: data.original_name || data.name,
-    Lanzamiento: data.parts
-      .map((item) =>
-        item.release_date.split(/[-/]/).find((part) => part.length === 4)
-      )
-      .filter((year) => year)
-      .sort(),
-    Poster:
-      data.images?.posters
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1500 &&
-            item.aspect_ratio === 0.667
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)
-        .map((item) => item.file_path) ||
-      data.poster_path ||
-      null,
-    Id: data.id,
-    Duracion: `${data.parts.length} películas`,
-    Portada:
-      data.images?.backdrops
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1080 &&
-            item.aspect_ratio === 1.778
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)
-        .map((item) => item.file_path) ||
-      data.backdrop_path ||
-      null,
-    Descripcion:
-      data.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
-        .find((item) => item)?.data.overview ||
-      data.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
-        .find((item) => item)?.data.overview ||
-      data.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
-        .find((item) => item)?.data.overview ||
-      data.overview ||
-      null,
-    Peliculas: data.parts
-      .sort((a, b) => a.release_date - b.release_date)
-      .map((item) => {
-        return {
-          Id: item.id,
-          Nombre: item.original_title || item.title,
-          Poster: item.poster_path,
-          Lanzamiento:
-            item.release_date
-              ?.split(/[-/]/)
-              .find((part) => part.length === 4) || "No hay fecha de estreno",
-        };
-      }),
-  };
-  return coleccion;
 }
 
 dropdownMenu.addEventListener("change", manejarSeleccion);
