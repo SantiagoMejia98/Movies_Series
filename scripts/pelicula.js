@@ -69,7 +69,7 @@ function crearColeccion(elemento, datos) {
     </div>
     <div class="movie-card">
       <img class="poster" 
-        src="https://image.tmdb.org/t/p/w342${datos.Poster[0]}" alt="${datos.Nombre}">
+        src="https://image.tmdb.org/t/p/w500${datos.Poster[0]}" alt="${datos.Nombre}">
       <div class="details">
         <h2>${datos.Nombre}</h2>
         <p>(${datos.Lanzamiento}) &bull; ${datos.Duracion}</p>
@@ -94,7 +94,7 @@ function crearColeccion(elemento, datos) {
 
     li.innerHTML = `
       <div class="pelicula-container" id="${peliculas[id].Id}">
-        <img src="https://image.tmdb.org/t/p/w342${peliculas[id].Poster[0]}" alt="${peliculas[id].Nombre}">
+        <img src="https://image.tmdb.org/t/p/w500${peliculas[id].Poster[0]}" alt="${peliculas[id].Nombre}">
         <h2><strong>${peliculas[id].Nombre} (${peliculas[id].Lanzamiento})</strong></h2>
       </div>
       `;
@@ -126,7 +126,7 @@ function crearPelicula(elemento, datos) {
         style="background-image: url('https://image.tmdb.org/t/p/original${datos.Portada[0]}');">
     </div>
     <div class="logo-container">
-        <img class="logo" src="https://image.tmdb.org/t/p/w342${datos.Logo[0]}" alt="${datos.Nombre}">
+        <img class="logo" src="https://image.tmdb.org/t/p/w500${datos.Logo[0]}" alt="${datos.Nombre}">
     </div>
   `;
 
@@ -134,7 +134,7 @@ function crearPelicula(elemento, datos) {
   moviecard.className = "movie-card";
 
   moviecard.innerHTML = `
-    <img class="poster" src="https://image.tmdb.org/t/p/w342${datos.Poster[0]}" alt="${datos.Nombre}"> 
+    <img class="poster" src="https://image.tmdb.org/t/p/w500${datos.Poster[0]}" alt="${datos.Nombre}"> 
     `;
 
   const details = document.createElement("div");
@@ -146,7 +146,7 @@ function crearPelicula(elemento, datos) {
     <p><i>${datos.Tagline}</i></p> 
     <ul>
       <li class="movie-item">
-        <img src="https://image.tmdb.org/t/p/w342/pTnn5JwWr4p3pG8H6VrpiQo7Vs0.jpg">
+        <img src="https://image.tmdb.org/t/p/w92/pTnn5JwWr4p3pG8H6VrpiQo7Vs0.jpg">
         <p>Ver tráiler</p>
       </li>
     </ul>
@@ -178,7 +178,7 @@ function crearPelicula(elemento, datos) {
       const li = document.createElement("li");
 
       li.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w342${proveedor.logo_path}" alt="${proveedor.provider_name}">
+        <img src="https://image.tmdb.org/t/p/w92${proveedor.logo_path}" alt="${proveedor.provider_name}">
       `;
 
       ulProvider.appendChild(li);
@@ -205,7 +205,7 @@ function crearPelicula(elemento, datos) {
     li.className = "director";
 
     li.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w342${director.Foto}" alt="${director.Nombre}">
+        <img src="https://image.tmdb.org/t/p/w185${director.Foto}" alt="${director.Nombre}">
         <p class="director-name">${director.Nombre}</p>
         `;
 
@@ -228,7 +228,7 @@ function crearPelicula(elemento, datos) {
     li.className = "actor";
 
     li.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w342${actor.Foto}" alt="${director.Nombre}">
+        <img src="https://image.tmdb.org/t/p/w185${actor.Foto}" alt="${director.Nombre}">
         <p class="actor-name">${actor.Nombre}</p>
         <p>${actor.Personaje}</p>
         `;

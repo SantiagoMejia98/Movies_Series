@@ -280,7 +280,7 @@ main {
 }
 
 .cast-list,
-.direct-list {
+.director-list {
   list-style: none;
   padding: 0;
   display: flex;
