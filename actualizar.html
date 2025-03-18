@@ -10,9 +10,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/actualizar.css">
     <link rel="icon" type="image/png" href="icon.png">
-    <title>Series</title>
+    <title>Actualizando...</title>
 </head>
 
 <body>
@@ -20,19 +20,35 @@
         <select id="dropdown-menu" class="dropdown-menu">
             <option value="seleccionar">Seleccionar</option>
             <option value="peliculas">Películas</option>
-            <option value="series" selected>Series</option>
+            <option value="series">Series</option>
             <option value="pelicula">Película</option>
             <option value="serie">Serie</option>
             <option value="busqueda">Buscar</option>
-            <option value="actualizar">Actualizar</option>
+            <option value="actualizar" selected>Actualizar</option>
         </select>
     </header>
 
     <main>
-        <section data-name="series" class="section">
-        </section>
+        <!-- From Uiverse.io by jeremyssocial -->
+        <div class="hacker-loader">
+            <div class="loader-text">
+                <span data-text="Initializing..." class="text-glitch">Actualizando Datos ⌛...</span>
+            </div>
+            <div class="loader-bar">
+                <div class="bar-fill"></div>
+                <div class="bar-glitch"></div>
+            </div>
+            <div class="particles">
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+            </div>
+        </div>
+
     </main>
-    <script src="./scripts/series.js" type="module"></script>
+    <script src="./scripts/actualizar.js" type="module"></script>
 </body>
 
 </html>

@@ -36,15 +36,15 @@ function crearlistaInicio(elemento, datos) {
   datos.forEach((pelicula) => {
     const li = document.createElement("li");
     li.className = "card";
-
+    li.setAttribute("data-id", pelicula.Id);
+    li.setAttribute("data-type", pelicula.Tipo);
     li.innerHTML = `
-                <div class="pelicula-container" id="${pelicula.Id}">
+                <div class="pelicula-container">
                     <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
                     <img src="https://image.tmdb.org/t/p/original${pelicula.Poster}" alt="${pelicula.Nombre}">
                     <div class="informacion">
                         <p class="fecha">${pelicula.Lanzamiento}</p>
                         <p class="duracion">${pelicula.Duracion}</p>
-                        <p class="hidden" id="tipo">${pelicula.Tipo}</p>
                     </div>
                 </div>
             `;
@@ -87,6 +87,9 @@ function manejarSeleccion(event) {
     case "busqueda":
       ruta = "busqueda.html";
       break;
+    case "actualizar":
+      ruta = "actualizar.html";
+      break;
   }
   if (ruta) {
     window.location.href = ruta;
@@ -95,379 +98,7 @@ function manejarSeleccion(event) {
   }
 }
 
-function JSONpelicula(titulo) {
-  return {
-    Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
-    Id: titulo.id,
-    Nombre:
-      titulo.title ||
-      titulo.name ||
-      titulo.original_title ||
-      titulo.original_name,
-    Coleccion: titulo.belongs_to_collection?.id || null,
-    Descripcion:
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
-        .find((item) => item)?.data.overview ||
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
-        .find((item) => item)?.data.overview ||
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
-        .find((item) => item)?.data.overview ||
-      titulo.overview ||
-      null,
-    Lanzamiento:
-      titulo.release_date?.split(/[-/]/).find((part) => part.length === 4) ||
-      "",
-    Duracion: `${Math.floor(titulo.runtime / 60)}h ${titulo.runtime % 60}min`,
-    Status: titulo.status || null,
-    Tagline: titulo.tagline || null,
-    Tipo: "movie",
-    Poster:
-      titulo.images?.posters
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1500 &&
-            item.aspect_ratio === 0.667
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
-      titulo.poster_path ||
-      null,
-    Portada:
-      titulo.images?.backdrops
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1080 &&
-            item.aspect_ratio === 1.778
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
-      titulo.poster_path ||
-      null,
-    Logo:
-      titulo.images?.logos
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.width >= 400
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path || null,
-    Videos:
-      titulo.videos?.results
-        .filter((item) => item.type === "Trailer")
-        .map((item) => item.key) || null,
-    Reparto:
-      titulo.credits?.cast
-        .filter((item) => item.profile_path !== null)
-        .slice(0, 15)
-        .map((item) => {
-          return {
-            Nombre: item.name,
-            Foto: item.profile_path,
-            Personaje: item.character,
-          };
-        }) || null,
-    Directores:
-      titulo.credits?.crew
-        .filter((item) => item.job === "Director" && item.profile_path !== null)
-        .map((item) => {
-          return {
-            Nombre: item.name,
-            Foto: item.profile_path,
-          };
-        }) || null,
-    Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate || "No disponible",
-  };
-}
-
-function JSONserie(titulo) {
-  return {
-    Nombre:
-      titulo.title ||
-      titulo.name ||
-      titulo.original_title ||
-      titulo.original.name,
-    Lanzamiento: titulo.first_air_date
-      ? `${titulo.first_air_date.split(/[-/]/).find((p) => p.length === 4)}${
-          titulo.status !== "Ended" && titulo.status !== "Canceled"
-            ? " - Presente"
-            : titulo.last_air_date
-            ? ` - ${titulo.last_air_date
-                .split(/[-/]/)
-                .find((p) => p.length === 4)}`
-            : ""
-        }`
-      : "Desconocido",
-    Id: titulo.id,
-    Tipo: "tv",
-    Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
-    Status: titulo.status || null,
-    Tagline: titulo.tagline || null,
-    Videos:
-      titulo.videos?.results
-        .filter((item) => item.type === "Trailer")
-        .map((item) => item.key) || null,
-    Poster:
-      titulo.images?.posters
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1500 &&
-            item.aspect_ratio === 0.667
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
-      titulo.poster_path ||
-      null,
-    Portada:
-      titulo.images?.backdrops
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1080 &&
-            item.aspect_ratio === 1.778
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
-      titulo.poster_path ||
-      null,
-    Logo:
-      titulo.images?.logos
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.width >= 400
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path || null,
-    Directores:
-      titulo.created_by
-        .filter((item) => item.profile_path !== null)
-        .map((item) => {
-          return {
-            Nombre: item.name,
-            Foto: item.profile_path,
-          };
-        }) || null,
-    Reparto:
-      titulo.aggregate_credits?.cast
-        .filter((item) => item.profile_path !== null)
-        .slice(0, 15)
-        .map((item) => {
-          return {
-            Nombre: item.name,
-            Foto: item.profile_path,
-            Personaje: item.roles.map((item) => item.character).join("<br>"),
-          };
-        }) || null,
-    Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate || "No disponible",
-    Duracion: `${titulo.number_of_seasons} ${
-      titulo.number_of_seasons === 1 ? "temporada" : "temporadas"
-    } - ${titulo.number_of_episodes} capítulos`,
-    Descripcion:
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
-        .find((item) => item)?.data.overview ||
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
-        .find((item) => item)?.data.overview ||
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
-        .find((item) => item)?.data.overview ||
-      titulo.overview ||
-      null,
-    Temporadas: titulo.seasons
-      .filter(
-        (season) => season.name !== "Specials" && season.poster_path !== null
-      )
-      .map((season) => ({
-        Nombre: season.name,
-        Poster: season.poster_path,
-        Duracion: `${season.episode_count} capitulos`,
-        Lanzamiento:
-          season.air_date?.split(/[-/]/).find((p) => p.length === 4) || "",
-      })),
-  };
-}
-
-function JSONcoleccion(data) {
-  return {
-    Nombre: data.original_name || data.name,
-    Lanzamiento: (() => {
-      let years = data.parts
-        .map(
-          (i) => i.release_date?.split(/[-/]/).find((p) => p.length === 4) || ""
-        )
-        .filter(Boolean)
-        .sort((a, b) => a - b);
-
-      return years.length
-        ? `${years[0]} - ${
-            data.parts.some((p) => !p.release_date)
-              ? "Presente"
-              : years[years.length - 1]
-          }`
-        : "Desconocido";
-    })(),
-    Poster:
-      data.images?.posters
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1500 &&
-            item.aspect_ratio === 0.667
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
-      data.poster_path ||
-      null,
-    Portada:
-      data.images?.backdrops
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1080 &&
-            item.aspect_ratio === 1.778
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
-      data.backdrop_path ||
-      null,
-    Id: data.id,
-    Duracion: `${data.parts.length} películas`,
-    Tipo: "collection",
-
-    Descripcion:
-      data.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
-        .find((item) => item)?.data.overview ||
-      data.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
-        .find((item) => item)?.data.overview ||
-      data.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
-        .find((item) => item)?.data.overview ||
-      data.overview ||
-      null,
-    Peliculas: data.parts
-      .sort((a, b) => new Date(a.release_date) - new Date(b.release_date))
-      .map((item) => item.id),
-  };
-}
-
-async function cargarDatos(tipo) {
-  try {
-    let page = 1;
-    let totalPages;
-
-    do {
-      const res = await fetch(
-        `https://api.themoviedb.org/3/account/21500820/watchlist/${tipo}?page=${page}`,
-        get
-      );
-
-      if (!res.ok) {
-        throw new Error(`Error al realizar la solicitud: ${res.status}`);
-      }
-
-      const data = await res.json();
-
-      if (data.results) {
-        if (tipo === "tv") {
-          const detalles = data.results.map(async (titulo) => {
-            await buscarDetallesSeries(titulo.id);
-          });
-
-          await Promise.all(detalles);
-        } else {
-          const detalles = data.results.map(async (titulo) => {
-            await buscarDetallesPeliculas(titulo.id);
-          });
-
-          await Promise.all(detalles);
-        }
-        totalPages = data.total_pages;
-      } else {
-        console.error("No se encontraron resultados");
-        break;
-      }
-
-      page++;
-    } while (page <= totalPages);
-  } catch (err) {
-    console.error("Error al cargar datos:", err);
-  }
-}
-
-async function buscarDetallesPeliculas(id) {
-  try {
-    const res = await fetch(
-      `https://api.themoviedb.org/3/movie/${id}?append_to_response=credits,videos,watch/providers,translations,images`,
-      get
-    );
-
-    if (!res.ok) {
-      throw new Error(`Error al realizar la solicitud: ${res.status}`);
-    }
-
-    const data = await res.json();
-    if (data) {
-      peliculas[id] = JSONpelicula(data);
-      if (data.belongs_to_collection) {
-        if (!colecciones[data.belongs_to_collection.id]) {
-          await buscarColeccion(data.belongs_to_collection.id);
-        }
-      }
-    }
-  } catch (err) {
-    console.error("Error al cargar datos:", err);
-  }
-}
-
-async function buscarDetallesSeries(id) {
-  try {
-    const res = await fetch(
-      `https://api.themoviedb.org/3/tv/${id}?append_to_response=aggregate_credits,videos,watch/providers,translations,images`,
-      get
-    );
-
-    if (!res.ok) {
-      throw new Error(`Error al realizar la solicitud: ${res.status}`);
-    }
-
-    const data = await res.json();
-    if (data) {
-      series[id] = JSONserie(data);
-      todasLasSeries.add(series[id]);
-    }
-  } catch (err) {
-    console.error("Error al cargar datos:", err);
-  }
-}
-
-async function buscarColeccion(id) {
-  try {
-    const res = await fetch(
-      `https://api.themoviedb.org/3/collection/${id}?append_to_response=translations,images`,
-      get
-    );
-
-    if (!res.ok) {
-      throw new Error(`Error al realizar la solicitud: ${res.status}`);
-    }
-
-    const data = await res.json();
-    if (data) {
-      colecciones[data.id] = JSONcoleccion(data);
-    }
-  } catch (err) {
-    console.error("Error al cargar datos:", err);
-  }
-}
-
 function guardarDatos() {
-  const expirationDate = new Date();
-  expirationDate.setDate(expirationDate.getDate() + EXPIRATION_DAYS);
-  data["expirationDate"] = expirationDate;
   localStorage.setItem("datos", JSON.stringify(data));
 }
 
@@ -481,23 +112,7 @@ async function cargarDatosGuardados() {
     todasLasPeliculas = new Set(data["peliculasCard"]);
     todasLasSeries = new Set(data["seriesCard"]);
   } else {
-    await cargarDatos("movies");
-    await cargarDatos("tv");
-    for (const id in peliculas) {
-      if (peliculas[id].Coleccion) {
-        todasLasPeliculas.add(colecciones[peliculas[id].Coleccion]);
-      } else {
-        todasLasPeliculas.add(peliculas[id]);
-      }
-    }
-
-    data["peliculas"] = peliculas;
-    data["series"] = series;
-    data["colecciones"] = colecciones;
-    data["peliculasCard"] = [...todasLasPeliculas];
-    data["seriesCard"] = [...todasLasSeries];
-
-    guardarDatos();
+    window.location = "actualizar.html";
   }
 }
 
@@ -507,3 +122,18 @@ crearlistaInicio(elementos.peliculas, todasLasPeliculas);
 crearlistaInicio(elementos.series, todasLasSeries);
 
 dropdownMenu.addEventListener("change", manejarSeleccion);
+
+document.addEventListener("click", function (event) {
+  const card = event.target.closest(".card");
+  if (!card) return;
+
+  const type = card.getAttribute("data-type");
+  const id = card.getAttribute("data-id");
+  data["aleatorio"] = { Tipo: type, Id: id };
+  guardarDatos();
+  if (type === "tv") {
+    window.location.href = "serie.html";
+  } else {
+    window.location.href = "pelicula.html";
+  }
+});

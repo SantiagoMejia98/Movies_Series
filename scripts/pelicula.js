@@ -39,12 +39,18 @@ async function cargarDatosGuardados() {
     } else {
       titulo = colecciones[aleatorio.Id];
     }
+    delete data["aleatorio"];
+    guardarDatos();
   }
   if (titulo.Tipo === "movie") {
     crearPelicula(elementos.pelicula, titulo);
   } else {
     crearColeccion(elementos.coleccion, titulo);
   }
+}
+
+function guardarDatos() {
+  localStorage.setItem("datos", JSON.stringify(data));
 }
 
 await cargarDatosGuardados();
@@ -96,11 +102,17 @@ function crearColeccion(elemento, datos) {
   datos.Peliculas.forEach((id) => {
     const li = document.createElement("li");
     li.className = "card";
+    li.setAttribute("data-id", peliculas[id].Id);
+    li.setAttribute("data-type", peliculas[id].Tipo);
 
     li.innerHTML = `
-      <div class="pelicula-container" id="${peliculas[id].Id}">
-        <h2><strong>${peliculas[id].Nombre} (${peliculas[id].Lanzamiento})</strong></h2>
-        <img src="https://image.tmdb.org/t/p/w500${peliculas[id].Poster}" alt="${peliculas[id].Nombre}">
+      <div class="pelicula-container">
+        <h2><strong>${peliculas[id].Nombre}${
+      peliculas[id].Lanzamiento ? ` (${peliculas[id].Lanzamiento})` : ""
+    }</strong></h2>
+        <img src="https://image.tmdb.org/t/p/w500${
+          peliculas[id].Poster
+        }" alt="${peliculas[id].Nombre}">
         <p>${peliculas[id].Duracion}</p>
       </div>
       `;
@@ -147,8 +159,8 @@ function crearPelicula(elemento, datos) {
   details.className = "details";
 
   details.innerHTML = `
-    <h2>${datos.Nombre} (${datos.Lanzamiento})</h2>
-    <p>${datos.Generos} &bull; ${datos.Duracion} &bull; ${datos.Status}</p>
+    <h2>${datos.Nombre}</h2>
+    <p>${datos.Generos} &bull; ${datos.Lanzamiento} &bull;${datos.Duracion} &bull; ${datos.Status}</p>
     <p><i>${datos.Tagline}</i></p> 
     <ul>
       <li class="movie-item">
@@ -283,6 +295,9 @@ function manejarSeleccion(event) {
     case "busqueda":
       ruta = "busqueda.html";
       break;
+    case "actualizar":
+      ruta = "actualizar.html";
+      break;
   }
   if (ruta) {
     window.location.href = ruta;
@@ -321,3 +336,18 @@ function closeTrailer() {
   const modal = document.getElementById("trailerModal");
   modal.style.display = "none";
 }
+
+document.addEventListener("click", function (event) {
+  const card = event.target.closest(".card");
+  if (!card) return;
+
+  const type = card.getAttribute("data-type");
+  const id = card.getAttribute("data-id");
+  data["aleatorio"] = { Tipo: type, Id: id };
+  guardarDatos();
+  if (type === "tv") {
+    window.location.href = "serie.html";
+  } else {
+    window.location.href = "pelicula.html";
+  }
+});

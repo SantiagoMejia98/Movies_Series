@@ -110,6 +110,9 @@ function manejarSeleccion(event) {
     case "busqueda":
       ruta = "busqueda.html";
       break;
+    case "actualizar":
+      ruta = "actualizar.html";
+      break;
   }
   if (ruta) {
     window.location.href = ruta;

@@ -33,6 +33,8 @@ async function cargarDatosGuardados() {
     titulo = todasLasSeries[aleatorio];
   } else {
     titulo = series[aleatorio.Id];
+    delete data["aleatorio"];
+    guardarDatos();
   }
   crearSerie(elementos.serie, titulo);
 }
@@ -72,8 +74,11 @@ function crearSerie(elemento, datos) {
   details.className = "details";
 
   details.innerHTML = `
-    <h2>${datos.Nombre} (${datos.Lanzamiento})</h2>
-    <p>${datos.Generos} &bull; ${datos.Duracion} &bull; ${datos.Status}</p>
+    <h2>${datos.Nombre}
+  </h2>
+    <p>${datos.Generos} &bull;  ${
+    datos.Lanzamiento ? ` (${datos.Lanzamiento})` : ""
+  } &bull; ${datos.Duracion} &bull; ${datos.Status}</p>
     <p><i>${datos.Tagline}</i></p> 
     <ul>
       <li class="movie-item">
@@ -84,7 +89,9 @@ function crearSerie(elemento, datos) {
     <div class="modal-content" id="trailerModal">
       <div class="close">&times;</div>
       <iframe class="trailer" id="trailerIframe"
-        src="https://www.youtube.com/embed/${datos.Videos[0]}" frameborder="0" allowfullscreen>
+        src="https://www.youtube.com/embed/${
+          datos.Videos[0]
+        }" frameborder="0" allowfullscreen>
       </iframe>
     </div>
     <h3>Sinopsis</h3>
@@ -231,12 +238,19 @@ function manejarSeleccion(event) {
     case "busqueda":
       ruta = "busqueda.html";
       break;
+    case "actualizar":
+      ruta = "actualizar.html";
+      break;
   }
   if (ruta) {
     window.location.href = ruta;
   } else {
     console.error("No se definió una ruta para la selección.");
   }
+}
+
+function guardarDatos() {
+  localStorage.setItem("datos", JSON.stringify(data));
 }
 
 dropdownMenu.addEventListener("change", manejarSeleccion);
