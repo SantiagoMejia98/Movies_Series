@@ -25,27 +25,17 @@ let aleatorio;
 async function cargarDatosGuardados() {
   const datos = localStorage.getItem("datos");
   data = JSON.parse(datos);
-  console.log(data);
-  peliculas = data["peliculas"];
-  colecciones = data["colecciones"];
-  todasLasPeliculas = data["peliculasCard"];
+  series = data["series"];
+  todasLasSeries = data["seriesCard"];
   aleatorio = data["aleatorio"];
   let titulo;
   if (!aleatorio) {
-    aleatorio = seleccionarElementosAleatorios(todasLasPeliculas.length);
-    titulo = todasLasPeliculas[aleatorio];
+    aleatorio = seleccionarElementosAleatorios(todasLasSeries.length);
+    titulo = todasLasSeries[aleatorio];
   } else {
-    if (aleatorio.Tipo === "movie") {
-      titulo = peliculas[aleatorio.Id];
-    } else {
-      titulo = colecciones[aleatorio.Id];
-    }
+    titulo = series[aleatorio.Id];
   }
-  if (titulo.Tipo === "movie") {
-    crearPelicula(elementos.pelicula, titulo);
-  } else {
-    crearColeccion(elementos.coleccion, titulo);
-  }
+  crearSerie(elementos.serie, titulo);
 }
 
 await cargarDatosGuardados();

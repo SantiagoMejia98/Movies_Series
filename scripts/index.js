@@ -40,7 +40,7 @@ function crearlistaInicio(elemento, datos) {
     li.innerHTML = `
                 <div class="pelicula-container" id="${pelicula.Id}">
                     <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
-                    <img src="https://image.tmdb.org/t/p/original${pelicula.Poster[0]}" alt="${pelicula.Nombre}">
+                    <img src="https://image.tmdb.org/t/p/original${pelicula.Poster}" alt="${pelicula.Nombre}">
                     <div class="informacion">
                         <p class="fecha">${pelicula.Lanzamiento}</p>
                         <p class="duracion">${pelicula.Duracion}</p>
@@ -132,14 +132,9 @@ function JSONpelicula(titulo) {
             item.height >= 1500 &&
             item.aspect_ratio === 0.667
         )
-        .sort((a, b) => b.vote_average - a.vote_average)
-        .map((item) => item.file_path) ||
+        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
       titulo.poster_path ||
       null,
-    Videos:
-      titulo.videos?.results
-        .filter((item) => item.type === "Trailer")
-        .map((item) => item.key) || null,
     Portada:
       titulo.images?.backdrops
         .filter(
@@ -148,8 +143,7 @@ function JSONpelicula(titulo) {
             item.height >= 1080 &&
             item.aspect_ratio === 1.778
         )
-        .sort((a, b) => b.vote_average - a.vote_average)
-        .map((item) => item.file_path) ||
+        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
       titulo.poster_path ||
       null,
     Logo:
@@ -159,8 +153,11 @@ function JSONpelicula(titulo) {
             (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
             item.width >= 400
         )
-        .sort((a, b) => b.vote_average - a.vote_average)
-        .map((item) => item.file_path) || null,
+        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path || null,
+    Videos:
+      titulo.videos?.results
+        .filter((item) => item.type === "Trailer")
+        .map((item) => item.key) || null,
     Reparto:
       titulo.credits?.cast
         .filter((item) => item.profile_path !== null)
@@ -204,18 +201,6 @@ function JSONserie(titulo) {
             : ""
         }`
       : "Desconocido",
-    Poster:
-      titulo.images?.posters
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1500 &&
-            item.aspect_ratio === 0.667
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)
-        .map((item) => item.file_path) ||
-      titulo.poster_path ||
-      null,
     Id: titulo.id,
     Tipo: "tv",
     Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
@@ -225,6 +210,17 @@ function JSONserie(titulo) {
       titulo.videos?.results
         .filter((item) => item.type === "Trailer")
         .map((item) => item.key) || null,
+    Poster:
+      titulo.images?.posters
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.height >= 1500 &&
+            item.aspect_ratio === 0.667
+        )
+        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
+      titulo.poster_path ||
+      null,
     Portada:
       titulo.images?.backdrops
         .filter(
@@ -233,8 +229,7 @@ function JSONserie(titulo) {
             item.height >= 1080 &&
             item.aspect_ratio === 1.778
         )
-        .sort((a, b) => b.vote_average - a.vote_average)
-        .map((item) => item.file_path) ||
+        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
       titulo.poster_path ||
       null,
     Logo:
@@ -244,8 +239,7 @@ function JSONserie(titulo) {
             (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
             item.width >= 400
         )
-        .sort((a, b) => b.vote_average - a.vote_average)
-        .map((item) => item.file_path) || null,
+        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path || null,
     Directores:
       titulo.created_by.map((item) => {
         return {
@@ -268,7 +262,7 @@ function JSONserie(titulo) {
       titulo["watch/providers"]?.results?.CO?.flatrate || "No disponible",
     Duracion: `${titulo.number_of_seasons} ${
       titulo.number_of_seasons === 1 ? "temporada" : "temporadas"
-    }<br>${titulo.number_of_episodes} capítulos`,
+    } - ${titulo.number_of_episodes} capítulos`,
     Descripcion:
       titulo.translations.translations
         .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
@@ -281,7 +275,13 @@ function JSONserie(titulo) {
         .find((item) => item)?.data.overview ||
       titulo.overview ||
       null,
-    Season: titulo.seasons,
+    Temporadas: titulo.seasons
+      .filter((season) => season.name !== "Specials")
+      .map((season) => ({
+        Nombre: season.name,
+        Poster: season.poster_path,
+        Duracion: `${season.episode_count} capitulos`,
+      })),
   };
 }
 
@@ -312,13 +312,9 @@ function JSONcoleccion(data) {
             item.height >= 1500 &&
             item.aspect_ratio === 0.667
         )
-        .sort((a, b) => b.vote_average - a.vote_average)
-        .map((item) => item.file_path) ||
+        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
       data.poster_path ||
       null,
-    Id: data.id,
-    Duracion: `${data.parts.length} películas`,
-    Tipo: "collection",
     Portada:
       data.images?.backdrops
         .filter(
@@ -327,10 +323,13 @@ function JSONcoleccion(data) {
             item.height >= 1080 &&
             item.aspect_ratio === 1.778
         )
-        .sort((a, b) => b.vote_average - a.vote_average)
-        .map((item) => item.file_path) ||
+        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
       data.backdrop_path ||
       null,
+    Id: data.id,
+    Duracion: `${data.parts.length} películas`,
+    Tipo: "collection",
+
     Descripcion:
       data.translations.translations
         .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
@@ -470,7 +469,6 @@ async function cargarDatosGuardados() {
   const datos = localStorage.getItem("datos");
   if (datos && new Date(JSON.parse(datos)["expirationDate"]) > new Date()) {
     data = JSON.parse(datos);
-    console.log(data);
     peliculas = data["peliculas"];
     series = data["series"];
     colecciones = data["colecciones"];
