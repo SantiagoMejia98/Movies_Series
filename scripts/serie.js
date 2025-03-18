@@ -10,8 +10,7 @@ const get = {
 const dropdownMenu = document.getElementById("dropdown-menu");
 
 const elementos = {
-  coleccion: document.querySelector('[data-name="coleccion"]'),
-  pelicula: document.querySelector('[data-name="pelicula"]'),
+  serie: document.querySelector('[data-name="serie"]'),
 };
 
 let todasLasPeliculas = new Set();
@@ -40,65 +39,7 @@ async function cargarDatosGuardados() {
 
 await cargarDatosGuardados();
 
-function crearColeccion(elemento, datos) {
-  const containerExistente = elemento.querySelector(".container");
-
-  if (containerExistente) {
-    elemento.removeChild(containerExistente);
-  }
-
-  const container = document.createElement("div");
-  container.className = "container";
-
-  const content = document.createElement("div");
-  content.className = "content";
-
-  content.innerHTML = `
-    <div class="background" 
-      style="background-image: url('https://image.tmdb.org/t/p/original${datos.Portada}');">
-    </div>
-    <div class="movie-card">
-      <img class="poster" 
-        src="https://image.tmdb.org/t/p/w500${datos.Poster}" alt="${datos.Nombre}">
-      <div class="details">
-        <h2>${datos.Nombre}</h2>
-        <p>(${datos.Lanzamiento}) &bull; ${datos.Duracion}</p>
-        <ul>
-          <li class="bookmark-item">
-            <i class="fa-regular fa-bookmark" id="${datos.Id}"></i>
-          </li>
-        </ul>
-        <h3>Sinopsis</h3>
-        <p>${datos.Descripcion}</p>
-      </div>
-    </div>`;
-
-  const coleccion = document.createElement("div");
-  coleccion.className = "coleccion";
-  coleccion.innerHTML = `<h2>Colección</h2>`;
-  const ul = document.createElement("ul");
-  ul.className = "lista";
-  datos.Peliculas.forEach((id) => {
-    const li = document.createElement("li");
-    li.className = "card";
-
-    li.innerHTML = `
-      <div class="pelicula-container" id="${peliculas[id].Id}">
-        <img src="https://image.tmdb.org/t/p/w500${peliculas[id].Poster}" alt="${peliculas[id].Nombre}">
-        <h2><strong>${peliculas[id].Nombre} (${peliculas[id].Lanzamiento})</strong></h2>
-      </div>
-      `;
-
-    ul.appendChild(li);
-  });
-
-  coleccion.appendChild(ul);
-  content.appendChild(coleccion);
-  container.appendChild(content);
-  elemento.appendChild(container);
-}
-
-function crearPelicula(elemento, datos) {
+function crearSerie(elemento, datos) {
   const containerExistente = elemento.querySelector(".container");
 
   if (containerExistente) {
@@ -230,6 +171,29 @@ function crearPelicula(elemento, datos) {
   cardcast.appendChild(cast);
   moviecard.appendChild(cardcast);
   content.appendChild(moviecard);
+
+  const coleccion = document.createElement("div");
+  coleccion.className = "coleccion";
+  coleccion.innerHTML = `<h2>Temporadas</h2>`;
+  const ulSeason = document.createElement("ul");
+  ulSeason.className = "lista";
+  datos.Temporadas.forEach((temporada) => {
+    const li = document.createElement("li");
+    li.className = "card";
+
+    li.innerHTML = `
+      <div class="pelicula-container">
+        <h2><strong>${temporada.Nombre} (${temporada.Lanzamiento})</strong></h2>
+        <img src="https://image.tmdb.org/t/p/w500${temporada.Poster}" alt="${temporada.Nombre}">
+        <p>${temporada.Duracion}</p>
+      </div>
+      `;
+
+    ulSeason.appendChild(li);
+  });
+
+  coleccion.appendChild(ulSeason);
+  content.appendChild(coleccion);
   container.appendChild(content);
   elemento.appendChild(container);
 

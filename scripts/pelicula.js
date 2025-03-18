@@ -25,7 +25,6 @@ let aleatorio;
 async function cargarDatosGuardados() {
   const datos = localStorage.getItem("datos");
   data = JSON.parse(datos);
-  console.log(data);
   peliculas = data["peliculas"];
   colecciones = data["colecciones"];
   todasLasPeliculas = data["peliculasCard"];
@@ -65,14 +64,20 @@ function crearColeccion(elemento, datos) {
 
   content.innerHTML = `
     <div class="background" 
-      style="background-image: url('https://image.tmdb.org/t/p/original${datos.Portada}');">
+      style="background-image: url('https://image.tmdb.org/t/p/original${
+        datos.Portada
+      }');">
     </div>
     <div class="movie-card">
       <img class="poster" 
-        src="https://image.tmdb.org/t/p/w500${datos.Poster}" alt="${datos.Nombre}">
+        src="https://image.tmdb.org/t/p/w500${datos.Poster}" alt="${
+    datos.Nombre
+  }">
       <div class="details">
         <h2>${datos.Nombre}</h2>
-        <p>(${datos.Lanzamiento}) &bull; ${datos.Duracion}</p>
+        <p>${peliculas[datos.Peliculas[0]].Generos} &bull; (${
+    datos.Lanzamiento
+  }) &bull; ${datos.Duracion}</p>
         <ul>
           <li class="bookmark-item">
             <i class="fa-regular fa-bookmark" id="${datos.Id}"></i>
@@ -94,8 +99,9 @@ function crearColeccion(elemento, datos) {
 
     li.innerHTML = `
       <div class="pelicula-container" id="${peliculas[id].Id}">
-        <img src="https://image.tmdb.org/t/p/w500${peliculas[id].Poster}" alt="${peliculas[id].Nombre}">
         <h2><strong>${peliculas[id].Nombre} (${peliculas[id].Lanzamiento})</strong></h2>
+        <img src="https://image.tmdb.org/t/p/w500${peliculas[id].Poster}" alt="${peliculas[id].Nombre}">
+        <p>${peliculas[id].Duracion}</p>
       </div>
       `;
 

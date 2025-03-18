@@ -119,7 +119,7 @@ function JSONpelicula(titulo) {
       null,
     Lanzamiento:
       titulo.release_date?.split(/[-/]/).find((part) => part.length === 4) ||
-      "No hay fecha de estreno",
+      "",
     Duracion: `${Math.floor(titulo.runtime / 60)}h ${titulo.runtime % 60}min`,
     Status: titulo.status || null,
     Tagline: titulo.tagline || null,
@@ -171,7 +171,7 @@ function JSONpelicula(titulo) {
         }) || null,
     Directores:
       titulo.credits?.crew
-        .filter((item) => item.job === "Director")
+        .filter((item) => item.job === "Director" && item.profile_path !== null)
         .map((item) => {
           return {
             Nombre: item.name,
@@ -241,12 +241,14 @@ function JSONserie(titulo) {
         )
         .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path || null,
     Directores:
-      titulo.created_by.map((item) => {
-        return {
-          Nombre: item.name,
-          Foto: item.profile_path,
-        };
-      }) || null,
+      titulo.created_by
+        .filter((item) => item.profile_path !== null)
+        .map((item) => {
+          return {
+            Nombre: item.name,
+            Foto: item.profile_path,
+          };
+        }) || null,
     Reparto:
       titulo.aggregate_credits?.cast
         .filter((item) => item.profile_path !== null)
@@ -276,11 +278,15 @@ function JSONserie(titulo) {
       titulo.overview ||
       null,
     Temporadas: titulo.seasons
-      .filter((season) => season.name !== "Specials")
+      .filter(
+        (season) => season.name !== "Specials" && season.poster_path !== null
+      )
       .map((season) => ({
         Nombre: season.name,
         Poster: season.poster_path,
         Duracion: `${season.episode_count} capitulos`,
+        Lanzamiento:
+          season.air_date?.split(/[-/]/).find((p) => p.length === 4) || "",
       })),
   };
 }
