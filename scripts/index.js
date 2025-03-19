@@ -55,16 +55,6 @@ function crearlistaInicio(elemento, datos) {
   elemento.appendChild(ul);
 }
 
-function mostrarSoloElemento(elementoAMostrar) {
-  Object.values(elementos).forEach((elemento) => {
-    if (elemento === elementoAMostrar) {
-      elemento.classList.remove("hidden");
-    } else {
-      elemento.classList.add("hidden");
-    }
-  });
-}
-
 function manejarSeleccion(event) {
   const valorSeleccionado = event.target.value;
   let ruta;
