@@ -305,6 +305,7 @@ function JSONcoleccion(data) {
       data.overview ||
       null,
     Peliculas: data.parts
+      .filter((item) => item.poster_path !== null)
       .sort((a, b) => new Date(a.release_date) - new Date(b.release_date))
       .map((item) => item.id),
   };

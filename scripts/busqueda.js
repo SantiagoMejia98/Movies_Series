@@ -35,6 +35,7 @@ const boton = document.getElementById("search-button");
 const dropdownMenu = document.getElementById("dropdown-menu");
 
 function crearListaBusquedaPresente(elemento, datos) {
+  elemento.className = "hidden";
   const ulExistente = elemento.querySelector("ul");
 
   if (ulExistente) {
@@ -70,6 +71,7 @@ function crearListaBusquedaPresente(elemento, datos) {
 }
 
 function crearListaBusquedaNueva(elemento, datos) {
+  elemento.className = "hidden";
   const ulExistente = elemento.querySelector("ul");
 
   if (ulExistente) {
@@ -262,8 +264,6 @@ async function buscarDetallesColeccion(id) {
 }
 
 async function buscar() {
-  elementos.presentes.className = "hidden";
-  elementos.nuevas.className = "hidden";
   nuevas = {};
   presentes = {};
   const query = document.getElementById("search-input").value;
@@ -343,6 +343,7 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
       const id = card.getAttribute("data_id");
       if (tipo === "collection") {
         const coleccion = nuevas[id];
+        colecciones[id] = coleccion;
         console.log(coleccion);
         coleccion.Peliculas.forEach((id) => {
           const body = {
@@ -360,6 +361,10 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
         };
         modificarWatchlist(body);
       }
+      presentes[id] = nuevas[id];
+      delete nuevas[id];
+      crearListaBusquedaPresente(elementos.presentes, presentes);
+      crearListaBusquedaNueva(elementos.nuevas, nuevas);
     } else if (event.target.classList.contains("eliminar-btn")) {
       const card = event.target.closest(".card");
       if (!card) return;
@@ -384,6 +389,10 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
         };
         modificarWatchlist(body);
       }
+      nuevas[id] = presentes[id];
+      delete presentes[id];
+      crearListaBusquedaPresente(elementos.presentes, presentes);
+      crearListaBusquedaNueva(elementos.nuevas, nuevas);
     }
   });
 });

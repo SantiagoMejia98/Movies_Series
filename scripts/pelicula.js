@@ -70,7 +70,7 @@ function crearColeccion(elemento, datos) {
 
   content.innerHTML = `
     <div class="background" 
-      style="background-image: url('https://image.tmdb.org/t/p/original${
+      style="background-image: url('https://image.tmdb.org/t/p/w1280${
         datos.Portada
       }');">
     </div>
@@ -141,7 +141,7 @@ function crearPelicula(elemento, datos) {
 
   content.innerHTML = `
     <div class="background"
-        style="background-image: url('https://image.tmdb.org/t/p/original${datos.Portada}');">
+        style="background-image: url('https://image.tmdb.org/t/p/w1280${datos.Portada}');">
     </div>
     <div class="logo-container">
         <img class="logo" src="https://image.tmdb.org/t/p/w500${datos.Logo}" alt="${datos.Nombre}">

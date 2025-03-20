@@ -25,3 +25,7 @@ pantalla 2: width = 1920 height = 919 pixel ratio = 1
 portatil: width = 1440 height = 791 pixel ratio = 1.5
 
 https://image.tmdb.org/t/p/original/7CxL8W0J8bzpIVVznQ0whiOKeDH.jpg
+
+
+-8
+the founder
