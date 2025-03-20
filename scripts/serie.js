@@ -133,7 +133,11 @@ function crearSerie(elemento, datos) {
   const director = document.createElement("div");
   director.className = "reparto";
 
-  director.innerHTML = `<h3>Director</h3>`;
+  if (datos.Directores.length > 1) {
+    director.innerHTML = `<h3>Directores</h3>`;
+  } else if (datos.Directores.length === 1) {
+    director.innerHTML = `<h3>Director</h3>`;
+  }
 
   const ulDirector = document.createElement("ul");
   ulDirector.className = "director-list";
@@ -156,7 +160,9 @@ function crearSerie(elemento, datos) {
   const cast = document.createElement("div");
   cast.className = "reparto";
 
-  cast.innerHTML = `<h3>Reparto</h3>`;
+  if (datos.Reparto.length > 0) {
+    cast.innerHTML = `<h3>Reparto</h3>`;
+  }
 
   const ulCast = document.createElement("ul");
   ulCast.className = "cast-list";
@@ -176,8 +182,8 @@ function crearSerie(elemento, datos) {
 
   cast.appendChild(ulCast);
   cardcast.appendChild(cast);
-  moviecard.appendChild(cardcast);
   content.appendChild(moviecard);
+  content.appendChild(cardcast);
 
   const coleccion = document.createElement("div");
   coleccion.className = "coleccion";

@@ -99,7 +99,7 @@ function crearColeccion(elemento, datos) {
   coleccion.innerHTML = `<h2>Colección</h2>`;
   const ul = document.createElement("ul");
   ul.className = "lista";
-  datos.Peliculas.forEach((id) => {
+  datos.Peliculas.sort((a, b) => a - b).forEach((id) => {
     const li = document.createElement("li");
     li.className = "card";
     li.setAttribute("data-id", peliculas[id].Id);
@@ -213,8 +213,11 @@ function crearPelicula(elemento, datos) {
   const director = document.createElement("div");
   director.className = "reparto";
 
-  director.innerHTML = `<h3>Director</h3>`;
-
+  if (datos.Directores.length > 1) {
+    director.innerHTML = `<h3>Directores</h3>`;
+  } else if (datos.Directores.length === 1) {
+    director.innerHTML = `<h3>Director</h3>`;
+  }
   const ulDirector = document.createElement("ul");
   ulDirector.className = "director-list";
 
@@ -236,7 +239,9 @@ function crearPelicula(elemento, datos) {
   const cast = document.createElement("div");
   cast.className = "reparto";
 
-  cast.innerHTML = `<h3>Reparto</h3>`;
+  if (datos.Reparto.length > 0) {
+    cast.innerHTML = `<h3>Reparto</h3>`;
+  }
 
   const ulCast = document.createElement("ul");
   ulCast.className = "cast-list";
@@ -256,8 +261,8 @@ function crearPelicula(elemento, datos) {
 
   cast.appendChild(ulCast);
   cardcast.appendChild(cast);
-  moviecard.appendChild(cardcast);
   content.appendChild(moviecard);
+  content.appendChild(cardcast);
   container.appendChild(content);
   elemento.appendChild(container);
 

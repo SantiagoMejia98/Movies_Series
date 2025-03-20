@@ -100,6 +100,7 @@ function JSONpelicula(titulo) {
             item.aspect_ratio === 1.778
         )
         .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
+      titulo.backdrop_path ||
       titulo.poster_path ||
       null,
     Logo:
@@ -186,6 +187,7 @@ function JSONserie(titulo) {
             item.aspect_ratio === 1.778
         )
         .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
+      titulo.backdrop_path ||
       titulo.poster_path ||
       null,
     Logo:
@@ -275,7 +277,8 @@ function JSONcoleccion(data) {
             item.aspect_ratio === 0.667
         )
         .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
-      data.poster_path ||
+      data.poster_path?.poster_path ||
+      data.parts.filter((item) => item.poster_path !== null)[0]?.poster_path ||
       null,
     Portada:
       data.images?.backdrops
@@ -286,7 +289,10 @@ function JSONcoleccion(data) {
             item.aspect_ratio === 1.778
         )
         .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
-      data.backdrop_path ||
+      data.backdrop_path?.backdrop_path ||
+      data.parts.filter((item) => item.backdrop_path !== null)[0]
+        ?.backdrop_path ||
+      data.poster_path ||
       null,
     Id: data.id,
     Duracion: `${data.parts.length} películas`,
@@ -415,6 +421,11 @@ async function buscarColeccion(id) {
     const data = await res.json();
     if (data) {
       colecciones[data.id] = JSONcoleccion(data);
+      for (const pelicula of data.parts) {
+        if (!peliculas[pelicula.id]) {
+          await buscarDetallesPeliculas(pelicula.id);
+        }
+      }
     }
   } catch (err) {
     console.error("Error al cargar datos:", err);
