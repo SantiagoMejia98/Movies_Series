@@ -99,7 +99,9 @@ function crearColeccion(elemento, datos) {
   coleccion.innerHTML = `<h2>Colección</h2>`;
   const ul = document.createElement("ul");
   ul.className = "lista";
-  datos.Peliculas.sort((a, b) => a - b).forEach((id) => {
+  datos.Peliculas.sort(
+    (a, b) => peliculas[a].Lanzamiento - peliculas[b].Lanzamiento
+  ).forEach((id) => {
     const li = document.createElement("li");
     li.className = "card";
     li.setAttribute("data-id", peliculas[id].Id);
@@ -108,7 +110,9 @@ function crearColeccion(elemento, datos) {
     li.innerHTML = `
       <div class="pelicula-container">
         <h2><strong>${peliculas[id].Nombre}${
-      peliculas[id].Lanzamiento ? ` (${peliculas[id].Lanzamiento})` : ""
+      peliculas[id].Lanzamiento !== "9999"
+        ? ` (${peliculas[id].Lanzamiento})`
+        : ""
     }</strong></h2>
         <img src="https://image.tmdb.org/t/p/w500${
           peliculas[id].Poster
@@ -184,9 +188,9 @@ function crearPelicula(elemento, datos) {
     <h3>Streaming on</h3>
   `;
 
-  if (datos.Proveedores === "No disponible") {
+  if (datos.Proveedores.length < 1) {
     proveedores.innerHTML += `
-      <p>${datos.Proveedores}</p>
+      <p>No disponible en Streaming</p>
     `;
   } else {
     const ulProvider = document.createElement("ul");
@@ -196,7 +200,7 @@ function crearPelicula(elemento, datos) {
       const li = document.createElement("li");
 
       li.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w92${proveedor.logo_path}" alt="${proveedor.provider_name}">
+        <img src="https://image.tmdb.org/t/p/w92${proveedor.Logo}" alt="${proveedor.Nombre}">
       `;
 
       ulProvider.appendChild(li);

@@ -12,7 +12,7 @@ const get = {
   },
 };
 
-const EXPIRATION_DAYS = 7;
+const EXPIRATION_DAYS = 30;
 
 const dropdownMenu = document.getElementById("dropdown-menu");
 
@@ -40,8 +40,12 @@ function crearlistaInicio(elemento, datos) {
     li.setAttribute("data-type", pelicula.Tipo);
     li.innerHTML = `
                 <div class="pelicula-container">
-                    <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
-                    <img src="https://image.tmdb.org/t/p/original${pelicula.Poster}" alt="${pelicula.Nombre}">
+                    <h2 class="titulo"><strong>${
+                      pelicula.Nombre.split(" (")[0]
+                    }</strong></h2>
+                    <img src="https://image.tmdb.org/t/p/original${
+                      pelicula.Poster
+                    }" alt="${pelicula.Nombre}">
                     <div class="informacion">
                         <p class="fecha">${pelicula.Lanzamiento}</p>
                         <p class="duracion">${pelicula.Duracion}</p>

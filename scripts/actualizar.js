@@ -6,6 +6,16 @@ const get = {
       "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzMGUxNDBmYzcyNGQ1OTFjMzAwMWJlNDQ4NDg4MjcxMiIsIm5iZiI6MTcyNTQ3NzAyMS40NzcsInN1YiI6IjY2ZDhiMDlkM2E5NGE0OWMxNjI2ZjAzZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.RdYktkxjOZERUNw2BaaX_ew5YAGVx2pJzAy5kHzi3RI",
   },
 };
+const PROVEEDORES_VALIDOS = [
+  "Disney Plus",
+  "Amazon Prime Video",
+  "Netflix",
+  "Apple TV Plus",
+  "Max",
+  "Paramount Plus",
+  "Crunchyroll",
+  "Universal+ Amazon Channel",
+];
 
 const EXPIRATION_DAYS = 7;
 
@@ -55,11 +65,17 @@ function JSONpelicula(titulo) {
   return {
     Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
     Id: titulo.id,
-    Nombre:
-      titulo.title ||
-      titulo.name ||
-      titulo.original_title ||
-      titulo.original_name,
+    Nombre: `${titulo.title || titulo.name}${
+      titulo.original_name &&
+      titulo.original_name !== titulo.title &&
+      titulo.original_name !== titulo.name
+        ? ` (${titulo.original_name})`
+        : titulo.original_title &&
+          titulo.original_title !== titulo.title &&
+          titulo.original_title !== titulo.name
+        ? ` (${titulo.original_title})`
+        : ""
+    }`,
     Coleccion: titulo.belongs_to_collection?.id || null,
     Descripcion:
       titulo.translations.translations
@@ -75,7 +91,7 @@ function JSONpelicula(titulo) {
       null,
     Lanzamiento:
       titulo.release_date?.split(/[-/]/).find((part) => part.length === 4) ||
-      "",
+      "9999",
     Duracion: `${Math.floor(titulo.runtime / 60)}h ${titulo.runtime % 60}min`,
     Status: titulo.status || null,
     Tagline: titulo.tagline || null,
@@ -136,17 +152,30 @@ function JSONpelicula(titulo) {
           };
         }) || null,
     Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate || "No disponible",
+      titulo["watch/providers"]?.results?.CO?.flatrate
+        ?.filter((prov) => PROVEEDORES_VALIDOS.includes(prov.provider_name))
+        .map((item) => {
+          return {
+            Logo: item.logo_path,
+            Nombre: item.provider_name,
+          };
+        }) || [],
   };
 }
 
 function JSONserie(titulo) {
   return {
-    Nombre:
-      titulo.title ||
-      titulo.name ||
-      titulo.original_title ||
-      titulo.original.name,
+    Nombre: `${titulo.title || titulo.name}${
+      titulo.original_name &&
+      titulo.original_name !== titulo.title &&
+      titulo.original_name !== titulo.name
+        ? ` (${titulo.original_name})`
+        : titulo.original_title &&
+          titulo.original_title !== titulo.title &&
+          titulo.original_title !== titulo.name
+        ? ` (${titulo.original_title})`
+        : ""
+    }`,
     Lanzamiento: titulo.first_air_date
       ? `${titulo.first_air_date.split(/[-/]/).find((p) => p.length === 4)}${
           titulo.status !== "Ended" && titulo.status !== "Canceled"
@@ -219,7 +248,14 @@ function JSONserie(titulo) {
           };
         }) || null,
     Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate || "No disponible",
+      titulo["watch/providers"]?.results?.CO?.flatrate
+        ?.filter((prov) => PROVEEDORES_VALIDOS.includes(prov.provider_name))
+        .map((item) => {
+          return {
+            Logo: item.logo_path,
+            Nombre: item.provider_name,
+          };
+        }) || [],
     Duracion: `${titulo.number_of_seasons} ${
       titulo.number_of_seasons === 1 ? "temporada" : "temporadas"
     } - ${titulo.number_of_episodes} capítulos`,
@@ -244,14 +280,20 @@ function JSONserie(titulo) {
         Poster: season.poster_path,
         Duracion: `${season.episode_count} capitulos`,
         Lanzamiento:
-          season.air_date?.split(/[-/]/).find((p) => p.length === 4) || "",
+          season.air_date?.split(/[-/]/).find((p) => p.length === 4) || "9999",
       })),
   };
 }
 
 function JSONcoleccion(data) {
   return {
-    Nombre: data.original_name || data.name,
+    Nombre: `${data.title || data.name} ${
+      data.original_name
+        ? `(${data.original_name})`
+        : "" || data.original_title
+        ? `(${data.original_title})`
+        : ""
+    }`,
     Lanzamiento: (() => {
       let years = data.parts
         .map(

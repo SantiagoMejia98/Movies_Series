@@ -104,9 +104,9 @@ function crearSerie(elemento, datos) {
     <h3>Streaming on</h3>
   `;
 
-  if (datos.Proveedores === "No disponible") {
+  if (datos.Proveedores.length < 1) {
     proveedores.innerHTML += `
-      <p>${datos.Proveedores}</p>
+      <p>No disponible en Streaming</p>
     `;
   } else {
     const ulProvider = document.createElement("ul");
@@ -116,7 +116,7 @@ function crearSerie(elemento, datos) {
       const li = document.createElement("li");
 
       li.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w92${proveedor.logo_path}" alt="${proveedor.provider_name}">
+        <img src="https://image.tmdb.org/t/p/w92${proveedor.Logo}" alt="${proveedor.Nombre}">
       `;
 
       ulProvider.appendChild(li);

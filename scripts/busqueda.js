@@ -54,8 +54,12 @@ function crearListaBusquedaPresente(elemento, datos) {
 
     li.innerHTML = `
               <div class="pelicula-container">
-                  <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
-                  <img src="https://image.tmdb.org/t/p/w500${pelicula.Poster}" alt="${pelicula.Nombre}">
+                  <h2 class="titulo"><strong>${
+                    pelicula.Nombre.split(" (")[0]
+                  }</strong></h2>
+                  <img src="https://image.tmdb.org/t/p/w500${
+                    pelicula.Poster
+                  }" alt="${pelicula.Nombre}">
                   <div class="informacion">
                       <p class="fecha">${pelicula.Lanzamiento}</p>
                       <p class="tipo" id="tipo">${pelicula.Tipo}</p>
@@ -90,8 +94,12 @@ function crearListaBusquedaNueva(elemento, datos) {
 
     li.innerHTML = `
               <div class="pelicula-container">
-                  <h2 class="titulo"><strong>${pelicula.Nombre}</strong></h2>
-                  <img src="https://image.tmdb.org/t/p/w500${pelicula.Poster}" alt="${pelicula.Nombre}">
+                  <h2 class="titulo"><strong>${
+                    pelicula.Nombre.split(" (")[0]
+                  }</strong></h2>
+                  <img src="https://image.tmdb.org/t/p/w500${
+                    pelicula.Poster
+                  }" alt="${pelicula.Nombre}">
                   <div class="informacion">
                       <p class="fecha">${pelicula.Lanzamiento}</p>
                       <p class="tipo" id="tipo">${pelicula.Tipo}</p>

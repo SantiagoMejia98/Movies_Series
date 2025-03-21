@@ -4,17 +4,8 @@
 "Apple TV Plus"
 "Max"
 "Paramount Plus"
-"Pluto TV"
 "Crunchyroll"
-"MGM Plus Amazon Channel"
-"ViX Premium Amazon Channel"
-"Cindie Amazon Channel"
-"MUBI Amazon Channel"
-"Paramount+ Amazon Channel"
-"Looke Amazon Channel"
 "Universal+ Amazon Channel"
-"Crunchyroll Amazon Channel"
-"Adrenalina Pura Amazon channel"
 
 iphone vertical: width = 414 height = 714 pixel ratio = 2
 iphone horizontal: width = 800 height = 364 pixel ratio = 2
@@ -26,7 +17,3 @@ portatil: width = 1440 height = 791 pixel ratio = 1.5
 
 https://image.tmdb.org/t/p/original/7CxL8W0J8bzpIVVznQ0whiOKeDH.jpg
 
-
-+1
-
-Vengeance todo agregado
