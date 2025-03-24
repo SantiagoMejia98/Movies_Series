@@ -53,6 +53,7 @@ function crearSerie(elemento, datos) {
 
   const content = document.createElement("div");
   content.className = "content";
+  content.setAttribute("data-id", datos.Id);
 
   content.innerHTML = `
     <div class="background"
