@@ -139,7 +139,7 @@ function JSONpelicula(titulo) {
           return {
             Nombre: item.name,
             Foto: item.profile_path,
-            Personaje: item.character,
+            Personaje: item.character.split(" (")[0],
           };
         }) || null,
     Directores:
@@ -244,7 +244,7 @@ function JSONserie(titulo) {
           return {
             Nombre: item.name,
             Foto: item.profile_path,
-            Personaje: item.roles.map((item) => item.character).join("<br>"),
+            Personaje: item.roles[0].character.split(" (")[0],
           };
         }) || null,
     Proveedores:

@@ -143,7 +143,8 @@ function crearPelicula(elemento, datos) {
   const content = document.createElement("div");
   content.className = "content";
 
-  content.innerHTML = `
+  if (datos.Logo) {
+    content.innerHTML = `
     <div class="background"
         style="background-image: url('https://image.tmdb.org/t/p/w1280${datos.Portada}');">
     </div>
@@ -151,6 +152,13 @@ function crearPelicula(elemento, datos) {
         <img class="logo" src="https://image.tmdb.org/t/p/w500${datos.Logo}" alt="${datos.Nombre}">
     </div>
   `;
+  } else {
+    content.innerHTML = `
+    <div class="background"
+        style="background-image: url('https://image.tmdb.org/t/p/w1280${datos.Portada}');">
+    </div>
+  `;
+  }
 
   const moviecard = document.createElement("div");
   moviecard.className = "movie-card";
