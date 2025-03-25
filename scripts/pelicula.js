@@ -81,7 +81,7 @@ function crearColeccion(elemento, datos) {
     datos.Nombre
   }">
       <div class="details">
-        <h2>${datos.Nombre}</h2>
+        <h2>${datos.Nombre.split(" (")[0]}</h2>
         <p>${peliculas[datos.Peliculas[0]].Generos} &bull; (${
     datos.Lanzamiento
   }) &bull; ${datos.Duracion}</p>
@@ -110,7 +110,7 @@ function crearColeccion(elemento, datos) {
 
     li.innerHTML = `
       <div class="pelicula-container">
-        <h2><strong>${peliculas[id].Nombre}${
+        <h2><strong>${peliculas[id].Nombre.split(" (")[0]}${
       peliculas[id].Lanzamiento !== "9999"
         ? ` (${peliculas[id].Lanzamiento})`
         : ""

@@ -55,14 +55,22 @@ function crearSerie(elemento, datos) {
   content.className = "content";
   content.setAttribute("data-id", datos.Id);
 
-  content.innerHTML = `
+  if (datos.Logo) {
+    content.innerHTML = `
     <div class="background"
-        style="background-image: url('https://image.tmdb.org/t/p/original${datos.Portada}');">
+        style="background-image: url('https://image.tmdb.org/t/p/w1280${datos.Portada}');">
     </div>
     <div class="logo-container">
         <img class="logo" src="https://image.tmdb.org/t/p/w500${datos.Logo}" alt="${datos.Nombre}">
     </div>
   `;
+  } else {
+    content.innerHTML = `
+    <div class="background"
+        style="background-image: url('https://image.tmdb.org/t/p/w1280${datos.Portada}');">
+    </div>
+  `;
+  }
 
   const moviecard = document.createElement("div");
   moviecard.className = "movie-card";
@@ -75,7 +83,7 @@ function crearSerie(elemento, datos) {
   details.className = "details";
 
   details.innerHTML = `
-    <h2>${datos.Nombre}
+    <h2>${datos.Nombre.split(" (")[0]}
   </h2>
     <p>${datos.Generos} &bull;  ${
     datos.Lanzamiento ? ` (${datos.Lanzamiento})` : ""
