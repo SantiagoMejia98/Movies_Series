@@ -7,6 +7,15 @@ const get = {
   },
 };
 
+const traduccionesStatus = {
+  Rumored: "Rumoreada",
+  Planned: "Planeada",
+  "In Production": "En producción",
+  "Post Production": "Post-producción",
+  Released: "Estrenada",
+  Canceled: "Cancelada",
+};
+
 const dropdownMenu = document.getElementById("dropdown-menu");
 
 const elementos = {
@@ -174,9 +183,15 @@ function crearPelicula(elemento, datos) {
 
   details.innerHTML = `
     <h2>${datos.Nombre}</h2>
-    <p>${datos.Generos} &bull; ${datos.Lanzamiento} &bull;${datos.Duracion} &bull; ${datos.Status}</p>
-    <p><i>${datos.Tagline}</i></p> 
-    <ul>
+    <p>${datos.Generos} ${
+    datos.Lanzamiento !== "9999" ? `&bull;${datos.Lanzamiento}` : ""
+  } ${datos.Duracion !== "0h 0min" ? `&bull;${datos.Duracion}` : ""} &bull; ${
+    traduccionesStatus[datos.Status]
+  }</p>
+    <p><i>${datos.Tagline ? datos.Tagline : ""}</i></p> 
+    ${
+      datos.Videos.length > 0
+        ? `<ul>
       <li class="movie-item">
         <img src="https://image.tmdb.org/t/p/w92/pTnn5JwWr4p3pG8H6VrpiQo7Vs0.jpg">
         <p>Ver tráiler</p>
@@ -185,11 +200,16 @@ function crearPelicula(elemento, datos) {
     <div class="modal-content" id="trailerModal">
       <div class="close">&times;</div>
       <iframe class="trailer" id="trailerIframe"
-        src="https://www.youtube.com/embed/${datos.Videos[0]}" frameborder="0" allowfullscreen>
+        src="https://www.youtube.com/embed/${
+          datos.Videos[0]
+        }" frameborder="0" allowfullscreen>
       </iframe>
     </div>
-    <h3>Sinopsis</h3>
-    <p>${datos.Descripcion}</p>`;
+    ${datos.Descripcion ? `<h3>Sinopsis</h3>` : ""}
+    <p>${datos.Descripcion}</p>`
+        : ""
+    }
+    `;
 
   const proveedores = document.createElement("div");
   proveedores.className = "streaming-providers";
