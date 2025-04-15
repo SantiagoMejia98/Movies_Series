@@ -230,10 +230,10 @@ async function buscarColeccion(query) {
   }
 }
 
-async function busqueda(id) {
+async function busqueda(id, tipo) {
   try {
     const res = await fetch(
-      `https://api.themoviedb.org/3/search/multi?query=${id}`,
+      `https://api.themoviedb.org/3/search/${tipo}?query=${id}`,
       get
     );
 
@@ -242,9 +242,7 @@ async function busqueda(id) {
     }
     const data = await res.json();
     if (data.results) {
-      return data.results.filter(
-        (item) => item.poster_path !== null && item.media_type !== "person"
-      );
+      return data.results.filter((item) => item.poster_path !== null);
     }
   } catch (err) {
     console.error("Error al cargar datos:", err);
@@ -276,46 +274,75 @@ async function buscar() {
   presentes = {};
   const query = document.getElementById("search-input").value;
   document.getElementById("search-input").value = "";
+
   let collection = await buscarColeccion(query);
-  if (collection.length > 0) {
-    collection.forEach(async (id) => {
-      if (!colecciones[id]) {
-        nuevas[id] = await buscarDetallesColeccion(id);
+
+  if (Array.isArray(collection) && collection.length > 0) {
+    const detalles = await Promise.allSettled(
+      collection.map(async (id) => {
+        if (!colecciones[id]) {
+          const coleccion = await buscarDetallesColeccion(id);
+          return { id, coleccion, esNueva: true };
+        } else {
+          return { id, coleccion: colecciones[id], esNueva: false };
+        }
+      })
+    );
+
+    detalles.forEach((resultado) => {
+      if (resultado.status === "fulfilled") {
+        const { id, coleccion, esNueva } = resultado.value;
+        if (coleccion && Array.isArray(coleccion.Peliculas)) {
+          if (esNueva) {
+            nuevas[id] = coleccion;
+          } else {
+            presentes[id] = coleccion;
+          }
+        }
       } else {
-        presentes[id] = colecciones[id];
+        console.warn("Fallo al obtener una colección:", resultado.reason);
       }
     });
   }
 
-  let titulos = await busqueda(query);
+  let pelisEncontradas = await busqueda(query, "movie");
+  let seriesEncontradas = await busqueda(query, "tv");
 
   let idsExcluidos = new Set();
 
   Object.values(nuevas).forEach((coleccion) => {
-    coleccion.Peliculas.forEach((id) => idsExcluidos.add(id));
+    if (Array.isArray(coleccion.Peliculas)) {
+      coleccion.Peliculas.forEach((id) => idsExcluidos.add(id));
+    }
   });
 
   Object.values(presentes).forEach((coleccion) => {
-    coleccion.Peliculas.forEach((id) => idsExcluidos.add(id));
+    if (Array.isArray(coleccion.Peliculas)) {
+      coleccion.Peliculas.forEach((id) => idsExcluidos.add(id));
+    }
   });
 
-  let titulosFiltrados = titulos.filter(
+  let pelisFiltradas = pelisEncontradas.filter(
     (titulo) => !idsExcluidos.has(titulo.id)
   );
 
-  titulosFiltrados.forEach((titulo) => {
-    if (titulo.media_type === "movie") {
-      if (!peliculas[titulo.id]) {
-        nuevas[titulo.id] = JSONpelicula(titulo);
-      } else {
-        presentes[titulo.id] = peliculas[titulo.id];
-      }
-    } else if (titulo.media_type === "tv") {
-      if (!series[titulo.id]) {
-        nuevas[titulo.id] = JSONserie(titulo);
-      } else {
-        presentes[titulo.id] = series[titulo.id];
-      }
+  let seriesFiltradas = seriesEncontradas.filter(
+    (titulo) => !idsExcluidos.has(titulo.id)
+  );
+
+  pelisFiltradas.forEach((titulo) => {
+    if (!peliculas[titulo.id]) {
+      nuevas[titulo.id] = JSONpelicula(titulo);
+    } else {
+      presentes[titulo.id] = peliculas[titulo.id];
+    }
+  });
+
+  seriesFiltradas.forEach((titulo) => {
+    if (!series[titulo.id]) {
+      nuevas[titulo.id] = JSONserie(titulo);
+    } else {
+      presentes[titulo.id] = series[titulo.id];
     }
   });
 

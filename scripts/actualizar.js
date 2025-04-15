@@ -17,7 +17,7 @@ const PROVEEDORES_VALIDOS = [
   "Universal+ Amazon Channel",
 ];
 
-const EXPIRATION_DAYS = 7;
+const EXPIRATION_DAYS = 30;
 
 const dropdownMenu = document.getElementById("dropdown-menu");
 
