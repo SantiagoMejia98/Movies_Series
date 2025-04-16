@@ -105,6 +105,17 @@ async function cargarDatosGuardados() {
     colecciones = data["colecciones"];
     todasLasPeliculas = new Set(data["peliculasCard"]);
     todasLasSeries = new Set(data["seriesCard"]);
+    alert(
+      Object.keys(data["peliculas"]).length +
+        "\n" +
+        Object.keys(data["series"]).length +
+        "\n" +
+        Object.keys(data["colecciones"]).length +
+        "\n" +
+        data["peliculasCard"].length +
+        "\n" +
+        data["seriesCard"].length
+    );
   } else {
     window.location = "actualizar.html";
   }

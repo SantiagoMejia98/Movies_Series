@@ -380,14 +380,12 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
         const coleccion = nuevas[id];
         colecciones[id] = coleccion;
         console.log(coleccion);
-        coleccion.Peliculas.forEach((id) => {
-          const body = {
-            media_id: id,
-            media_type: "movie",
-            watchlist: true,
-          };
-          modificarWatchlist(body);
-        });
+        const body = {
+          media_id: coleccion.Peliculas[0],
+          media_type: "movie",
+          watchlist: true,
+        };
+        modificarWatchlist(body);
       } else {
         const body = {
           media_id: id,
