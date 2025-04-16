@@ -475,7 +475,7 @@ async function buscarColeccion(id) {
 }
 
 function guardarDatos() {
-  localStorage.setItem("datos", JSON.stringify(data));
+  localStorage.setItem("datos", data);
 }
 
 await cargarDatos("movies");
@@ -488,6 +488,21 @@ for (const id in peliculas) {
   }
 }
 
+function calcularTamañoAntesDeGuardar(datos) {
+  // Convertir los datos a una cadena JSON
+  const datosJSON = JSON.stringify(datos);
+
+  // Calcular el tamaño en bytes de la cadena JSON
+  const tamañoBytes = new Blob([datosJSON]).size;
+
+  // Convertir a MB
+  const tamañoMB = tamañoBytes / (1024 * 1024);
+  console.log(`El tamaño de los datos a guardar es: ${tamañoMB.toFixed(2)} MB`);
+
+  // Retornar el tamaño en MB
+  return tamañoMB;
+}
+
 data["peliculas"] = peliculas;
 data["series"] = series;
 data["colecciones"] = colecciones;
@@ -497,17 +512,9 @@ const expirationDate = new Date();
 expirationDate.setDate(expirationDate.getDate() + EXPIRATION_DAYS);
 data["expirationDate"] = expirationDate;
 
-alert(
-  Object.keys(peliculas).length +
-    "\n" +
-    Object.keys(series).length +
-    "\n" +
-    Object.keys(colecciones).length +
-    "\n" +
-    todasLasPeliculas.size +
-    "\n" +
-    todasLasSeries.size
-);
-
+const jsonString = JSON.stringify(data);
+data = LZString.compressToUTF16(jsonString);
+const tamaño = calcularTamañoAntesDeGuardar(data);
+alert(`${tamaño.toFixed(2)}MB`);
 guardarDatos();
 window.location = "index.html";

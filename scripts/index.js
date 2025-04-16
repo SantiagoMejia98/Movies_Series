@@ -97,9 +97,22 @@ function guardarDatos() {
 }
 
 async function cargarDatosGuardados() {
-  const datos = localStorage.getItem("datos");
-  if (datos && new Date(JSON.parse(datos)["expirationDate"]) > new Date()) {
-    data = JSON.parse(datos);
+  //const datos = localStorage.getItem("datos");
+  // Recuperar los datos comprimidos desde localStorage
+  const compressedData = localStorage.getItem("datos");
+
+  if (compressedData) {
+    // Descomprimir los datos
+    const jsonString = LZString.decompressFromUTF16(compressedData);
+
+    // Convertir la cadena JSON a objeto
+    data = JSON.parse(jsonString);
+    console.log(data);
+  }
+
+  if (data && new Date(data["expirationDate"]) > new Date()) {
+    //data = JSON.parse(datos);
+
     peliculas = data["peliculas"];
     series = data["series"];
     colecciones = data["colecciones"];
