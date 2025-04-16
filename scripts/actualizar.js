@@ -498,4 +498,16 @@ expirationDate.setDate(expirationDate.getDate() + EXPIRATION_DAYS);
 data["expirationDate"] = expirationDate;
 
 guardarDatos();
+
+alert(
+  Object.keys(peliculas).length +
+    "\n" +
+    Object.keys(series).length +
+    "\n" +
+    Object.keys(colecciones).length +
+    "\n" +
+    todasLasPeliculas.length +
+    "\n" +
+    todasLasSeries.length
+);
 window.location = "index.html";
