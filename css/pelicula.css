@@ -492,6 +492,18 @@ main {
     font-size: 0.8rem;
     color: white;
   }
+
+  .background {
+    display: none;
+  }
+
+  body {
+    background-color: black;
+  }
+
+  .container {
+    margin-top: auto;
+  }
 }
 
 @media (max-width: 414px) {
