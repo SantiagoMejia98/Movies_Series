@@ -506,8 +506,8 @@ alert(
     "\n" +
     Object.keys(colecciones).length +
     "\n" +
-    todasLasPeliculas.length +
+    todasLasPeliculas.size +
     "\n" +
-    todasLasSeries.length
+    todasLasSeries.size
 );
 window.location = "index.html";
