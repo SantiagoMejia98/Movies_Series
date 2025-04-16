@@ -497,8 +497,6 @@ const expirationDate = new Date();
 expirationDate.setDate(expirationDate.getDate() + EXPIRATION_DAYS);
 data["expirationDate"] = expirationDate;
 
-guardarDatos();
-
 alert(
   Object.keys(peliculas).length +
     "\n" +
@@ -510,4 +508,6 @@ alert(
     "\n" +
     todasLasSeries.size
 );
+
+guardarDatos();
 window.location = "index.html";
