@@ -197,7 +197,7 @@ main {
   box-shadow: 0 0 10px #eee;
   margin-top: 10px;
 }
-
+/*
 @keyframes show {
   from {
     opacity: 0;
@@ -220,3 +220,4 @@ main {
   animation-range: entry 25% cover 30%;
   animation-fill-mode: both;
 }
+*/
