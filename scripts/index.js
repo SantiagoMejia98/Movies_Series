@@ -92,33 +92,27 @@ function manejarSeleccion(event) {
   }
 }
 
-function guardarDatos() {
-  localStorage.setItem("datos", JSON.stringify(data));
+function guardarDatos(data) {
+  const jsonString = JSON.stringify(data);
+  const datos = LZString.compressToUTF16(jsonString);
+  localStorage.setItem("datos", datos);
 }
 
 async function cargarDatosGuardados() {
-  //const datos = localStorage.getItem("datos");
-  // Recuperar los datos comprimidos desde localStorage
   const compressedData = localStorage.getItem("datos");
 
   if (compressedData) {
-    // Descomprimir los datos
     const jsonString = LZString.decompressFromUTF16(compressedData);
-
-    // Convertir la cadena JSON a objeto
     data = JSON.parse(jsonString);
-    console.log(data);
   }
 
   if (data && new Date(data["expirationDate"]) > new Date()) {
-    //data = JSON.parse(datos);
-
     peliculas = data["peliculas"];
     series = data["series"];
     colecciones = data["colecciones"];
     todasLasPeliculas = new Set(data["peliculasCard"]);
     todasLasSeries = new Set(data["seriesCard"]);
-    alert(
+    /*alert(
       Object.keys(data["peliculas"]).length +
         "\n" +
         Object.keys(data["series"]).length +
@@ -128,7 +122,7 @@ async function cargarDatosGuardados() {
         data["peliculasCard"].length +
         "\n" +
         data["seriesCard"].length
-    );
+    );*/
   } else {
     window.location = "actualizar.html";
   }
@@ -148,7 +142,7 @@ document.addEventListener("click", function (event) {
   const type = card.getAttribute("data-type");
   const id = card.getAttribute("data-id");
   data["aleatorio"] = { Tipo: type, Id: id };
-  guardarDatos();
+  guardarDatos(data);
   if (type === "tv") {
     window.location.href = "serie.html";
   } else {

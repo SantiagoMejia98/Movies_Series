@@ -22,11 +22,8 @@ let presentes = {};
 
 async function cargarDatosGuardados() {
   const compressedData = localStorage.getItem("datos");
-  if (compressedData) {
-    const jsonString = LZString.decompressFromUTF16(compressedData);
-    data = JSON.parse(jsonString);
-    console.log(data);
-  }
+  const jsonString = LZString.decompressFromUTF16(compressedData);
+  data = JSON.parse(jsonString);
   peliculas = data["peliculas"];
   series = data["series"];
   colecciones = data["colecciones"];

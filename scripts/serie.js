@@ -22,8 +22,9 @@ let data = {};
 let aleatorio;
 
 async function cargarDatosGuardados() {
-  const datos = localStorage.getItem("datos");
-  data = JSON.parse(datos);
+  const compressedData = localStorage.getItem("datos");
+  const jsonString = LZString.decompressFromUTF16(compressedData);
+  data = JSON.parse(jsonString);
   series = data["series"];
   todasLasSeries = data["seriesCard"];
   aleatorio = data["aleatorio"];
@@ -34,7 +35,7 @@ async function cargarDatosGuardados() {
   } else {
     titulo = series[aleatorio.Id];
     delete data["aleatorio"];
-    guardarDatos();
+    guardarDatos(data);
   }
   crearSerie(elementos.serie, titulo);
 }
@@ -264,8 +265,10 @@ function manejarSeleccion(event) {
   }
 }
 
-function guardarDatos() {
-  localStorage.setItem("datos", JSON.stringify(data));
+function guardarDatos(data) {
+  const jsonString = JSON.stringify(data);
+  const datos = LZString.compressToUTF16(jsonString);
+  localStorage.setItem("datos", datos);
 }
 
 dropdownMenu.addEventListener("change", manejarSeleccion);

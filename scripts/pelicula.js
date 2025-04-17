@@ -32,8 +32,9 @@ let data = {};
 let aleatorio;
 
 async function cargarDatosGuardados() {
-  const datos = localStorage.getItem("datos");
-  data = JSON.parse(datos);
+  const compressedData = localStorage.getItem("datos");
+  const jsonString = LZString.decompressFromUTF16(compressedData);
+  data = JSON.parse(jsonString);
   peliculas = data["peliculas"];
   colecciones = data["colecciones"];
   todasLasPeliculas = data["peliculasCard"];
@@ -49,7 +50,7 @@ async function cargarDatosGuardados() {
       titulo = colecciones[aleatorio.Id];
     }
     delete data["aleatorio"];
-    guardarDatos();
+    guardarDatos(data);
   }
   if (titulo.Tipo === "movie") {
     crearPelicula(elementos.pelicula, titulo);
@@ -58,8 +59,10 @@ async function cargarDatosGuardados() {
   }
 }
 
-function guardarDatos() {
-  localStorage.setItem("datos", JSON.stringify(data));
+function guardarDatos(data) {
+  const jsonString = JSON.stringify(data);
+  const datos = LZString.compressToUTF16(jsonString);
+  localStorage.setItem("datos", datos);
 }
 
 await cargarDatosGuardados();

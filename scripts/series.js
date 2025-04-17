@@ -73,13 +73,16 @@ function manejarSeleccion(event) {
   }
 }
 
-function guardarDatos() {
-  localStorage.setItem("datos", JSON.stringify(data));
+function guardarDatos(data) {
+  const jsonString = JSON.stringify(data);
+  const datos = LZString.compressToUTF16(jsonString);
+  localStorage.setItem("datos", datos);
 }
 
 async function cargarDatosGuardados() {
-  const datos = localStorage.getItem("datos");
-  data = JSON.parse(datos);
+  const compressedData = localStorage.getItem("datos");
+  const jsonString = LZString.decompressFromUTF16(compressedData);
+  data = JSON.parse(jsonString);
   todasLasSeries = new Set(data["seriesCard"]);
   crearlistaInicio(elementos.series, todasLasSeries);
 }
@@ -95,7 +98,7 @@ document.addEventListener("click", function (event) {
   const type = card.getAttribute("data-type");
   const id = card.getAttribute("data-id");
   data["aleatorio"] = { Tipo: type, Id: id };
-  guardarDatos();
+  guardarDatos(data);
   if (type === "tv") {
     window.location.href = "serie.html";
   } else {
