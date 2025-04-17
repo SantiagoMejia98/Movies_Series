@@ -386,10 +386,6 @@ document.addEventListener("click", function (event) {
   const type = card.getAttribute("data-type");
   const id = card.getAttribute("data-id");
   data["aleatorio"] = { Tipo: type, Id: id };
-  guardarDatos();
-  if (type === "tv") {
-    window.location.href = "serie.html";
-  } else {
-    window.location.href = "pelicula.html";
-  }
+  guardarDatos(data);
+  window.location.href = "pelicula.html";
 });

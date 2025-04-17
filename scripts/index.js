@@ -93,9 +93,10 @@ function manejarSeleccion(event) {
 }
 
 function guardarDatos(data) {
-  const jsonString = JSON.stringify(data);
-  const datos = LZString.compressToUTF16(jsonString);
-  localStorage.setItem("datos", datos);
+  const start = performance.now();
+  localStorage.setItem("aleatorio", JSON.stringify(data));
+  const end = performance.now();
+  alert(`${(end - start).toFixed(2)} ms`);
 }
 
 async function cargarDatosGuardados() {
@@ -141,8 +142,8 @@ document.addEventListener("click", function (event) {
 
   const type = card.getAttribute("data-type");
   const id = card.getAttribute("data-id");
-  data["aleatorio"] = { Tipo: type, Id: id };
-  guardarDatos(data);
+  const aleatorio = { Tipo: type, Id: id };
+  guardarDatos(aleatorio);
   if (type === "tv") {
     window.location.href = "serie.html";
   } else {

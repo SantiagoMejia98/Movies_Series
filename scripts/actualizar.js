@@ -475,9 +475,13 @@ async function buscarColeccion(id) {
 }
 
 function guardarDatos(data) {
+  const start = performance.now();
   const jsonString = JSON.stringify(data);
   const datos = LZString.compressToUTF16(jsonString);
   localStorage.setItem("datos", datos);
+
+  const end = performance.now();
+  alert(`Guardado en localStorage en ${(end - start).toFixed(2)} ms`);
 }
 
 await cargarDatos("movies");
