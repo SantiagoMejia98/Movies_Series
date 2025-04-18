@@ -22,12 +22,18 @@ let data = {};
 let aleatorio;
 
 async function cargarDatosGuardados() {
-  const compressedData = localStorage.getItem("datos");
-  const jsonString = LZString.decompressFromUTF16(compressedData);
-  data = JSON.parse(jsonString);
-  series = data["series"];
-  todasLasSeries = data["seriesCard"];
-  aleatorio = data["aleatorio"];
+  const start = performance.now();
+  series = JSON.parse(
+    LZString.decompressFromUTF16(localStorage.getItem("series"))
+  );
+  todasLasSeries = JSON.parse(
+    LZString.decompressFromUTF16(localStorage.getItem("seriesCard"))
+  );
+  aleatorio = localStorage.getItem("aleatorio");
+  if (aleatorio) {
+    aleatorio = JSON.parse(aleatorio);
+    localStorage.removeItem("aleatorio");
+  }
   let titulo;
   if (!aleatorio) {
     aleatorio = seleccionarElementosAleatorios(todasLasSeries.length);
@@ -38,6 +44,9 @@ async function cargarDatosGuardados() {
     guardarDatos(data);
   }
   crearSerie(elementos.serie, titulo);
+
+  const end = performance.now();
+  alert(`Tiempo de carga de datos: ${(end - start).toFixed(2)} ms`);
 }
 
 await cargarDatosGuardados();

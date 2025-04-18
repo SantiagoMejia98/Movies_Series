@@ -32,13 +32,21 @@ let data = {};
 let aleatorio;
 
 async function cargarDatosGuardados() {
-  const compressedData = localStorage.getItem("datos");
-  const jsonString = LZString.decompressFromUTF16(compressedData);
-  data = JSON.parse(jsonString);
-  peliculas = data["peliculas"];
-  colecciones = data["colecciones"];
-  todasLasPeliculas = data["peliculasCard"];
-  aleatorio = data["aleatorio"];
+  const start = performance.now();
+  peliculas = JSON.parse(
+    LZString.decompressFromUTF16(localStorage.getItem("peliculas"))
+  );
+  colecciones = JSON.parse(
+    LZString.decompressFromUTF16(localStorage.getItem("colecciones"))
+  );
+  todasLasPeliculas = JSON.parse(
+    LZString.decompressFromUTF16(localStorage.getItem("peliculasCard"))
+  );
+  aleatorio = localStorage.getItem("aleatorio");
+  if (aleatorio) {
+    aleatorio = JSON.parse(aleatorio);
+    localStorage.removeItem("aleatorio");
+  }
   let titulo;
   if (!aleatorio) {
     aleatorio = seleccionarElementosAleatorios(todasLasPeliculas.length);
@@ -57,6 +65,9 @@ async function cargarDatosGuardados() {
   } else {
     crearColeccion(elementos.coleccion, titulo);
   }
+
+  const end = performance.now();
+  alert(`Tiempo de carga de datos: ${(end - start).toFixed(2)} ms`);
 }
 
 function guardarDatos(data) {

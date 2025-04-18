@@ -74,17 +74,19 @@ function manejarSeleccion(event) {
 }
 
 function guardarDatos(data) {
-  const jsonString = JSON.stringify(data);
-  const datos = LZString.compressToUTF16(jsonString);
-  localStorage.setItem("datos", datos);
+  localStorage.setItem("aleatorio", JSON.stringify(data));
 }
 
 async function cargarDatosGuardados() {
-  const compressedData = localStorage.getItem("datos");
-  const jsonString = LZString.decompressFromUTF16(compressedData);
-  data = JSON.parse(jsonString);
-  todasLasPeliculas = new Set(data["peliculasCard"]);
+  const start = performance.now();
+  todasLasPeliculas = new Set(
+    JSON.parse(
+      LZString.decompressFromUTF16(localStorage.getItem("peliculasCard"))
+    )
+  );
   crearlistaInicio(elementos.peliculas, todasLasPeliculas);
+  const end = performance.now();
+  alert(`Tiempo de carga de datos: ${(end - start).toFixed(2)} ms`);
 }
 
 await cargarDatosGuardados();
@@ -97,8 +99,8 @@ document.addEventListener("click", function (event) {
 
   const type = card.getAttribute("data-type");
   const id = card.getAttribute("data-id");
-  data["aleatorio"] = { Tipo: type, Id: id };
-  guardarDatos(data);
+  const aleatorio = { Tipo: type, Id: id };
+  guardarDatos(aleatorio);
   if (type === "tv") {
     window.location.href = "serie.html";
   } else {

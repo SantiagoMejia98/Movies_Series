@@ -476,9 +476,26 @@ async function buscarColeccion(id) {
 
 function guardarDatos(data) {
   const start = performance.now();
-  const jsonString = JSON.stringify(data);
+  localStorage.clear();
+
+  const jsonString = JSON.stringify(data["peliculas"]);
   const datos = LZString.compressToUTF16(jsonString);
-  localStorage.setItem("datos", datos);
+  localStorage.setItem("peliculas", datos);
+  const jsonString2 = JSON.stringify(data["series"]);
+  const datos2 = LZString.compressToUTF16(jsonString2);
+  localStorage.setItem("series", datos2);
+  const jsonString3 = JSON.stringify(data["colecciones"]);
+  const datos3 = LZString.compressToUTF16(jsonString3);
+  localStorage.setItem("colecciones", datos3);
+  const jsonString4 = JSON.stringify(data["peliculasCard"]);
+  const datos4 = LZString.compressToUTF16(jsonString4);
+  localStorage.setItem("peliculasCard", datos4);
+  const jsonString5 = JSON.stringify(data["seriesCard"]);
+  const datos5 = LZString.compressToUTF16(jsonString5);
+  localStorage.setItem("seriesCard", datos5);
+  const jsonString6 = JSON.stringify(data["expirationDate"]);
+  const datos6 = LZString.compressToUTF16(jsonString6);
+  localStorage.setItem("expirationDate", datos6);
 
   const end = performance.now();
   alert(`Guardado en localStorage en ${(end - start).toFixed(2)} ms`);

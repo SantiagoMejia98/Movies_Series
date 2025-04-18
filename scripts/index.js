@@ -93,40 +93,43 @@ function manejarSeleccion(event) {
 }
 
 function guardarDatos(data) {
-  const start = performance.now();
   localStorage.setItem("aleatorio", JSON.stringify(data));
-  const end = performance.now();
-  alert(`${(end - start).toFixed(2)} ms`);
 }
 
 async function cargarDatosGuardados() {
-  const compressedData = localStorage.getItem("datos");
-
+  const start = performance.now();
+  const compressedData = localStorage.getItem("expirationDate");
+  let fecha;
   if (compressedData) {
     const jsonString = LZString.decompressFromUTF16(compressedData);
-    data = JSON.parse(jsonString);
+    fecha = JSON.parse(jsonString);
   }
 
-  if (data && new Date(data["expirationDate"]) > new Date()) {
-    peliculas = data["peliculas"];
-    series = data["series"];
-    colecciones = data["colecciones"];
-    todasLasPeliculas = new Set(data["peliculasCard"]);
-    todasLasSeries = new Set(data["seriesCard"]);
-    /*alert(
-      Object.keys(data["peliculas"]).length +
-        "\n" +
-        Object.keys(data["series"]).length +
-        "\n" +
-        Object.keys(data["colecciones"]).length +
-        "\n" +
-        data["peliculasCard"].length +
-        "\n" +
-        data["seriesCard"].length
-    );*/
+  if (fecha && new Date(fecha) > new Date()) {
+    peliculas = JSON.parse(
+      LZString.decompressFromUTF16(localStorage.getItem("peliculas"))
+    );
+    series = JSON.parse(
+      LZString.decompressFromUTF16(localStorage.getItem("series"))
+    );
+    colecciones = JSON.parse(
+      LZString.decompressFromUTF16(localStorage.getItem("colecciones"))
+    );
+    todasLasPeliculas = new Set(
+      JSON.parse(
+        LZString.decompressFromUTF16(localStorage.getItem("peliculasCard"))
+      )
+    );
+    todasLasSeries = new Set(
+      JSON.parse(
+        LZString.decompressFromUTF16(localStorage.getItem("seriesCard"))
+      )
+    );
   } else {
     window.location = "actualizar.html";
   }
+  const end = performance.now();
+  alert(`Tiempo de carga de datos: ${(end - start).toFixed(2)} ms`);
 }
 
 await cargarDatosGuardados();
