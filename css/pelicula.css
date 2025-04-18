@@ -76,7 +76,7 @@ main {
   margin-top: 80vh;
 }
 
-.background {
+/*.background {
   position: fixed;
   top: 0;
   left: 0;
@@ -89,6 +89,19 @@ main {
   filter: brightness(0.5);
   z-index: -1;
   -webkit-filter: brightness(0.5);
+}*/
+
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw; /* asegura el ancho completo del viewport */
+  height: 100vh; /* asegura el alto completo */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+  pointer-events: none; /* opcional */
 }
 
 .content {
