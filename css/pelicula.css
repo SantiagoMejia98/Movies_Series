@@ -464,6 +464,14 @@ main {
 }
 
 @media (max-width: 800px) {
+  .background {
+    z-index: -2;
+  }
+
+  .movil {
+    z-index: -1;
+  }
+
   main {
     padding: 0 30px 30px;
   }
@@ -506,14 +514,6 @@ main {
   .director p {
     font-size: 0.8rem;
     color: white;
-  }
-
-  .background {
-    z-index: -2;
-  }
-
-  .movil {
-    z-index: -1;
   }
 }
 
