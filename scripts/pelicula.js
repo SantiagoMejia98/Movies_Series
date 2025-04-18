@@ -87,12 +87,12 @@ function crearColeccion(elemento, datos) {
 
   content.innerHTML = `
     <div class="background" 
-      style="background-image: url('https://image.tmdb.org/t/p/w1280${
+      style="background-image: url('https://image.tmdb.org/t/p/original${
         datos.Portada
       }');">
     </div>
     <div class="movil" 
-      style="background-image: url('https://image.tmdb.org/t/p/w1280${
+      style="background-image: url('https://image.tmdb.org/t/p/original${
         datos.Movil
       }');">
     </div>
@@ -169,10 +169,10 @@ function crearPelicula(elemento, datos) {
   if (datos.Logo) {
     content.innerHTML = `
     <div class="background"
-        style="background-image: url('https://image.tmdb.org/t/p/w1280${datos.Portada}');">
+        style="background-image: url('https://image.tmdb.org/t/p/original${datos.Portada}');">
     </div>
     <div class="movil" 
-      style="background-image: url('https://image.tmdb.org/t/p/w${datos.Movil}');">
+      style="background-image: url('https://image.tmdb.org/t/p/original${datos.Movil}');">
     </div>
     <div class="logo-container">
         <img class="logo" src="https://image.tmdb.org/t/p/w500${datos.Logo}" alt="${datos.Nombre}">

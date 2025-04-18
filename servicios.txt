@@ -7,10 +7,10 @@
 "Crunchyroll"
 "Universal+ Amazon Channel"
 
-iphone vertical: width = 393 height = 659 pixel ratio = 2
-iphone horizontal: width = 734 height = 343 pixel ratio = 2
-tablet horizontal: width = 1334 height = 632 pixel ratio = 1.5
+iphone vertical: width = 393 height = 659 pixel ratio = 3
+iphone horizontal: width = 734 height = 343 pixel ratio = 3
 tablet vertical: width = 800 height = 1166 pixel ratio = 1.5
+tablet horizontal: width = 1333 height = 632 pixel ratio = 1.5
 pantalla 1: width = 1920 height = 919 pixel ratio = 1
 pantalla 2: width = 1920 height = 919 pixel ratio = 1
 portatil: width = 1440 height = 791 pixel ratio = 1.5

@@ -129,10 +129,6 @@ async function cargarDatosGuardados() {
   }
 }
 
-alert(
-  `w:${window.innerWidth} h:${window.innerHeight} r:${window.devicePixelRatio}`
-);
-
 await cargarDatosGuardados();
 
 crearlistaInicio(elementos.peliculas, todasLasPeliculas);
