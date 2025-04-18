@@ -327,13 +327,6 @@ function crearPelicula(elemento, datos) {
   container.appendChild(content);
   elemento.appendChild(container);
 
-  const movieItem = document.querySelector(".movie-item");
-  movieItem.addEventListener("click", function () {
-    openTrailer();
-  });
-  const closeBtn = document.querySelector(".close");
-  closeBtn.addEventListener("click", closeTrailer);
-
   const background = document.querySelector(".background");
   background.setAttribute(
     "data-bg-vertical",
