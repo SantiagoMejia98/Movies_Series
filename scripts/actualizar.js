@@ -119,6 +119,19 @@ function JSONpelicula(titulo) {
       titulo.backdrop_path ||
       titulo.poster_path ||
       null,
+    Movil:
+      titulo.images?.posters
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.height >= 1500 &&
+            item.aspect_ratio === 0.667
+        )
+        .sort((a, b) => b.vote_average - a.vote_average)[1]?.file_path ||
+      titulo.poster_path?.poster_path ||
+      titulo.parts.filter((item) => item.poster_path !== null)[1]
+        ?.poster_path ||
+      null,
     Logo:
       titulo.images?.logos
         .filter(
@@ -219,6 +232,19 @@ function JSONserie(titulo) {
       titulo.backdrop_path ||
       titulo.poster_path ||
       null,
+    Movil:
+      titulo.images?.posters
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.height >= 1500 &&
+            item.aspect_ratio === 0.667
+        )
+        .sort((a, b) => b.vote_average - a.vote_average)[1]?.file_path ||
+      titulo.poster_path?.poster_path ||
+      titulo.parts.filter((item) => item.poster_path !== null)[1]
+        ?.poster_path ||
+      null,
     Logo:
       titulo.images?.logos
         .filter(
@@ -285,17 +311,17 @@ function JSONserie(titulo) {
   };
 }
 
-function JSONcoleccion(data) {
+function JSONcoleccion(titulo) {
   return {
-    Nombre: `${data.title || data.name} ${
-      data.original_name
-        ? `(${data.original_name})`
-        : "" || data.original_title
-        ? `(${data.original_title})`
+    Nombre: `${titulo.title || titulo.name} ${
+      titulo.original_name
+        ? `(${titulo.original_name})`
+        : "" || titulo.original_title
+        ? `(${titulo.original_title})`
         : ""
     }`,
     Lanzamiento: (() => {
-      let years = data.parts
+      let years = titulo.parts
         .map(
           (i) => i.release_date?.split(/[-/]/).find((p) => p.length === 4) || ""
         )
@@ -304,14 +330,14 @@ function JSONcoleccion(data) {
 
       return years.length
         ? `${years[0]} - ${
-            data.parts.some((p) => !p.release_date)
+            titulo.parts.some((p) => !p.release_date)
               ? "Presente"
               : years[years.length - 1]
           }`
         : "Desconocido";
     })(),
     Poster:
-      data.images?.posters
+      titulo.images?.posters
         .filter(
           (item) =>
             (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
@@ -319,11 +345,12 @@ function JSONcoleccion(data) {
             item.aspect_ratio === 0.667
         )
         .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
-      data.poster_path?.poster_path ||
-      data.parts.filter((item) => item.poster_path !== null)[0]?.poster_path ||
+      titulo.poster_path?.poster_path ||
+      titulo.parts.filter((item) => item.poster_path !== null)[0]
+        ?.poster_path ||
       null,
     Portada:
-      data.images?.backdrops
+      titulo.images?.backdrops
         .filter(
           (item) =>
             (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
@@ -331,28 +358,41 @@ function JSONcoleccion(data) {
             item.aspect_ratio === 1.778
         )
         .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
-      data.backdrop_path?.backdrop_path ||
-      data.parts.filter((item) => item.backdrop_path !== null)[0]
+      titulo.backdrop_path?.backdrop_path ||
+      titulo.parts.filter((item) => item.backdrop_path !== null)[0]
         ?.backdrop_path ||
-      data.poster_path ||
+      titulo.poster_path ||
       null,
-    Id: data.id,
-    Duracion: `${data.parts.length} películas`,
+    Movil:
+      titulo.images?.posters
+        .filter(
+          (item) =>
+            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+            item.height >= 1500 &&
+            item.aspect_ratio === 0.667
+        )
+        .sort((a, b) => b.vote_average - a.vote_average)[1]?.file_path ||
+      titulo.poster_path?.poster_path ||
+      titulo.parts.filter((item) => item.poster_path !== null)[1]
+        ?.poster_path ||
+      null,
+    Id: titulo.id,
+    Duracion: `${titulo.parts.length} películas`,
     Tipo: "collection",
 
     Descripcion:
-      data.translations.translations
+      titulo.translations.translations
         .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
         .find((item) => item)?.data.overview ||
-      data.translations.translations
+      titulo.translations.translations
         .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
         .find((item) => item)?.data.overview ||
-      data.translations.translations
+      titulo.translations.translations
         .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
         .find((item) => item)?.data.overview ||
-      data.overview ||
+      titulo.overview ||
       null,
-    Peliculas: data.parts
+    Peliculas: titulo.parts
       .filter((item) => item.poster_path !== null)
       .sort((a, b) => new Date(a.release_date) - new Date(b.release_date))
       .map((item) => item.id),
@@ -475,30 +515,31 @@ async function buscarColeccion(id) {
 }
 
 function guardarDatos(data) {
-  const start = performance.now();
   localStorage.clear();
-
-  const jsonString = JSON.stringify(data["peliculas"]);
-  const datos = LZString.compressToUTF16(jsonString);
-  localStorage.setItem("peliculas", datos);
-  const jsonString2 = JSON.stringify(data["series"]);
-  const datos2 = LZString.compressToUTF16(jsonString2);
-  localStorage.setItem("series", datos2);
-  const jsonString3 = JSON.stringify(data["colecciones"]);
-  const datos3 = LZString.compressToUTF16(jsonString3);
-  localStorage.setItem("colecciones", datos3);
-  const jsonString4 = JSON.stringify(data["peliculasCard"]);
-  const datos4 = LZString.compressToUTF16(jsonString4);
-  localStorage.setItem("peliculasCard", datos4);
-  const jsonString5 = JSON.stringify(data["seriesCard"]);
-  const datos5 = LZString.compressToUTF16(jsonString5);
-  localStorage.setItem("seriesCard", datos5);
-  const jsonString6 = JSON.stringify(data["expirationDate"]);
-  const datos6 = LZString.compressToUTF16(jsonString6);
-  localStorage.setItem("expirationDate", datos6);
-
-  const end = performance.now();
-  alert(`Guardado en localStorage en ${(end - start).toFixed(2)} ms`);
+  localStorage.setItem(
+    "peliculas",
+    LZString.compressToUTF16(JSON.stringify(data["peliculas"]))
+  );
+  localStorage.setItem(
+    "series",
+    LZString.compressToUTF16(JSON.stringify(data["series"]))
+  );
+  localStorage.setItem(
+    "colecciones",
+    LZString.compressToUTF16(JSON.stringify(data["colecciones"]))
+  );
+  localStorage.setItem(
+    "peliculasCard",
+    LZString.compressToUTF16(JSON.stringify(data["peliculasCard"]))
+  );
+  localStorage.setItem(
+    "seriesCard",
+    LZString.compressToUTF16(JSON.stringify(data["seriesCard"]))
+  );
+  localStorage.setItem(
+    "expirationDate",
+    LZString.compressToUTF16(JSON.stringify(data["expirationDate"]))
+  );
 }
 
 await cargarDatos("movies");

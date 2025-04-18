@@ -78,13 +78,10 @@ function guardarDatos(data) {
 }
 
 async function cargarDatosGuardados() {
-  const start = performance.now();
   todasLasSeries = new Set(
     JSON.parse(LZString.decompressFromUTF16(localStorage.getItem("seriesCard")))
   );
   crearlistaInicio(elementos.series, todasLasSeries);
-  const end = performance.now();
-  alert(`Tiempo de carga de datos: ${(end - start).toFixed(2)} ms`);
 }
 
 await cargarDatosGuardados();

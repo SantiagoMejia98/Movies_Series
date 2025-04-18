@@ -21,7 +21,6 @@ let nuevas = {};
 let presentes = {};
 
 async function cargarDatosGuardados() {
-  const start = performance.now();
   peliculas = JSON.parse(
     LZString.decompressFromUTF16(localStorage.getItem("peliculas"))
   );
@@ -31,9 +30,6 @@ async function cargarDatosGuardados() {
   colecciones = JSON.parse(
     LZString.decompressFromUTF16(localStorage.getItem("colecciones"))
   );
-
-  const end = performance.now();
-  alert(`Tiempo de carga de datos: ${(end - start).toFixed(2)} ms`);
 }
 
 await cargarDatosGuardados();

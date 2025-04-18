@@ -22,7 +22,6 @@ let data = {};
 let aleatorio;
 
 async function cargarDatosGuardados() {
-  const start = performance.now();
   series = JSON.parse(
     LZString.decompressFromUTF16(localStorage.getItem("series"))
   );
@@ -32,7 +31,6 @@ async function cargarDatosGuardados() {
   aleatorio = localStorage.getItem("aleatorio");
   if (aleatorio) {
     aleatorio = JSON.parse(aleatorio);
-    localStorage.removeItem("aleatorio");
   }
   let titulo;
   if (!aleatorio) {
@@ -40,13 +38,10 @@ async function cargarDatosGuardados() {
     titulo = todasLasSeries[aleatorio];
   } else {
     titulo = series[aleatorio.Id];
-    delete data["aleatorio"];
     guardarDatos(data);
   }
+  localStorage.removeItem("aleatorio");
   crearSerie(elementos.serie, titulo);
-
-  const end = performance.now();
-  alert(`Tiempo de carga de datos: ${(end - start).toFixed(2)} ms`);
 }
 
 await cargarDatosGuardados();
@@ -69,6 +64,9 @@ function crearSerie(elemento, datos) {
     content.innerHTML = `
     <div class="background"
         style="background-image: url('https://image.tmdb.org/t/p/w1280${datos.Portada}');">
+    </div>
+    <div class="movil" 
+      style="background-image: url('https://image.tmdb.org/t/p/w1280${datos.Movil}');">
     </div>
     <div class="logo-container">
         <img class="logo" src="https://image.tmdb.org/t/p/w500${datos.Logo}" alt="${datos.Nombre}">

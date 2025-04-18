@@ -32,7 +32,6 @@ let data = {};
 let aleatorio;
 
 async function cargarDatosGuardados() {
-  const start = performance.now();
   peliculas = JSON.parse(
     LZString.decompressFromUTF16(localStorage.getItem("peliculas"))
   );
@@ -45,7 +44,6 @@ async function cargarDatosGuardados() {
   aleatorio = localStorage.getItem("aleatorio");
   if (aleatorio) {
     aleatorio = JSON.parse(aleatorio);
-    localStorage.removeItem("aleatorio");
   }
   let titulo;
   if (!aleatorio) {
@@ -57,7 +55,6 @@ async function cargarDatosGuardados() {
     } else {
       titulo = colecciones[aleatorio.Id];
     }
-    delete data["aleatorio"];
     guardarDatos(data);
   }
   if (titulo.Tipo === "movie") {
@@ -65,15 +62,11 @@ async function cargarDatosGuardados() {
   } else {
     crearColeccion(elementos.coleccion, titulo);
   }
-
-  const end = performance.now();
-  alert(`Tiempo de carga de datos: ${(end - start).toFixed(2)} ms`);
+  localStorage.removeItem("aleatorio");
 }
 
 function guardarDatos(data) {
-  const jsonString = JSON.stringify(data);
-  const datos = LZString.compressToUTF16(jsonString);
-  localStorage.setItem("datos", datos);
+  localStorage.setItem("aleatorio", JSON.stringify(data));
 }
 
 await cargarDatosGuardados();
@@ -96,6 +89,11 @@ function crearColeccion(elemento, datos) {
     <div class="background" 
       style="background-image: url('https://image.tmdb.org/t/p/w1280${
         datos.Portada
+      }');">
+    </div>
+    <div class="movil" 
+      style="background-image: url('https://image.tmdb.org/t/p/w1280${
+        datos.Movil
       }');">
     </div>
     <div class="movie-card">
@@ -172,6 +170,9 @@ function crearPelicula(elemento, datos) {
     content.innerHTML = `
     <div class="background"
         style="background-image: url('https://image.tmdb.org/t/p/w1280${datos.Portada}');">
+    </div>
+    <div class="movil" 
+      style="background-image: url('https://image.tmdb.org/t/p/w${datos.Movil}');">
     </div>
     <div class="logo-container">
         <img class="logo" src="https://image.tmdb.org/t/p/w500${datos.Logo}" alt="${datos.Nombre}">
@@ -396,7 +397,7 @@ document.addEventListener("click", function (event) {
 
   const type = card.getAttribute("data-type");
   const id = card.getAttribute("data-id");
-  data["aleatorio"] = { Tipo: type, Id: id };
-  guardarDatos(data);
+  const aleatorio = { Tipo: type, Id: id };
+  guardarDatos(aleatorio);
   window.location.href = "pelicula.html";
 });

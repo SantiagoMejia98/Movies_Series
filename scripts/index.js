@@ -97,7 +97,6 @@ function guardarDatos(data) {
 }
 
 async function cargarDatosGuardados() {
-  const start = performance.now();
   const compressedData = localStorage.getItem("expirationDate");
   let fecha;
   if (compressedData) {
@@ -128,9 +127,9 @@ async function cargarDatosGuardados() {
   } else {
     window.location = "actualizar.html";
   }
-  const end = performance.now();
-  alert(`Tiempo de carga de datos: ${(end - start).toFixed(2)} ms`);
 }
+
+alert(`w:${window.innerWidth} h:${window.innerHeight}`);
 
 await cargarDatosGuardados();
 

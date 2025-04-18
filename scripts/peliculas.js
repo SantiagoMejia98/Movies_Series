@@ -78,15 +78,12 @@ function guardarDatos(data) {
 }
 
 async function cargarDatosGuardados() {
-  const start = performance.now();
   todasLasPeliculas = new Set(
     JSON.parse(
       LZString.decompressFromUTF16(localStorage.getItem("peliculasCard"))
     )
   );
   crearlistaInicio(elementos.peliculas, todasLasPeliculas);
-  const end = performance.now();
-  alert(`Tiempo de carga de datos: ${(end - start).toFixed(2)} ms`);
 }
 
 await cargarDatosGuardados();
