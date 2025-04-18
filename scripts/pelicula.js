@@ -403,3 +403,17 @@ document.addEventListener("click", function (event) {
   guardarDatos(aleatorio);
   window.location.href = "pelicula.html";
 });
+
+function detectarOrientacion() {
+  if (window.innerHeight > window.innerWidth) {
+    alert("Vertical (Portrait)");
+  } else {
+    alert("Horizontal (Landscape)");
+  }
+}
+
+// Detectar en el momento
+detectarOrientacion();
+
+// Detectar cuando cambia
+window.addEventListener("resize", detectarOrientacion);
