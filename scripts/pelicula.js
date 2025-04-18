@@ -434,5 +434,5 @@ function detectarOrientacion() {
     )})`;
   }
 }
-alert(`w:${window.innerWidth} h:${window.innerHeight}`);
+//alert(`w:${window.innerWidth} h:${window.innerHeight}`);
 window.addEventListener("resize", detectarOrientacion);

@@ -127,6 +127,17 @@ async function cargarDatosGuardados() {
   } else {
     window.location = "actualizar.html";
   }
+  /*alert(
+    `${Object.keys(peliculas).length} peliculas y ${
+      Object.keys(series).length
+    } series guardadas \n ${
+      Object.keys(colecciones).length
+    } colecciones guardadas \n ${
+      todasLasPeliculas.size
+    } peliculas en la lista de inicio \n ${
+      todasLasSeries.size
+    } series en la lista de inicio`
+  );*/
 }
 
 await cargarDatosGuardados();
