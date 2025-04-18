@@ -87,7 +87,7 @@ function crearColeccion(elemento, datos) {
 
   content.innerHTML = `
     <div class="background" 
-      style="background-image: url(https://image.tmdb.org/t/p/original${
+      style="background-image: url('https://image.tmdb.org/t/p/original${
         window.innerHeight > window.innerWidth ? datos.Movil : datos.Portada
       }')">
     </div>
@@ -189,9 +189,9 @@ function crearPelicula(elemento, datos) {
   } else {
     content.innerHTML = `
     <div class="background" 
-      style="background-image: url(https://image.tmdb.org/t/p/original${
-        window.innerHeight > window.innerWidth ? datos.Portada : datos.movil
-      }');">
+      style="background-image: url('https://image.tmdb.org/t/p/original${
+        window.innerHeight > window.innerWidth ? datos.Movil : datos.Portada
+      }')">
     </div>
   `;
   }
