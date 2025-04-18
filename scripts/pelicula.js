@@ -86,11 +86,6 @@ function crearColeccion(elemento, datos) {
   content.setAttribute("data-id", datos.Id);
 
   content.innerHTML = `
-  <div class="movil" 
-      style="background-image: url('https://image.tmdb.org/t/p/original${
-        datos.Movil
-      }');">
-    </div>
     <div class="background" 
       style="background-image: url(https://image.tmdb.org/t/p/original${
         window.innerHeight > window.innerWidth ? datos.Portada : datos.movil
@@ -116,6 +111,15 @@ function crearColeccion(elemento, datos) {
         <p>${datos.Descripcion}</p>
       </div>
     </div>`;
+
+  background.setAttribute(
+    "data-bg-vertical",
+    `https://image.tmdb.org/t/p/original${datos.Movil}`
+  );
+  background.setAttribute(
+    "data-bg-horizontal",
+    `https://image.tmdb.org/t/p/original${datos.Portada}`
+  );
 
   const coleccion = document.createElement("div");
   coleccion.className = "coleccion";
@@ -169,21 +173,24 @@ function crearPelicula(elemento, datos) {
 
   if (datos.Logo) {
     content.innerHTML = `
-    <div class="movil" 
-      style="background-image: url('https://image.tmdb.org/t/p/original${datos.Movil}');">
-    </div>
-    <div class="background"
-        style="background-image: url('https://image.tmdb.org/t/p/original${datos.Portada}');">
+    <div class="background" 
+      style="background-image: url(https://image.tmdb.org/t/p/original${
+        window.innerHeight > window.innerWidth ? datos.Portada : datos.movil
+      }');">
     </div>
     
     <div class="logo-container">
-        <img class="logo" src="https://image.tmdb.org/t/p/w500${datos.Logo}" alt="${datos.Nombre}">
+        <img class="logo" src="https://image.tmdb.org/t/p/w500${
+          datos.Logo
+        }" alt="${datos.Nombre}">
     </div>
   `;
   } else {
     content.innerHTML = `
-    <div class="background"
-        style="background-image: url('https://image.tmdb.org/t/p/w1280${datos.Portada}');">
+    <div class="background" 
+      style="background-image: url(https://image.tmdb.org/t/p/original${
+        window.innerHeight > window.innerWidth ? datos.Portada : datos.movil
+      }');">
     </div>
   `;
   }
@@ -405,15 +412,16 @@ document.addEventListener("click", function (event) {
 });
 
 function detectarOrientacion() {
+  const elemento = document.querySelector(".background");
   if (window.innerHeight > window.innerWidth) {
-    alert("Vertical (Portrait)");
+    elemento.style.backgroundImage = `url(${elemento.getAttribute(
+      "data-bg-vertical"
+    )})`;
   } else {
-    alert("Horizontal (Landscape)");
+    elemento.style.backgroundImage = `url(${elemento.getAttribute(
+      "data-bg-horizontal"
+    )})`;
   }
 }
 
-// Detectar en el momento
-detectarOrientacion();
-
-// Detectar cuando cambia
 window.addEventListener("resize", detectarOrientacion);

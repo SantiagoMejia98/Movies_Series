@@ -91,21 +91,6 @@ main {
   -webkit-filter: brightness(0.5);
 }
 
-.movil {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 100vh;
-  background-size: cover;
-  background-position: center;
-  filter: brightness(0.5);
-  z-index: -2;
-  -webkit-filter: brightness(0.5);
-}
-
 .content {
   display: flex;
   flex-direction: column;
@@ -464,14 +449,6 @@ main {
 }
 
 @media (max-width: 800px) {
-  .background {
-    z-index: -2;
-  }
-
-  .movil {
-    z-index: -1;
-  }
-
   main {
     padding: 0 30px 30px;
   }
