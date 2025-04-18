@@ -128,9 +128,7 @@ function JSONpelicula(titulo) {
             item.aspect_ratio === 0.667
         )
         .sort((a, b) => b.vote_average - a.vote_average)[1]?.file_path ||
-      titulo.poster_path?.poster_path ||
-      titulo.parts.filter((item) => item.poster_path !== null)[1]
-        ?.poster_path ||
+      titulo.poster_path ||
       null,
     Logo:
       titulo.images?.logos
@@ -241,9 +239,7 @@ function JSONserie(titulo) {
             item.aspect_ratio === 0.667
         )
         .sort((a, b) => b.vote_average - a.vote_average)[1]?.file_path ||
-      titulo.poster_path?.poster_path ||
-      titulo.parts.filter((item) => item.poster_path !== null)[1]
-        ?.poster_path ||
+      titulo.poster_path ||
       null,
     Logo:
       titulo.images?.logos
