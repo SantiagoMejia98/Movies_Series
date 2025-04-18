@@ -88,8 +88,8 @@ function crearColeccion(elemento, datos) {
   content.innerHTML = `
     <div class="background" 
       style="background-image: url(https://image.tmdb.org/t/p/original${
-        window.innerHeight > window.innerWidth ? datos.Portada : datos.movil
-      }');">
+        window.innerHeight > window.innerWidth ? datos.Movil : datos.Portada
+      }')">
     </div>
     
     <div class="movie-card">
@@ -111,15 +111,6 @@ function crearColeccion(elemento, datos) {
         <p>${datos.Descripcion}</p>
       </div>
     </div>`;
-
-  background.setAttribute(
-    "data-bg-vertical",
-    `https://image.tmdb.org/t/p/original${datos.Movil}`
-  );
-  background.setAttribute(
-    "data-bg-horizontal",
-    `https://image.tmdb.org/t/p/original${datos.Portada}`
-  );
 
   const coleccion = document.createElement("div");
   coleccion.className = "coleccion";
@@ -155,6 +146,16 @@ function crearColeccion(elemento, datos) {
   content.appendChild(coleccion);
   container.appendChild(content);
   elemento.appendChild(container);
+
+  const background = document.querySelector(".background");
+  background.setAttribute(
+    "data-bg-vertical",
+    `https://image.tmdb.org/t/p/original${datos.Movil}`
+  );
+  background.setAttribute(
+    "data-bg-horizontal",
+    `https://image.tmdb.org/t/p/original${datos.Portada}`
+  );
 }
 
 function crearPelicula(elemento, datos) {
@@ -174,9 +175,9 @@ function crearPelicula(elemento, datos) {
   if (datos.Logo) {
     content.innerHTML = `
     <div class="background" 
-      style="background-image: url(https://image.tmdb.org/t/p/original${
-        window.innerHeight > window.innerWidth ? datos.Portada : datos.movil
-      }');">
+      style="background-image: url('https://image.tmdb.org/t/p/original${
+        window.innerHeight > window.innerWidth ? datos.Movil : datos.Portada
+      }')">
     </div>
     
     <div class="logo-container">
@@ -330,6 +331,16 @@ function crearPelicula(elemento, datos) {
   });
   const closeBtn = document.querySelector(".close");
   closeBtn.addEventListener("click", closeTrailer);
+
+  const background = document.querySelector(".background");
+  background.setAttribute(
+    "data-bg-vertical",
+    `https://image.tmdb.org/t/p/original${datos.Movil}`
+  );
+  background.setAttribute(
+    "data-bg-horizontal",
+    `https://image.tmdb.org/t/p/original${datos.Portada}`
+  );
 }
 
 function seleccionarElementosAleatorios(tamaño) {
