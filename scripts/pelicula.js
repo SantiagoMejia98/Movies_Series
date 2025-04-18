@@ -86,16 +86,17 @@ function crearColeccion(elemento, datos) {
   content.setAttribute("data-id", datos.Id);
 
   content.innerHTML = `
+  <div class="movil" 
+      style="background-image: url('https://image.tmdb.org/t/p/original${
+        datos.Movil
+      }');">
+    </div>
     <div class="background" 
       style="background-image: url('https://image.tmdb.org/t/p/original${
         datos.Portada
       }');">
     </div>
-    <div class="movil" 
-      style="background-image: url('https://image.tmdb.org/t/p/original${
-        datos.Movil
-      }');">
-    </div>
+    
     <div class="movie-card">
       <img class="poster" 
         src="https://image.tmdb.org/t/p/w500${datos.Poster}" alt="${
@@ -168,12 +169,13 @@ function crearPelicula(elemento, datos) {
 
   if (datos.Logo) {
     content.innerHTML = `
-    <div class="background"
-        style="background-image: url('https://image.tmdb.org/t/p/original${datos.Portada}');">
-    </div>
     <div class="movil" 
       style="background-image: url('https://image.tmdb.org/t/p/original${datos.Movil}');">
     </div>
+    <div class="background"
+        style="background-image: url('https://image.tmdb.org/t/p/original${datos.Portada}');">
+    </div>
+    
     <div class="logo-container">
         <img class="logo" src="https://image.tmdb.org/t/p/w500${datos.Logo}" alt="${datos.Nombre}">
     </div>
