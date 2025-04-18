@@ -92,8 +92,8 @@ function crearColeccion(elemento, datos) {
       }');">
     </div>
     <div class="background" 
-      style="background-image: url('https://image.tmdb.org/t/p/original${
-        datos.Portada
+      style="background-image: url(https://image.tmdb.org/t/p/original${
+        window.innerHeight > window.innerWidth ? datos.Portada : datos.movil
       }');">
     </div>
     
