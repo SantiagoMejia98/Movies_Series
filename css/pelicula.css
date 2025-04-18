@@ -8,6 +8,17 @@ body {
   font-family: "JetBrains Mono", monospace;
 }
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 main {
   position: relative;
 }
@@ -75,10 +86,6 @@ main {
   width: 100%;
   margin-top: 80vh;
 }
-body {
-  padding: env(safe-area-inset-top) env(safe-area-inset-right)
-    env(safe-area-inset-bottom) env(safe-area-inset-left);
-}
 
 .background {
   position: fixed;
@@ -93,13 +100,6 @@ body {
   filter: brightness(0.5);
   z-index: -1;
   -webkit-filter: brightness(0.5);
-}
-.background {
-  position: fixed;
-  top: calc(-1 * env(safe-area-inset-top));
-  left: calc(-1 * env(safe-area-inset-left));
-  width: calc(100vw + env(safe-area-inset-left) + env(safe-area-inset-right));
-  height: calc(100vh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
 }
 
 .content {
@@ -387,7 +387,7 @@ body {
   border: none;
   outline: none;
   position: fixed;
-  top: 10p x;
+  top: 10 px;
   right: 10px;
   border-radius: 5px;
   -webkit-border-radius: 5px;
