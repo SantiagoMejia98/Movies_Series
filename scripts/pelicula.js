@@ -72,7 +72,6 @@ function guardarDatos(data) {
 await cargarDatosGuardados();
 
 function crearColeccion(elemento, datos) {
-  console.log(datos.Id);
   const containerExistente = elemento.querySelector(".container");
 
   if (containerExistente) {
@@ -160,7 +159,6 @@ function crearColeccion(elemento, datos) {
 }
 
 function crearPelicula(elemento, datos) {
-  console.log(datos.Id);
   const containerExistente = elemento.querySelector(".container");
 
   if (containerExistente) {
