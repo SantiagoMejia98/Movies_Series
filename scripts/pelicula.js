@@ -156,6 +156,12 @@ function crearColeccion(elemento, datos) {
     "data-bg-horizontal",
     `https://image.tmdb.org/t/p/original${datos.Portada}`
   );
+  // Pre-cargar ambas imágenes
+  const preloadVertical = new Image();
+  preloadVertical.src = `https://image.tmdb.org/t/p/original${datos.Movil}`;
+
+  const preloadHorizontal = new Image();
+  preloadHorizontal.src = `https://image.tmdb.org/t/p/original${datos.Portada}`;
 }
 
 function crearPelicula(elemento, datos) {
@@ -334,6 +340,12 @@ function crearPelicula(elemento, datos) {
     "data-bg-horizontal",
     `https://image.tmdb.org/t/p/original${datos.Portada}`
   );
+  // Pre-cargar ambas imágenes
+  const preloadVertical = new Image();
+  preloadVertical.src = `https://image.tmdb.org/t/p/original${datos.Movil}`;
+
+  const preloadHorizontal = new Image();
+  preloadHorizontal.src = `https://image.tmdb.org/t/p/original${datos.Portada}`;
 }
 
 function seleccionarElementosAleatorios(tamaño) {
