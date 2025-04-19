@@ -311,13 +311,17 @@ document.querySelectorAll(".bookmark-item").forEach((item) => {
   });
 });
 
-function openTrailer() {
-  const modal = document.getElementById("trailerModal");
-  modal.style.display = "block";
+function detectarOrientacion() {
+  const elemento = document.querySelector(".background");
+  if (window.innerHeight > window.innerWidth) {
+    elemento.style.backgroundImage = `url(${elemento.getAttribute(
+      "data-bg-vertical"
+    )})`;
+  } else {
+    elemento.style.backgroundImage = `url(${elemento.getAttribute(
+      "data-bg-horizontal"
+    )})`;
+  }
 }
-
-// Función para cerrar el modal
-function closeTrailer() {
-  const modal = document.getElementById("trailerModal");
-  modal.style.display = "none";
-}
+//alert(`w:${window.innerWidth} h:${window.innerHeight}`);
+window.addEventListener("resize", detectarOrientacion);

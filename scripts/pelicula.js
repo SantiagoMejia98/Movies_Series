@@ -405,17 +405,6 @@ document.querySelectorAll(".bookmark-item").forEach((item) => {
   });
 });
 
-function openTrailer() {
-  const modal = document.getElementById("trailerModal");
-  modal.style.display = "block";
-}
-
-// Función para cerrar el modal
-function closeTrailer() {
-  const modal = document.getElementById("trailerModal");
-  modal.style.display = "none";
-}
-
 document.addEventListener("click", function (event) {
   const card = event.target.closest(".card");
   if (!card) return;
