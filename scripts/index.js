@@ -43,7 +43,7 @@ function crearlistaInicio(elemento, datos) {
                     <h2 class="titulo"><strong>${
                       pelicula.Nombre.split(" (")[0]
                     }</strong></h2>
-                    <img src="https://image.tmdb.org/t/p/original${
+                    <img src="https://image.tmdb.org/t/p/w500${
                       pelicula.Poster
                     }" alt="${pelicula.Nombre}">
                     <div class="informacion">
