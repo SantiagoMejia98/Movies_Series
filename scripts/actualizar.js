@@ -10,11 +10,10 @@ const PROVEEDORES_VALIDOS = [
   "Disney Plus",
   "Amazon Prime Video",
   "Netflix",
-  "Apple TV Plus",
+  "Apple TV+",
   "Max",
   "Paramount Plus",
   "Crunchyroll",
-  "Universal+ Amazon Channel",
 ];
 
 const EXPIRATION_DAYS = 30;

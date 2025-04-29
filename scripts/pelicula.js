@@ -16,6 +16,24 @@ const traduccionesStatus = {
   Canceled: "Cancelada",
 };
 
+const PROVEEDORES_VALIDOS = {
+  "Disney Plus": "https://www.disneyplus.com/search/{query}",
+  "Amazon Prime Video":
+    "https://www.primevideo.com/search/ref=atv_nb_sug?ie=UTF8&phrase={query}&i=instant-video",
+  Netflix: "https://www.netflix.com/search?q={query}",
+  "Apple TV+": "https://tv.apple.com/search?term={query}",
+  Max: "https://play.max.com/search/result?q={query}",
+  "Paramount Plus": "https://www.paramountplus.com/shows/{query}/",
+  Crunchyroll: "https://www.crunchyroll.com/es-es/search?q={query}",
+};
+
+function obtenerLinkBusqueda(proveedor, titulo) {
+  const baseUrl = PROVEEDORES_VALIDOS[proveedor];
+  if (!baseUrl) return null;
+  const query = encodeURIComponent(titulo);
+  return baseUrl.replace("{query}", query);
+}
+
 const dropdownMenu = document.getElementById("dropdown-menu");
 
 const elementos = {
@@ -261,7 +279,12 @@ function crearPelicula(elemento, datos) {
       const li = document.createElement("li");
 
       li.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w92${proveedor.Logo}" alt="${proveedor.Nombre}">
+        <a href="${obtenerLinkBusqueda(
+          proveedor.Nombre,
+          datos.Nombre
+        )}" target="_blank"><img src="https://image.tmdb.org/t/p/w92${
+        proveedor.Logo
+      }" alt="${proveedor.Nombre}"></a>
       `;
 
       ulProvider.appendChild(li);
