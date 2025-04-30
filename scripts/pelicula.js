@@ -278,11 +278,7 @@ function crearPelicula(elemento, datos) {
       const li = document.createElement("li");
 
       li.innerHTML = `
-        <a href="${
-          PROVEEDORES_VALIDOS[proveedor.Nombre]
-        }" target="_blank"><img src="https://image.tmdb.org/t/p/w92${
-        proveedor.Logo
-      }" alt="${proveedor.Nombre}"></a>
+        <a href="intent://www.amazon.com/s?k=demon+slayer&i=instant-video#Intent;scheme=https;package=com.amazon.avod.thirdpartyclient;end" target="_blank"><img src="https://image.tmdb.org/t/p/w92${proveedor.Logo}" alt="${proveedor.Nombre}"></a>
       `;
 
       ulProvider.appendChild(li);
