@@ -27,15 +27,7 @@ const PROVEEDORES_VALIDOS = {
 function obtenerLinkBusqueda(proveedor, titulo) {
   const baseUrl = PROVEEDORES_VALIDOS[proveedor];
   if (!baseUrl) return null;
-  let query;
-  if (proveedor === "Paramount Plus") {
-    query = titulo
-      .replace(/ /g, "-")
-      .toLowerCase()
-      .replace(/[^a-z0-9-]/g, "");
-  } else {
-    query = encodeURIComponent(titulo);
-  }
+  const query = encodeURIComponent(titulo);
   return baseUrl.replace("{query}", query);
 }
 

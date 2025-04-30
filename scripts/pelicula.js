@@ -454,3 +454,15 @@ function detectarOrientacion() {
 }
 //alert(`w:${window.innerWidth} h:${window.innerHeight}`);
 window.addEventListener("resize", detectarOrientacion);
+
+function copiarNombre() {
+  const nombre = document.querySelector(".details h2").innerText.split(" (")[0];
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(nombre).catch((err) => {
+      console.warn("No se pudo copiar el nombre:", err);
+    });
+  }
+}
+
+const a = document.querySelector("a");
+a.addEventListener("click", copiarNombre);
