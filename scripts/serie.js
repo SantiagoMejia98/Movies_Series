@@ -151,6 +151,10 @@ function crearSerie(elemento, datos) {
     <h3>Streaming on</h3>
   `;
 
+  navigator.clipboard.writeText(datos.Nombre.split(" (")[0]).catch((err) => {
+    console.warn("No se pudo copiar automáticamente:", err);
+  });
+
   if (datos.Proveedores.length < 1) {
     proveedores.innerHTML += `
       <p>No disponible en Streaming</p>
@@ -166,23 +170,14 @@ function crearSerie(elemento, datos) {
         <a href="${obtenerLinkBusqueda(
           proveedor.Nombre.split(" (")[0],
           datos.Nombre
-        )}" target="_blank" onclick="onclick="copiarTexto(event, '${
-        datos.Nombre.split(" (")[0]
-      }')"><img src="https://image.tmdb.org/t/p/w92${proveedor.Logo}" alt="${
-        proveedor.Nombre
-      }"></a>
+        )}" target="_blank"><img src="https://image.tmdb.org/t/p/w92${
+        proveedor.Logo
+      }" alt="${proveedor.Nombre}"></a>
       `;
 
       ulProvider.appendChild(li);
     });
     proveedores.appendChild(ulProvider);
-  }
-
-  function copiarTexto(event, texto) {
-    event.preventDefault(); // evita que se abra el link hasta que copiemos
-    navigator.clipboard.writeText(texto).then(() => {
-      window.open(event.currentTarget.href, "_blank"); // abre después de copiar
-    });
   }
 
   details.appendChild(proveedores);
