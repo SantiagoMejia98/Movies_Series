@@ -19,7 +19,7 @@ const PROVEEDORES_VALIDOS = {
     "https://www.primevideo.com/search/ref=atv_nb_sug?ie=UTF8&phrase={query}&i=instant-video",
   Netflix: "https://www.netflix.com/search?q={query}",
   "Apple TV Plus": "https://tv.apple.com/search/{query}",
-  Max: "https://play.max.com/search?q={query}",
+  Max: "https://play.max.com/search/result?q={query}",
   "Paramount Plus": "https://www.paramountplus.com/shows/{query}/",
   Crunchyroll: "https://www.crunchyroll.com/es-es/search?q={query}",
 };
