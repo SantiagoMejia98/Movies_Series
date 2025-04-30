@@ -228,6 +228,13 @@ function crearPelicula(elemento, datos) {
   `;
   }
 
+  function copiarTexto(event, texto) {
+    event.preventDefault(); // evita que se abra el link hasta que copiemos
+    navigator.clipboard.writeText(texto).then(() => {
+      window.open(event.currentTarget.href, "_blank"); // abre después de copiar
+    });
+  }
+
   const moviecard = document.createElement("div");
   moviecard.className = "movie-card";
 
@@ -290,9 +297,9 @@ function crearPelicula(elemento, datos) {
         <a href="${obtenerLinkBusqueda(
           proveedor.Nombre.split(" (")[0],
           datos.Nombre
-        )}" target="_blank" onclick="${navigator.clipboard.writeText(
+        )}" target="_blank" onclick="onclick="copiarTexto(event, '${
         datos.Nombre.split(" (")[0]
-      )}"><img src="https://image.tmdb.org/t/p/w92${proveedor.Logo}" alt="${
+      }')"><img src="https://image.tmdb.org/t/p/w92${proveedor.Logo}" alt="${
         proveedor.Nombre
       }"></a>
       `;
