@@ -461,6 +461,7 @@ function copiarNombre() {
     navigator.clipboard.writeText(nombre).catch((err) => {
       console.warn("No se pudo copiar el nombre:", err);
     });
+    alert(`Nombre "${nombre}" copiado al portapapeles.`);
   }
 }
 
