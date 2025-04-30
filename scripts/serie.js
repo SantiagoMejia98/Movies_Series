@@ -18,7 +18,7 @@ const PROVEEDORES_VALIDOS = {
   "Amazon Prime Video":
     "https://www.primevideo.com/storefront/home/ref=atv_nb_logo",
   Netflix: "https://www.netflix.com/browse",
-  "Apple TV Plus": "https://tv.apple.com/co/search",
+  "Apple TV+": "https://tv.apple.com/co/search",
   Max: "https://play.max.com/search",
   "Paramount Plus": "https://www.paramountplus.com/co/search/",
   Crunchyroll: "https://www.crunchyroll.com/es-es/search",
