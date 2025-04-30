@@ -1,11 +1,51 @@
-"Disney Plus"
-"Amazon Prime Video"
-"Netflix"
-"Apple TV Plus"
-"Max"
-"Paramount Plus"
-"Crunchyroll"
-"Universal+ Amazon Channel"
+Apple TV
+Netflix
+MUBI
+Acorn TV
+Amazon Prime Video
+MUBI Amazon Channel
+Crunchyroll
+Pluto TV
+Sun Nxt
+Hoichoi
+Disney Plus
+MovistarTV
+Apple TV+
+Dekkoo
+VIX 
+Kocowa
+DIRECTV GO
+DOCSVILLE
+Paramount Plus
+Plex
+WOW Presents Plus
+Magellan TV
+BroadwayHD
+Filmzie
+True Story
+DocAlliance Films
+Paramount+ Amazon Channel
+Eventive
+Looke Amazon Channel
+Cultpix
+FilmBox+
+Takflix
+Paramount Plus Apple TV Channel 
+Univer Video
+ViX Premium Amazon Channel
+Runtime
+Universal+ Amazon Channel
+Max
+Crunchyroll Amazon Channel
+Adrenalina Pura Amazon channel
+Adrenalina Pura Apple TV channel
+MGM Plus Amazon Channel
+MGM+ Apple TV Channel
+Cindie Amazon Channel
+Apple TV Plus Amazon Channel
+JustWatchTV
+Filmelier Plus Amazon Channel
+FOUND TV
 
 iphone vertical: width = 393 height = 659 pixel ratio = 3
 iphone horizontal: width = 852 height = 343 pixel ratio = 3
