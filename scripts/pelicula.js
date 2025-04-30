@@ -457,22 +457,11 @@ window.addEventListener("resize", detectarOrientacion);
 
 function copiarNombre() {
   const nombre = document.querySelector(".details h2").innerText.split(" (")[0];
-
-  // Método alternativo compatible con Safari
-  const textarea = document.createElement("textarea");
-  textarea.value = nombre;
-  textarea.setAttribute("readonly", "");
-  textarea.style.position = "absolute";
-  textarea.style.left = "-9999px";
-  document.body.appendChild(textarea);
-  textarea.select();
-  const copiado = document.execCommand("copy");
-  document.body.removeChild(textarea);
-
-  if (copiado) {
-    alert(`Nombre "${nombre}" copiado al portapapeles.`);
-  } else {
-    alert("No se pudo copiar el nombre.");
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(nombre).catch((err) => {
+      console.warn("No se pudo copiar el nombre:", err);
+    });
+    alert(`Nombre "${nombre}".`);
   }
 }
 
