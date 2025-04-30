@@ -31,8 +31,11 @@ function obtenerLinkBusqueda(proveedor, titulo) {
   const baseUrl = PROVEEDORES_VALIDOS[proveedor];
   if (!baseUrl) return null;
   let query;
-  if (proveedor === "Amazon Prime Video") {
-    query = encodeURIComponent(titulo.replace(/ /g, "+"));
+  if (proveedor === "Paramount Plus") {
+    query = titulo
+      .replace(/ /g, "-")
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, "");
   } else {
     query = encodeURIComponent(titulo);
   }
@@ -285,7 +288,7 @@ function crearPelicula(elemento, datos) {
 
       li.innerHTML = `
         <a href="${obtenerLinkBusqueda(
-          proveedor.Nombre,
+          proveedor.Nombre.split(" (")[0],
           datos.Nombre
         )}" target="_blank"><img src="https://image.tmdb.org/t/p/w92${
         proveedor.Logo

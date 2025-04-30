@@ -28,8 +28,11 @@ function obtenerLinkBusqueda(proveedor, titulo) {
   const baseUrl = PROVEEDORES_VALIDOS[proveedor];
   if (!baseUrl) return null;
   let query;
-  if (proveedor === "Amazon Prime Video") {
-    query = encodeURIComponent(titulo.replace(/ /g, "+"));
+  if (proveedor === "Paramount Plus") {
+    query = titulo
+      .replace(/ /g, "-")
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, "");
   } else {
     query = encodeURIComponent(titulo);
   }
@@ -118,7 +121,7 @@ function crearSerie(elemento, datos) {
   details.className = "details";
 
   details.innerHTML = `
-    <h2>${datos.Nombre.split(" (")[0]}
+    <h2>${datos.Nombre}
   </h2>
     <p>${datos.Generos} &bull;  ${
     datos.Lanzamiento ? ` (${datos.Lanzamiento})` : ""
@@ -161,7 +164,7 @@ function crearSerie(elemento, datos) {
 
       li.innerHTML = `
         <a href="${obtenerLinkBusqueda(
-          proveedor.Nombre,
+          proveedor.Nombre.split(" (")[0],
           datos.Nombre
         )}" target="_blank"><img src="https://image.tmdb.org/t/p/w92${
         proveedor.Logo
