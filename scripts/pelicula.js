@@ -17,7 +17,7 @@ const traduccionesStatus = {
 };
 
 const PROVEEDORES_VALIDOS = {
-  "Disney Plus": "https://www.disneyplus.com/search/{query}",
+  "Disney Plus": "https://www.disneyplus.com/es-419/browse/search/{query}",
   "Amazon Prime Video":
     "https://www.primevideo.com/search/ref=atv_nb_sug?ie=UTF8&phrase={query}&i=instant-video",
   Netflix: "https://www.netflix.com/search?q={query}",

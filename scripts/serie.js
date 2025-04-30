@@ -14,12 +14,12 @@ const elementos = {
 };
 
 const PROVEEDORES_VALIDOS = {
-  "Disney Plus": "https://www.disneyplus.com/search/{query}",
+  "Disney Plus": "https://www.disneyplus.com/es-419/browse/search/{query}",
   "Amazon Prime Video":
-    "https://www.primevideo.com/search/ref=atv_nb_sug?ie=UTF8&phrase={query}",
+    "https://www.primevideo.com/search/ref=atv_nb_sug?ie=UTF8&phrase={query}&i=instant-video",
   Netflix: "https://www.netflix.com/search?q={query}",
-  "Apple TV+": "https://tv.apple.com/search?term={query}",
-  Max: "https://play.max.com/search/result?q={query}",
+  "Apple TV Plus": "https://tv.apple.com/search/{query}",
+  Max: "https://play.max.com/search?q={query}",
   "Paramount Plus": "https://www.paramountplus.com/shows/{query}/",
   Crunchyroll: "https://www.crunchyroll.com/es-es/search?q={query}",
 };
