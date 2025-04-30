@@ -166,9 +166,11 @@ function crearSerie(elemento, datos) {
         <a href="${obtenerLinkBusqueda(
           proveedor.Nombre.split(" (")[0],
           datos.Nombre
-        )}" target="_blank"><img src="https://image.tmdb.org/t/p/w92${
-        proveedor.Logo
-      }" alt="${proveedor.Nombre}"></a>
+        )}" target="_blank" onclick="${navigator.clipboard.writeText(
+        datos.Nombre.split(" (")[0]
+      )}"><img src="https://image.tmdb.org/t/p/w92${proveedor.Logo}" alt="${
+        proveedor.Nombre
+      }"></a>
       `;
 
       ulProvider.appendChild(li);
