@@ -162,14 +162,12 @@ function JSONpelicula(titulo) {
           };
         }) || null,
     Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate
-        ?.filter((prov) => PROVEEDORES_VALIDOS.includes(prov.provider_name))
-        .map((item) => {
-          return {
-            Logo: item.logo_path,
-            Nombre: item.provider_name,
-          };
-        }) || [],
+      titulo["watch/providers"]?.results?.CO?.flatrate?.map((item) => {
+        return {
+          Logo: item.logo_path,
+          Nombre: item.provider_name,
+        };
+      }) || [],
   };
 }
 
@@ -269,14 +267,12 @@ function JSONserie(titulo) {
           };
         }) || null,
     Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate
-        ?.filter((prov) => PROVEEDORES_VALIDOS.includes(prov.provider_name))
-        .map((item) => {
-          return {
-            Logo: item.logo_path,
-            Nombre: item.provider_name,
-          };
-        }) || [],
+      titulo["watch/providers"]?.results?.CO?.flatrate?.map((item) => {
+        return {
+          Logo: item.logo_path,
+          Nombre: item.provider_name,
+        };
+      }) || [],
     Duracion: `${titulo.number_of_seasons} ${
       titulo.number_of_seasons === 1 ? "temporada" : "temporadas"
     } - ${titulo.number_of_episodes} capítulos`,
