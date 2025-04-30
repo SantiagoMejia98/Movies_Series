@@ -151,10 +151,6 @@ function crearSerie(elemento, datos) {
     <h3>Streaming on</h3>
   `;
 
-  navigator.clipboard.writeText(datos.Nombre.split(" (")[0]).catch((err) => {
-    console.warn("No se pudo copiar automáticamente:", err);
-  });
-
   if (datos.Proveedores.length < 1) {
     proveedores.innerHTML += `
       <p>No disponible en Streaming</p>

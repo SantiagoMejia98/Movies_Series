@@ -268,9 +268,6 @@ function crearPelicula(elemento, datos) {
     }
     `;
 
-  navigator.clipboard.writeText(datos.Nombre.split(" (")[0]).catch((err) => {
-    console.warn("No se pudo copiar automáticamente:", err);
-  });
   const proveedores = document.createElement("div");
   proveedores.className = "streaming-providers";
 

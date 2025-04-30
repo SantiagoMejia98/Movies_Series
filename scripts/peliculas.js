@@ -97,7 +97,10 @@ dropdownMenu.addEventListener("change", manejarSeleccion);
 document.addEventListener("click", function (event) {
   const card = event.target.closest(".card");
   if (!card) return;
-
+  const nombre = card.querySelector(".titulo").textContent;
+  navigator.clipboard.writeText(nombre).catch((err) => {
+    console.warn("No se pudo copiar automáticamente:", err);
+  });
   const type = card.getAttribute("data-type");
   const id = card.getAttribute("data-id");
   const aleatorio = { Tipo: type, Id: id };
