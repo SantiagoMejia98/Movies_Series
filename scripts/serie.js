@@ -16,7 +16,7 @@ const elementos = {
 const PROVEEDORES_VALIDOS = {
   "Disney Plus": "https://www.disneyplus.com/search/{query}",
   "Amazon Prime Video":
-    "https://www.primevideo.com/search/ref=atv_nb_sug?ie=UTF8&phrase={query}&i=instant-video",
+    "https://www.primevideo.com/search/ref=atv_nb_sug?ie=UTF8&phrase={query}",
   Netflix: "https://www.netflix.com/search?q={query}",
   "Apple TV+": "https://tv.apple.com/search?term={query}",
   Max: "https://play.max.com/search/result?q={query}",
@@ -27,7 +27,12 @@ const PROVEEDORES_VALIDOS = {
 function obtenerLinkBusqueda(proveedor, titulo) {
   const baseUrl = PROVEEDORES_VALIDOS[proveedor];
   if (!baseUrl) return null;
-  const query = encodeURIComponent(titulo);
+  let query;
+  if (proveedor === "Amazon Prime Video") {
+    query = encodeURIComponent(titulo.replace(/ /g, "+"));
+  } else {
+    query = encodeURIComponent(titulo);
+  }
   return baseUrl.replace("{query}", query);
 }
 
