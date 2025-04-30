@@ -15,12 +15,13 @@ const elementos = {
 
 const PROVEEDORES_VALIDOS = {
   "Disney Plus": "https://www.disneyplus.com",
-  "Amazon Prime Video": "https://www.primevideo.com",
-  Netflix: "https://www.netflix.com",
-  "Apple TV Plus": "https://tv.apple.com",
-  Max: "https://play.max.com",
-  "Paramount Plus": "https://www.paramountplus.com",
-  Crunchyroll: "https://www.crunchyroll.com",
+  "Amazon Prime Video":
+    "https://www.primevideo.com/storefront/home/ref=atv_nb_logo",
+  Netflix: "https://www.netflix.com/browse",
+  "Apple TV Plus": "https://tv.apple.com/co/search",
+  Max: "https://play.max.com/search",
+  "Paramount Plus": "https://www.paramountplus.com/co/search/",
+  Crunchyroll: "https://www.crunchyroll.com/es-es/search",
 };
 
 let todasLasPeliculas = new Set();
