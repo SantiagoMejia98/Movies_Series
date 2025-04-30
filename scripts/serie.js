@@ -14,7 +14,7 @@ const elementos = {
 };
 
 const PROVEEDORES_VALIDOS = {
-  "Disney Plus": "https://www.disneyplus.com/browse/search",
+  "Disney Plus": "https://www.disneyplus.com/es-419/browse/search?q={query}",
   "Amazon Prime Video":
     "https://www.primevideo.com/search/ref=atv_nb_sug?ie=UTF8&phrase={query}&i=instant-video",
   Netflix: "https://www.netflix.com/search?q={query}",
@@ -27,7 +27,6 @@ const PROVEEDORES_VALIDOS = {
 function obtenerLinkBusqueda(proveedor, titulo) {
   const baseUrl = PROVEEDORES_VALIDOS[proveedor];
   if (!baseUrl) return null;
-  if (proveedor === "Disney Plus") return baseUrl;
   let query;
   if (proveedor === "Paramount Plus") {
     query = titulo
