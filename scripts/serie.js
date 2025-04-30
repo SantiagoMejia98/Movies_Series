@@ -27,6 +27,7 @@ const PROVEEDORES_VALIDOS = {
 function obtenerLinkBusqueda(proveedor, titulo) {
   const baseUrl = PROVEEDORES_VALIDOS[proveedor];
   if (!baseUrl) return null;
+  if (proveedor === "Disney Plus") return baseUrl;
   let query;
   if (proveedor === "Paramount Plus") {
     query = titulo
