@@ -14,7 +14,7 @@ const elementos = {
 };
 
 const PROVEEDORES_VALIDOS = {
-  "Disney Plus": "https://www.disneyplus.com/es-419/browse/search?q={query}",
+  "Disney Plus": "https://www.disneyplus.com/es-419/browse/search",
   "Amazon Prime Video":
     "https://www.primevideo.com/search/ref=atv_nb_sug?ie=UTF8&phrase={query}&i=instant-video",
   Netflix: "https://www.netflix.com/search?q={query}",
@@ -133,14 +133,6 @@ function crearSerie(elemento, datos) {
         <p>Ver tráiler</p>
       </li>
     </ul>
-    <div class="modal-content" id="trailerModal">
-      <div class="close">&times;</div>
-      <iframe class="trailer" id="trailerIframe"
-        src="https://www.youtube.com/embed/${
-          datos.Videos[0]
-        }" frameborder="0" allowfullscreen>
-      </iframe>
-    </div>
     <h3>Sinopsis</h3>
     <p>${datos.Descripcion}</p>`;
 
