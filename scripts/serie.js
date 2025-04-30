@@ -15,21 +15,13 @@ const elementos = {
 
 const PROVEEDORES_VALIDOS = {
   "Disney Plus": "https://www.disneyplus.com",
-  "Amazon Prime Video":
-    "https://www.primevideo.com/search/ref=atv_nb_sug?ie=UTF8&phrase={query}&i=instant-video",
-  Netflix: "https://www.netflix.com/search?q={query}",
-  "Apple TV Plus": "https://tv.apple.com/search/{query}",
-  Max: "https://play.max.com/search/result?q={query}",
-  "Paramount Plus": "https://www.paramountplus.com/shows/{query}/",
-  Crunchyroll: "https://www.crunchyroll.com/es-es/search?q={query}",
+  "Amazon Prime Video": "https://www.primevideo.com",
+  Netflix: "https://www.netflix.com",
+  "Apple TV Plus": "https://tv.apple.com",
+  Max: "https://play.max.com",
+  "Paramount Plus": "https://www.paramountplus.com",
+  Crunchyroll: "https://www.crunchyroll.com",
 };
-
-function obtenerLinkBusqueda(proveedor, titulo) {
-  const baseUrl = PROVEEDORES_VALIDOS[proveedor];
-  if (!baseUrl) return null;
-  const query = encodeURIComponent(titulo);
-  return baseUrl.replace("{query}", query);
-}
 
 let todasLasPeliculas = new Set();
 let todasLasSeries = new Set();
@@ -147,10 +139,9 @@ function crearSerie(elemento, datos) {
       const li = document.createElement("li");
 
       li.innerHTML = `
-        <a href="${obtenerLinkBusqueda(
-          proveedor.Nombre.split(" (")[0],
-          datos.Nombre
-        )}" target="_blank"><img src="https://image.tmdb.org/t/p/w92${
+        <a href="${
+          PROVEEDORES_VALIDOS[proveedor.Nombre]
+        }" target="_blank"><img src="https://image.tmdb.org/t/p/w92${
         proveedor.Logo
       }" alt="${proveedor.Nombre}"></a>
       `;
@@ -340,3 +331,15 @@ function detectarOrientacion() {
 }
 //alert(`w:${window.innerWidth} h:${window.innerHeight}`);
 window.addEventListener("resize", detectarOrientacion);
+
+function copiarNombre() {
+  const nombre = document.querySelector(".details h2").innerText.split(" (")[0];
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(nombre).catch((err) => {
+      console.warn("No se pudo copiar el nombre:", err);
+    });
+  }
+}
+
+const a = document.querySelector("a");
+a.addEventListener("click", copiarNombre);
