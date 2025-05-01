@@ -119,7 +119,8 @@ main {
   box-shadow: 0 0 10px #eee;
 }
 
-.search-input {
+.search-input,
+#buscador {
   background-image: linear-gradient(
     to right,
     #2c3e50 0%,

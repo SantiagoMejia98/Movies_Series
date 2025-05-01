@@ -108,3 +108,20 @@ document.addEventListener("click", function (event) {
     window.location.href = "pelicula.html";
   }
 });
+
+const buscador = document.getElementById("buscador");
+
+buscador.addEventListener("input", function () {
+  const texto = buscador.value.trim().toLowerCase();
+
+  if (texto === "") {
+    crearlistaInicio(elementos.peliculas, todasLasPeliculas);
+    return;
+  }
+
+  const peliculasFiltradas = Array.from(todasLasPeliculas).filter((p) =>
+    p.Nombre.toLowerCase().includes(texto)
+  );
+
+  crearlistaInicio(elementos.peliculas, peliculasFiltradas);
+});
