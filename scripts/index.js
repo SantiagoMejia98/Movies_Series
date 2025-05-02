@@ -135,15 +135,7 @@ async function cargarDatosGuardados() {
   medirPesos("peliculasCard");
   medirPesos("seriesCard");
   alert(
-    `${Object.keys(peliculas).length} peliculas y ${
-      Object.keys(series).length
-    } series guardadas \n ${
-      Object.keys(colecciones).length
-    } colecciones guardadas \n ${
-      todasLasPeliculas.size
-    } peliculas en la lista de inicio \n ${
-      todasLasSeries.size
-    } series en la lista de inicio`
+    `0 peliculas y 0 series guardadas \n 0 colecciones guardadas \n ${todasLasPeliculas.size} peliculas en la lista de inicio \n ${todasLasSeries.size} series en la lista de inicio`
   );
 }
 
