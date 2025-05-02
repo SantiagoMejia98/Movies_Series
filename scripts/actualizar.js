@@ -497,11 +497,11 @@ async function buscarColeccion(id) {
 
 function guardarDatos(data) {
   localStorage.clear();
-  localStorage.setItem("peliculas", JSON.stringify(data["peliculas"]));
-  localStorage.setItem("series", JSON.stringify(data["series"]));
-  localStorage.setItem("colecciones", JSON.stringify(data["colecciones"]));
-  //localStorage.setItem("peliculasCard", JSON.stringify(data["peliculasCard"]));
-  //localStorage.setItem("seriesCard", JSON.stringify(data["seriesCard"]));
+  //localStorage.setItem("peliculas", JSON.stringify(data["peliculas"]));
+  //localStorage.setItem("series", JSON.stringify(data["series"]));
+  //localStorage.setItem("colecciones", JSON.stringify(data["colecciones"]));
+  localStorage.setItem("peliculasCard", JSON.stringify(data["peliculasCard"]));
+  localStorage.setItem("seriesCard", JSON.stringify(data["seriesCard"]));
   localStorage.setItem(
     "expirationDate",
     JSON.stringify(data["expirationDate"])
@@ -529,11 +529,11 @@ for (const id in peliculas) {
   }
 }
 
-data["peliculas"] = peliculas;
-data["series"] = series;
-data["colecciones"] = colecciones;
-//data["peliculasCard"] = [...todasLasPeliculas];
-//data["seriesCard"] = [...todasLasSeries];
+//data["peliculas"] = peliculas;
+//data["series"] = series;
+//data["colecciones"] = colecciones;
+data["peliculasCard"] = [...todasLasPeliculas];
+data["seriesCard"] = [...todasLasSeries];
 const expirationDate = new Date();
 expirationDate.setDate(expirationDate.getDate() + EXPIRATION_DAYS);
 data["expirationDate"] = expirationDate;
