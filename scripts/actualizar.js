@@ -25,6 +25,9 @@ let todasLasSeries = {};
 let peliculas = {};
 let colecciones = {};
 let data = {};
+let seriesId = new Set();
+let peliculasId = new Set();
+let coleccionesId = new Set();
 
 function manejarSeleccion(event) {
   const valorSeleccionado = event.target.value;
@@ -437,6 +440,7 @@ async function buscarDetallesPeliculas(id) {
     const data = await res.json();
     if (data) {
       peliculas[id] = JSONpelicula(data);
+      peliculasId.add(id);
       if (data.belongs_to_collection) {
         if (!colecciones[data.belongs_to_collection.id]) {
           await buscarColeccion(data.belongs_to_collection.id);
@@ -464,6 +468,7 @@ async function buscarDetallesSeries(id) {
     const data = await res.json();
     if (data) {
       todasLasSeries[id] = JSONserie(data);
+      seriesId.add(id);
     }
   } catch (err) {
     console.error("Error al cargar datos:", err);
@@ -484,6 +489,7 @@ async function buscarColeccion(id) {
     const data = await res.json();
     if (data) {
       colecciones[id] = JSONcoleccion(data);
+      coleccionesId.add(id);
       for (const pelicula of data.parts) {
         if (!peliculas[pelicula.id]) {
           await buscarDetallesPeliculas(pelicula.id);
@@ -499,6 +505,9 @@ function guardarDatos(data) {
   localStorage.clear();
   localStorage.setItem("peliculasCard", JSON.stringify(data["peliculasCard"]));
   localStorage.setItem("seriesCard", JSON.stringify(data["seriesCard"]));
+  localStorage.setItem("peliculasId", JSON.stringify(data["peliculasId"]));
+  localStorage.setItem("seriesId", JSON.stringify(data["seriesId"]));
+  localStorage.setItem("coleccionesId", JSON.stringify(data["coleccionesId"]));
   localStorage.setItem(
     "expirationDate",
     JSON.stringify(data["expirationDate"])
@@ -509,15 +518,17 @@ await cargarDatos("movies");
 await cargarDatos("tv");
 
 for (const coleccion in colecciones) {
-  for (const id in colecciones[coleccion].Partes) {
-    colecciones[coleccion].Peliculas[id] =
-      peliculas[colecciones[coleccion].Partes[id]];
+  for (const movieId of colecciones[coleccion].Partes) {
+    colecciones[coleccion].Peliculas[movieId] = peliculas[movieId];
   }
   todasLasPeliculas[coleccion] = colecciones[coleccion];
 }
 
 data["peliculasCard"] = todasLasPeliculas;
 data["seriesCard"] = todasLasSeries;
+data["peliculasId"] = Array.from(peliculasId);
+data["seriesId"] = Array.from(seriesId);
+data["coleccionesId"] = Array.from(coleccionesId);
 const expirationDate = new Date();
 expirationDate.setDate(expirationDate.getDate() + EXPIRATION_DAYS);
 data["expirationDate"] = expirationDate;

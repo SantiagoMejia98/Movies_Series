@@ -123,7 +123,7 @@ document.addEventListener("click", function (event) {
 
   const type = card.getAttribute("data-type");
   const id = card.getAttribute("data-id");
-  const aleatorio = id;
+  const aleatorio = [id];
   guardarDatos(aleatorio);
   if (type === "tv") {
     window.location.href = "serie.html";

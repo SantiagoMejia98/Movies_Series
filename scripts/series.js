@@ -93,7 +93,7 @@ document.addEventListener("click", function (event) {
   if (!card) return;
 
   const id = card.getAttribute("data-id");
-  const aleatorio = id;
+  const aleatorio = [id];
   guardarDatos(aleatorio);
   window.location.href = "serie.html";
 });

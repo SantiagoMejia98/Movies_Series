@@ -30,6 +30,7 @@ let aleatorio;
 async function cargarDatosGuardados() {
   todasLasSeries = JSON.parse(localStorage.getItem("seriesCard"));
   aleatorio = JSON.parse(localStorage.getItem("aleatorio"));
+  console.log(aleatorio);
   let titulo;
   if (!aleatorio) {
     const claves = Object.keys(todasLasSeries);

@@ -13,23 +13,16 @@ const get = {
   },
 };
 
-let peliculas = {};
-let series = {};
-let colecciones = {};
-let data = {};
+let peliculas = [];
+let series = [];
+let colecciones = [];
 let nuevas = {};
 let presentes = {};
 
 async function cargarDatosGuardados() {
-  peliculas = JSON.parse(
-    LZString.decompressFromUTF16(localStorage.getItem("peliculas"))
-  );
-  series = JSON.parse(
-    LZString.decompressFromUTF16(localStorage.getItem("series"))
-  );
-  colecciones = JSON.parse(
-    LZString.decompressFromUTF16(localStorage.getItem("colecciones"))
-  );
+  peliculas = JSON.parse(localStorage.getItem("peliculasId"));
+  series = JSON.parse(localStorage.getItem("seriesId"));
+  colecciones = JSON.parse(localStorage.getItem("coleccionesId"));
 }
 
 await cargarDatosGuardados();
@@ -214,7 +207,7 @@ async function buscarColeccion(query) {
   let coleccionesID = [];
   try {
     const res = await fetch(
-      `https://api.themoviedb.org/3/search/collection?query=${query}`,
+      `https://api.themoviedb.org/3/search/collection?query=${query} collection`,
       get
     );
 
@@ -224,6 +217,7 @@ async function buscarColeccion(query) {
 
     const data = await res.json();
     if (data.results) {
+      console.log(data.results);
       coleccionesID = data.results
         .filter((item) => item.poster_path !== null)
         .map((item) => item.id);

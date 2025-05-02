@@ -47,9 +47,12 @@ async function cargarDatosGuardados() {
     titulo = todasLasPeliculas[aleatorio];
   } else {
     localStorage.removeItem("aleatorio");
-    titulo = todasLasPeliculas[aleatorio];
+    if (aleatorio.length > 1) {
+      titulo = todasLasPeliculas[aleatorio[0]].Peliculas[aleatorio[1]];
+    } else {
+      titulo = todasLasPeliculas[aleatorio];
+    }
   }
-  localStorage.removeItem("aleatorio");
   if (titulo.Tipo === "collection") {
     crearColeccion(elementos.coleccion, titulo);
   } else {
@@ -114,6 +117,7 @@ function crearColeccion(elemento, datos) {
     li.className = "card";
     li.setAttribute("data-id", pelicula.Id);
     li.setAttribute("data-type", pelicula.Tipo);
+    li.setAttribute("data-collection", datos.Id);
 
     li.innerHTML = `
       <div class="pelicula-container">
@@ -392,6 +396,17 @@ document.querySelectorAll(".bookmark-item").forEach((item) => {
     // Alternar la clase "filled" para cambiar el color
     this.classList.toggle("filled");
   });
+});
+
+document.addEventListener("click", function (event) {
+  const card = event.target.closest(".card");
+  if (!card) return;
+
+  const id = card.getAttribute("data-id");
+  const coleccion = card.getAttribute("data-collection");
+  const aleatorio = [coleccion, id];
+  guardarDatos(aleatorio);
+  window.location.href = "pelicula.html";
 });
 
 function detectarOrientacion() {
