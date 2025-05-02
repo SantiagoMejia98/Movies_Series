@@ -119,25 +119,13 @@ async function cargarDatosGuardados() {
   const fecha = JSON.parse(localStorage.getItem("expirationDate"));
 
   if (fecha && new Date(fecha) > new Date()) {
-    peliculas = JSON.parse(
-      LZString.decompressFromUTF16(localStorage.getItem("peliculas"))
-    );
-    series = JSON.parse(
-      LZString.decompressFromUTF16(localStorage.getItem("series"))
-    );
-    colecciones = JSON.parse(
-      LZString.decompressFromUTF16(localStorage.getItem("colecciones"))
-    );
+    peliculas = JSON.parse(localStorage.getItem("peliculas"));
+    series = JSON.parse(localStorage.getItem("series"));
+    colecciones = JSON.parse(localStorage.getItem("colecciones"));
     todasLasPeliculas = new Set(
-      JSON.parse(
-        LZString.decompressFromUTF16(localStorage.getItem("peliculasCard"))
-      )
+      JSON.parse(localStorage.getItem("peliculasCard"))
     );
-    todasLasSeries = new Set(
-      JSON.parse(
-        LZString.decompressFromUTF16(localStorage.getItem("seriesCard"))
-      )
-    );
+    todasLasSeries = new Set(JSON.parse(localStorage.getItem("seriesCard")));
   } else {
     window.location = "actualizar.html";
   }

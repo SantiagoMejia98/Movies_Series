@@ -497,26 +497,11 @@ async function buscarColeccion(id) {
 
 function guardarDatos(data) {
   localStorage.clear();
-  localStorage.setItem(
-    "peliculas",
-    LZString.compressToUTF16(JSON.stringify(data["peliculas"]))
-  );
-  localStorage.setItem(
-    "series",
-    LZString.compressToUTF16(JSON.stringify(data["series"]))
-  );
-  localStorage.setItem(
-    "colecciones",
-    LZString.compressToUTF16(JSON.stringify(data["colecciones"]))
-  );
-  localStorage.setItem(
-    "peliculasCard",
-    LZString.compressToUTF16(JSON.stringify(data["peliculasCard"]))
-  );
-  localStorage.setItem(
-    "seriesCard",
-    LZString.compressToUTF16(JSON.stringify(data["seriesCard"]))
-  );
+  localStorage.setItem("peliculas", JSON.stringify(data["peliculas"]));
+  localStorage.setItem("series", JSON.stringify(data["series"]));
+  localStorage.setItem("colecciones", JSON.stringify(data["colecciones"]));
+  localStorage.setItem("peliculasCard", JSON.stringify(data["peliculasCard"]));
+  localStorage.setItem("seriesCard", JSON.stringify(data["seriesCard"]));
   localStorage.setItem(
     "expirationDate",
     JSON.stringify(data["expirationDate"])
