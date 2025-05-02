@@ -264,7 +264,7 @@ function crearPelicula(elemento, datos) {
       const li = document.createElement("li");
 
       li.innerHTML = `
-        <a href="${
+        <a class="pro" href="${
           PROVEEDORES_VALIDOS[proveedor.Nombre]
         }" target="_blank"><img src="https://image.tmdb.org/t/p/w92${
         proveedor.Logo
@@ -353,6 +353,11 @@ function crearPelicula(elemento, datos) {
 
   const preloadHorizontal = new Image();
   preloadHorizontal.src = `https://image.tmdb.org/t/p/original${datos.Portada}`;
+
+  if (datos.Proveedores.length > 0) {
+    const a = document.querySelector(".pro");
+    a.addEventListener("click", copiarNombre);
+  }
 }
 
 function seleccionarElementosAleatorios(tamaño) {
@@ -446,6 +451,3 @@ function copiarNombre() {
     });
   }
 }
-
-const a = document.querySelector("a");
-a.addEventListener("click", copiarNombre);

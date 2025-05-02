@@ -77,15 +77,17 @@ function JSONpelicula(titulo) {
     }`,
     Coleccion: titulo.belongs_to_collection?.id || null,
     Descripcion:
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
-        .find((item) => item)?.data.overview ||
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
-        .find((item) => item)?.data.overview ||
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
-        .find((item) => item)?.data.overview ||
+      (
+        titulo.translations.translations.find(
+          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO"
+        ) ||
+        titulo.translations.translations.find(
+          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX"
+        ) ||
+        titulo.translations.translations.find(
+          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES"
+        )
+      )?.data.overview ||
       titulo.overview ||
       null,
     Lanzamiento:
@@ -96,51 +98,39 @@ function JSONpelicula(titulo) {
     Tagline: titulo.tagline || null,
     Tipo: "movie",
     Poster:
-      titulo.images?.posters
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1500 &&
-            item.aspect_ratio === 0.667
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
+      titulo.images?.posters.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1500 &&
+          item.aspect_ratio === 0.667
+      )[0]?.file_path ||
       titulo.poster_path ||
       null,
     Portada:
-      titulo.images?.backdrops
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1080 &&
-            item.aspect_ratio === 1.778
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
+      titulo.images?.backdrops.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1080 &&
+          item.aspect_ratio === 1.778
+      )[0]?.file_path ||
       titulo.backdrop_path ||
       titulo.poster_path ||
       null,
     Movil:
-      titulo.images?.posters
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1500 &&
-            item.aspect_ratio === 0.667
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[1]?.file_path ||
+      titulo.images?.posters.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1500 &&
+          item.aspect_ratio === 0.667
+      )[1]?.file_path ||
       titulo.poster_path ||
       null,
     Logo:
-      titulo.images?.logos
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.width >= 400
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path || null,
-    Videos:
-      titulo.videos?.results
-        .filter((item) => item.type === "Trailer")
-        .map((item) => item.key) || null,
+      titulo.images?.logos.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.width >= 400
+      )[0]?.file_path || null,
     Reparto:
       titulo.credits?.cast
         .filter((item) => item.profile_path !== null)
@@ -202,52 +192,40 @@ function JSONserie(titulo) {
     Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
     Status: titulo.status || null,
     Tagline: titulo.tagline || null,
-    Videos:
-      titulo.videos?.results
-        .filter((item) => item.type === "Trailer")
-        .map((item) => item.key) || null,
     Poster:
-      titulo.images?.posters
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1500 &&
-            item.aspect_ratio === 0.667
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
+      titulo.images?.posters.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1500 &&
+          item.aspect_ratio === 0.667
+      )[0]?.file_path ||
       titulo.poster_path ||
       null,
     Portada:
-      titulo.images?.backdrops
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1080 &&
-            item.aspect_ratio === 1.778
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
+      titulo.images?.backdrops.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1080 &&
+          item.aspect_ratio === 1.778
+      )[0]?.file_path ||
       titulo.backdrop_path ||
       titulo.poster_path ||
       null,
     Movil:
-      titulo.images?.posters
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1500 &&
-            item.aspect_ratio === 0.667
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[1]?.file_path ||
+      titulo.images?.posters.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1500 &&
+          item.aspect_ratio === 0.667
+      )[1]?.file_path ||
       titulo.poster_path ||
       null,
     Logo:
-      titulo.images?.logos
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.width >= 400
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path || null,
+      titulo.images?.logos.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.width >= 400
+      )[0]?.file_path || null,
     Directores:
       titulo.created_by
         .filter((item) => item.profile_path !== null)
@@ -281,15 +259,17 @@ function JSONserie(titulo) {
       titulo.number_of_seasons === 1 ? "temporada" : "temporadas"
     } - ${titulo.number_of_episodes} capítulos`,
     Descripcion:
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
-        .find((item) => item)?.data.overview ||
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
-        .find((item) => item)?.data.overview ||
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
-        .find((item) => item)?.data.overview ||
+      (
+        titulo.translations.translations.find(
+          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO"
+        ) ||
+        titulo.translations.translations.find(
+          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX"
+        ) ||
+        titulo.translations.translations.find(
+          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES"
+        )
+      )?.data.overview ||
       titulo.overview ||
       null,
     Temporadas: titulo.seasons
@@ -332,41 +312,35 @@ function JSONcoleccion(titulo) {
         : "Desconocido";
     })(),
     Poster:
-      titulo.images?.posters
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1500 &&
-            item.aspect_ratio === 0.667
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
+      titulo.images?.posters.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1500 &&
+          item.aspect_ratio === 0.667
+      )[0]?.file_path ||
       titulo.poster_path?.poster_path ||
       titulo.parts.filter((item) => item.poster_path !== null)[0]
         ?.poster_path ||
       null,
     Portada:
-      titulo.images?.backdrops
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1080 &&
-            item.aspect_ratio === 1.778
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[0]?.file_path ||
+      titulo.images?.backdrops.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1080 &&
+          item.aspect_ratio === 1.778
+      )[0]?.file_path ||
       titulo.backdrop_path?.backdrop_path ||
       titulo.parts.filter((item) => item.backdrop_path !== null)[0]
         ?.backdrop_path ||
       titulo.poster_path ||
       null,
     Movil:
-      titulo.images?.posters
-        .filter(
-          (item) =>
-            (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-            item.height >= 1500 &&
-            item.aspect_ratio === 0.667
-        )
-        .sort((a, b) => b.vote_average - a.vote_average)[1]?.file_path ||
+      titulo.images?.posters.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1500 &&
+          item.aspect_ratio === 0.667
+      )[1]?.file_path ||
       titulo.poster_path?.poster_path ||
       titulo.parts.filter((item) => item.poster_path !== null)[1]
         ?.poster_path ||
@@ -376,15 +350,17 @@ function JSONcoleccion(titulo) {
     Tipo: "collection",
 
     Descripcion:
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO")
-        .find((item) => item)?.data.overview ||
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX")
-        .find((item) => item)?.data.overview ||
-      titulo.translations.translations
-        .filter((item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES")
-        .find((item) => item)?.data.overview ||
+      (
+        titulo.translations.translations.find(
+          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO"
+        ) ||
+        titulo.translations.translations.find(
+          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX"
+        ) ||
+        titulo.translations.translations.find(
+          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES"
+        )
+      )?.data.overview ||
       titulo.overview ||
       null,
     Peliculas: titulo.parts
@@ -533,7 +509,7 @@ function guardarDatos(data) {
   );
   localStorage.setItem(
     "expirationDate",
-    LZString.compressToUTF16(JSON.stringify(data["expirationDate"]))
+    JSON.stringify(data["expirationDate"])
   );
 }
 
@@ -555,6 +531,26 @@ data["seriesCard"] = [...todasLasSeries];
 const expirationDate = new Date();
 expirationDate.setDate(expirationDate.getDate() + EXPIRATION_DAYS);
 data["expirationDate"] = expirationDate;
+
+function getSizeInMB(str) {
+  const bytes = new Blob([str]).size;
+  return (bytes / (1024 * 1024)).toFixed(3); // Redondeado a 3 decimales
+}
+
+function medirPesos(data) {
+  const jsonString = JSON.stringify(data);
+  const compressed = LZString.compressToUTF16(jsonString);
+
+  alert(
+    "Tamaño JSON.stringify: " +
+      getSizeInMB(jsonString) +
+      " MB\n" +
+      "Tamaño LZString.compressToUTF16: " +
+      getSizeInMB(compressed) +
+      " MB"
+  );
+}
+medirPesos(data);
 
 guardarDatos(data);
 window.location = "index.html";

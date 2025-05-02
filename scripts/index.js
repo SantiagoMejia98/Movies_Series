@@ -97,12 +97,7 @@ function guardarDatos(data) {
 }
 
 async function cargarDatosGuardados() {
-  const compressedData = localStorage.getItem("expirationDate");
-  let fecha;
-  if (compressedData) {
-    const jsonString = LZString.decompressFromUTF16(compressedData);
-    fecha = JSON.parse(jsonString);
-  }
+  const fecha = JSON.parse(localStorage.getItem("expirationDate"));
 
   if (fecha && new Date(fecha) > new Date()) {
     peliculas = JSON.parse(
@@ -127,7 +122,7 @@ async function cargarDatosGuardados() {
   } else {
     window.location = "actualizar.html";
   }
-  /*alert(
+  alert(
     `${Object.keys(peliculas).length} peliculas y ${
       Object.keys(series).length
     } series guardadas \n ${
@@ -137,7 +132,7 @@ async function cargarDatosGuardados() {
     } peliculas en la lista de inicio \n ${
       todasLasSeries.size
     } series en la lista de inicio`
-  );*/
+  );
 }
 
 await cargarDatosGuardados();
