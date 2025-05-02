@@ -355,7 +355,6 @@ function JSONcoleccion(titulo) {
     Id: titulo.id,
     Duracion: `${titulo.parts.length} películas`,
     Tipo: "collection",
-
     Descripcion:
       (
         titulo.translations.translations.find(
@@ -373,10 +372,11 @@ function JSONcoleccion(titulo) {
       )?.data.overview ||
       titulo.overview ||
       null,
-    Peliculas: titulo.parts
+    Partes: titulo.parts
       .filter((item) => item.poster_path !== null)
       .sort((a, b) => new Date(a.release_date) - new Date(b.release_date))
       .map((item) => item.id),
+    Peliculas: new Set(),
   };
 }
 
@@ -500,8 +500,8 @@ function guardarDatos(data) {
   localStorage.setItem("peliculas", JSON.stringify(data["peliculas"]));
   localStorage.setItem("series", JSON.stringify(data["series"]));
   localStorage.setItem("colecciones", JSON.stringify(data["colecciones"]));
-  localStorage.setItem("peliculasCard", JSON.stringify(data["peliculasCard"]));
-  localStorage.setItem("seriesCard", JSON.stringify(data["seriesCard"]));
+  //localStorage.setItem("peliculasCard", JSON.stringify(data["peliculasCard"]));
+  //localStorage.setItem("seriesCard", JSON.stringify(data["seriesCard"]));
   localStorage.setItem(
     "expirationDate",
     JSON.stringify(data["expirationDate"])
@@ -510,6 +510,17 @@ function guardarDatos(data) {
 
 await cargarDatos("movies");
 await cargarDatos("tv");
+
+for (const coleccion in colecciones) {
+  for (const id in colecciones[coleccion].Partes) {
+    colecciones[coleccion].Peliculas.add(
+      peliculas[colecciones[coleccion].Partes[id]]
+    );
+  }
+  colecciones[coleccion].Peliculas = [...colecciones[coleccion].Peliculas];
+  //todasLasPeliculas.add(colecciones[coleccion]);
+}
+
 for (const id in peliculas) {
   if (peliculas[id].Coleccion) {
     todasLasPeliculas.add(colecciones[peliculas[id].Coleccion]);
@@ -521,8 +532,8 @@ for (const id in peliculas) {
 data["peliculas"] = peliculas;
 data["series"] = series;
 data["colecciones"] = colecciones;
-data["peliculasCard"] = [...todasLasPeliculas];
-data["seriesCard"] = [...todasLasSeries];
+//data["peliculasCard"] = [...todasLasPeliculas];
+//data["seriesCard"] = [...todasLasSeries];
 const expirationDate = new Date();
 expirationDate.setDate(expirationDate.getDate() + EXPIRATION_DAYS);
 data["expirationDate"] = expirationDate;
