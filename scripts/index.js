@@ -96,6 +96,25 @@ function guardarDatos(data) {
   localStorage.setItem("aleatorio", JSON.stringify(data));
 }
 
+function getSizeInMB(str) {
+  const bytes = new Blob([str]).size;
+  return (bytes / (1024 * 1024)).toFixed(3); // Redondeado a 3 decimales
+}
+
+function medirPesos(data) {
+  const compressed = localStorage.getItem(data);
+  const jsonString = LZString.decompressFromUTF16(compressed);
+
+  alert(
+    "Tamaño JSON.stringify: " +
+      getSizeInMB(jsonString) +
+      " MB\n" +
+      "Tamaño LZString.compressToUTF16: " +
+      getSizeInMB(compressed) +
+      " MB"
+  );
+}
+
 async function cargarDatosGuardados() {
   const fecha = JSON.parse(localStorage.getItem("expirationDate"));
 
@@ -122,6 +141,11 @@ async function cargarDatosGuardados() {
   } else {
     window.location = "actualizar.html";
   }
+  medirPesos("peliculas");
+  medirPesos("series");
+  medirPesos("colecciones");
+  medirPesos("peliculasCard");
+  medirPesos("seriesCard");
   alert(
     `${Object.keys(peliculas).length} peliculas y ${
       Object.keys(series).length
