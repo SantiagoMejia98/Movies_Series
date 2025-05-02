@@ -427,7 +427,7 @@ async function cargarDatos(tipo) {
 async function buscarDetallesPeliculas(id) {
   try {
     const res = await fetch(
-      `https://api.themoviedb.org/3/movie/${id}?append_to_response=credits,videos,watch/providers,translations,images`,
+      `https://api.themoviedb.org/3/movie/${id}?append_to_response=credits,watch/providers,translations,images`,
       get
     );
 
@@ -452,7 +452,7 @@ async function buscarDetallesPeliculas(id) {
 async function buscarDetallesSeries(id) {
   try {
     const res = await fetch(
-      `https://api.themoviedb.org/3/tv/${id}?append_to_response=aggregate_credits,videos,watch/providers,translations,images`,
+      `https://api.themoviedb.org/3/tv/${id}?append_to_response=aggregate_credits,watch/providers,translations,images`,
       get
     );
 
