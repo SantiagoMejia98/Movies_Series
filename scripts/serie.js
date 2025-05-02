@@ -113,13 +113,17 @@ function crearSerie(elemento, datos) {
   } &bull; ${datos.Duracion} &bull; ${datos.Status}</p>
     <p><i>${datos.Tagline}</i></p> 
     <ul>
-      <li class="movie-item">
-        <img src="https://image.tmdb.org/t/p/w92/pTnn5JwWr4p3pG8H6VrpiQo7Vs0.jpg">
-        <p>Ver tráiler</p>
+    <li class="movie-item">
+    <a href="https://www.youtube.com/results?search_query=${
+      datos.Nombre +
+      " " +
+      (datos.Lanzamiento !== "9999" ? datos.Lanzamiento : "") +
+      " trailer"
+    }" target="_blank"><img src="https://image.tmdb.org/t/p/w92/pTnn5JwWr4p3pG8H6VrpiQo7Vs0.jpg">
+    </a>
       </li>
     </ul>
-    <h3>Sinopsis</h3>
-    <p>${datos.Descripcion}</p>`;
+    ${datos.Descripcion ? `<h3>Sinopsis</h3> ${datos.Descripcion}` : ""}`;
 
   const proveedores = document.createElement("div");
   proveedores.className = "streaming-providers";

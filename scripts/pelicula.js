@@ -236,7 +236,7 @@ function crearPelicula(elemento, datos) {
     <a href="https://www.youtube.com/results?search_query=${
       datos.Nombre +
       " " +
-      (datos.Lanzamiento !== 9999 ? datos.Lanzamiento : "") +
+      (datos.Lanzamiento !== "9999" ? datos.Lanzamiento : "") +
       " trailer"
     }" target="_blank"><img src="https://image.tmdb.org/t/p/w92/pTnn5JwWr4p3pG8H6VrpiQo7Vs0.jpg">
     </a>
