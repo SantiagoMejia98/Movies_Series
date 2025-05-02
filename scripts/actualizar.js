@@ -79,17 +79,21 @@ function JSONpelicula(titulo) {
     Descripcion:
       (
         titulo.translations.translations.find(
-          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO"
+          (item) =>
+            item.iso_639_1 === "es" &&
+            item.iso_3166_1 === "MX" &&
+            item.data?.overview?.trim()
         ) ||
         titulo.translations.translations.find(
-          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX"
-        ) ||
-        titulo.translations.translations.find(
-          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES"
+          (item) =>
+            item.iso_639_1 === "es" &&
+            item.iso_3166_1 === "ES" &&
+            item.data?.overview?.trim()
         )
       )?.data.overview ||
       titulo.overview ||
       null,
+
     Lanzamiento:
       titulo.release_date?.split(/[-/]/).find((part) => part.length === 4) ||
       "9999",
@@ -261,13 +265,16 @@ function JSONserie(titulo) {
     Descripcion:
       (
         titulo.translations.translations.find(
-          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO"
+          (item) =>
+            item.iso_639_1 === "es" &&
+            item.iso_3166_1 === "MX" &&
+            item.data?.overview?.trim()
         ) ||
         titulo.translations.translations.find(
-          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX"
-        ) ||
-        titulo.translations.translations.find(
-          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES"
+          (item) =>
+            item.iso_639_1 === "es" &&
+            item.iso_3166_1 === "ES" &&
+            item.data?.overview?.trim()
         )
       )?.data.overview ||
       titulo.overview ||
@@ -352,13 +359,16 @@ function JSONcoleccion(titulo) {
     Descripcion:
       (
         titulo.translations.translations.find(
-          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "CO"
+          (item) =>
+            item.iso_639_1 === "es" &&
+            item.iso_3166_1 === "MX" &&
+            item.data?.overview?.trim()
         ) ||
         titulo.translations.translations.find(
-          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "MX"
-        ) ||
-        titulo.translations.translations.find(
-          (item) => item.iso_639_1 === "es" && item.iso_3166_1 === "ES"
+          (item) =>
+            item.iso_639_1 === "es" &&
+            item.iso_3166_1 === "ES" &&
+            item.data?.overview?.trim()
         )
       )?.data.overview ||
       titulo.overview ||
