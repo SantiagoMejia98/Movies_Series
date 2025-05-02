@@ -4,8 +4,7 @@ const elementos = {
 
 const dropdownMenu = document.getElementById("dropdown-menu");
 
-let todasLasPeliculas = new Set();
-let data = {};
+let todasLasPeliculas = {};
 
 function crearlistaInicio(elemento, datos) {
   const ulExistente = elemento.querySelector("ul");
@@ -17,18 +16,17 @@ function crearlistaInicio(elemento, datos) {
   const ul = document.createElement("ul");
   ul.className = "lista";
 
-  datos.forEach((pelicula) => {
+  for (const pelicula of Object.values(datos)) {
     const li = document.createElement("li");
     li.className = "card";
     li.setAttribute("data-id", pelicula.Id);
     li.setAttribute("data-type", pelicula.Tipo);
-
     li.innerHTML = `
                 <div class="pelicula-container">
                     <h2 class="titulo"><strong>${
                       pelicula.Nombre.split(" (")[0]
                     }</strong></h2>
-                    <img src="https://image.tmdb.org/t/p/original${
+                    <img src="https://image.tmdb.org/t/p/w500${
                       pelicula.Poster
                     }" alt="${pelicula.Nombre}">
                     <div class="informacion">
@@ -39,7 +37,7 @@ function crearlistaInicio(elemento, datos) {
             `;
 
     ul.appendChild(li);
-  });
+  }
 
   elemento.appendChild(ul);
 }
@@ -82,11 +80,7 @@ function guardarDatos(data) {
 }
 
 async function cargarDatosGuardados() {
-  todasLasPeliculas = new Set(
-    JSON.parse(
-      LZString.decompressFromUTF16(localStorage.getItem("peliculasCard"))
-    )
-  );
+  todasLasPeliculas = JSON.parse(localStorage.getItem("peliculasCard"));
   crearlistaInicio(elementos.peliculas, todasLasPeliculas);
 }
 
@@ -98,15 +92,10 @@ document.addEventListener("click", function (event) {
   const card = event.target.closest(".card");
   if (!card) return;
 
-  const type = card.getAttribute("data-type");
   const id = card.getAttribute("data-id");
-  const aleatorio = { Tipo: type, Id: id };
+  const aleatorio = id;
   guardarDatos(aleatorio);
-  if (type === "tv") {
-    window.location.href = "serie.html";
-  } else {
-    window.location.href = "pelicula.html";
-  }
+  window.location.href = "pelicula.html";
 });
 
 const buscador = document.getElementById("buscador");
@@ -119,7 +108,7 @@ buscador.addEventListener("input", function () {
     return;
   }
 
-  const peliculasFiltradas = Array.from(todasLasPeliculas).filter((p) =>
+  const peliculasFiltradas = Object.values(todasLasPeliculas).filter((p) =>
     p.Nombre.toLowerCase().includes(texto)
   );
 

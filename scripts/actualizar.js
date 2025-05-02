@@ -20,10 +20,9 @@ const EXPIRATION_DAYS = 30;
 
 const dropdownMenu = document.getElementById("dropdown-menu");
 
-let todasLasPeliculas = new Set();
-let todasLasSeries = new Set();
+let todasLasPeliculas = {};
+let todasLasSeries = {};
 let peliculas = {};
-let series = {};
 let colecciones = {};
 let data = {};
 
@@ -376,7 +375,7 @@ function JSONcoleccion(titulo) {
       .filter((item) => item.poster_path !== null)
       .sort((a, b) => new Date(a.release_date) - new Date(b.release_date))
       .map((item) => item.id),
-    Peliculas: new Set(),
+    Peliculas: {},
   };
 }
 
@@ -442,6 +441,8 @@ async function buscarDetallesPeliculas(id) {
         if (!colecciones[data.belongs_to_collection.id]) {
           await buscarColeccion(data.belongs_to_collection.id);
         }
+      } else {
+        todasLasPeliculas[id] = peliculas[id];
       }
     }
   } catch (err) {
@@ -462,8 +463,7 @@ async function buscarDetallesSeries(id) {
 
     const data = await res.json();
     if (data) {
-      series[id] = JSONserie(data);
-      todasLasSeries.add(series[id]);
+      todasLasSeries[id] = JSONserie(data);
     }
   } catch (err) {
     console.error("Error al cargar datos:", err);
@@ -483,7 +483,7 @@ async function buscarColeccion(id) {
 
     const data = await res.json();
     if (data) {
-      colecciones[data.id] = JSONcoleccion(data);
+      colecciones[id] = JSONcoleccion(data);
       for (const pelicula of data.parts) {
         if (!peliculas[pelicula.id]) {
           await buscarDetallesPeliculas(pelicula.id);
@@ -497,9 +497,6 @@ async function buscarColeccion(id) {
 
 function guardarDatos(data) {
   localStorage.clear();
-  //localStorage.setItem("peliculas", JSON.stringify(data["peliculas"]));
-  localStorage.setItem("series", JSON.stringify(data["series"]));
-  //localStorage.setItem("colecciones", JSON.stringify(data["colecciones"]));
   localStorage.setItem("peliculasCard", JSON.stringify(data["peliculasCard"]));
   localStorage.setItem("seriesCard", JSON.stringify(data["seriesCard"]));
   localStorage.setItem(
@@ -513,27 +510,14 @@ await cargarDatos("tv");
 
 for (const coleccion in colecciones) {
   for (const id in colecciones[coleccion].Partes) {
-    colecciones[coleccion].Peliculas.add(
-      peliculas[colecciones[coleccion].Partes[id]]
-    );
+    colecciones[coleccion].Peliculas[id] =
+      peliculas[colecciones[coleccion].Partes[id]];
   }
-  colecciones[coleccion].Peliculas = [...colecciones[coleccion].Peliculas];
-  //todasLasPeliculas.add(colecciones[coleccion]);
+  todasLasPeliculas[coleccion] = colecciones[coleccion];
 }
 
-for (const id in peliculas) {
-  if (peliculas[id].Coleccion) {
-    todasLasPeliculas.add(colecciones[peliculas[id].Coleccion]);
-  } else {
-    todasLasPeliculas.add(peliculas[id]);
-  }
-}
-
-//data["peliculas"] = peliculas;
-data["series"] = series;
-//data["colecciones"] = colecciones;
-data["peliculasCard"] = [...todasLasPeliculas];
-data["seriesCard"] = [...todasLasSeries];
+data["peliculasCard"] = todasLasPeliculas;
+data["seriesCard"] = todasLasSeries;
 const expirationDate = new Date();
 expirationDate.setDate(expirationDate.getDate() + EXPIRATION_DAYS);
 data["expirationDate"] = expirationDate;

@@ -34,46 +34,27 @@ const elementos = {
   pelicula: document.querySelector('[data-name="pelicula"]'),
 };
 
-let todasLasPeliculas = new Set();
-let todasLasSeries = new Set();
-let peliculas = {};
-let series = {};
-let colecciones = {};
-let data = {};
+let todasLasPeliculas = {};
 let aleatorio;
 
 async function cargarDatosGuardados() {
-  peliculas = JSON.parse(
-    LZString.decompressFromUTF16(localStorage.getItem("peliculas"))
-  );
-  colecciones = JSON.parse(
-    LZString.decompressFromUTF16(localStorage.getItem("colecciones"))
-  );
-  todasLasPeliculas = JSON.parse(
-    LZString.decompressFromUTF16(localStorage.getItem("peliculasCard"))
-  );
-  aleatorio = localStorage.getItem("aleatorio");
-  if (aleatorio) {
-    aleatorio = JSON.parse(aleatorio);
-  }
+  todasLasPeliculas = JSON.parse(localStorage.getItem("peliculasCard"));
+  aleatorio = JSON.parse(localStorage.getItem("aleatorio"));
   let titulo;
   if (!aleatorio) {
-    aleatorio = seleccionarElementosAleatorios(todasLasPeliculas.length);
+    const claves = Object.keys(todasLasPeliculas);
+    aleatorio = claves[Math.floor(Math.random() * claves.length)];
     titulo = todasLasPeliculas[aleatorio];
   } else {
-    if (aleatorio.Tipo === "movie") {
-      titulo = peliculas[aleatorio.Id];
-    } else {
-      titulo = colecciones[aleatorio.Id];
-    }
-    guardarDatos(data);
-  }
-  if (titulo.Tipo === "movie") {
-    crearPelicula(elementos.pelicula, titulo);
-  } else {
-    crearColeccion(elementos.coleccion, titulo);
+    localStorage.removeItem("aleatorio");
+    titulo = todasLasPeliculas[aleatorio];
   }
   localStorage.removeItem("aleatorio");
+  if (titulo.Tipo === "collection") {
+    crearColeccion(elementos.coleccion, titulo);
+  } else {
+    crearPelicula(elementos.pelicula, titulo);
+  }
 }
 
 function guardarDatos(data) {
@@ -110,7 +91,7 @@ function crearColeccion(elemento, datos) {
   }">
       <div class="details">
         <h2>${datos.Nombre.split(" (")[0]}</h2>
-        <p>${peliculas[datos.Peliculas[0]].Generos} &bull; (${
+        <p>${datos.Peliculas[Object.keys(datos.Peliculas)[0]].Genero} &bull; (${
     datos.Lanzamiento
   }) &bull; ${datos.Duracion}</p>
         <ul>
@@ -128,30 +109,26 @@ function crearColeccion(elemento, datos) {
   coleccion.innerHTML = `<h2>Colección</h2>`;
   const ul = document.createElement("ul");
   ul.className = "lista";
-  datos.Peliculas.sort(
-    (a, b) => peliculas[a].Lanzamiento - peliculas[b].Lanzamiento
-  ).forEach((id) => {
+  for (const pelicula of Object.values(datos.Peliculas)) {
     const li = document.createElement("li");
     li.className = "card";
-    li.setAttribute("data-id", peliculas[id].Id);
-    li.setAttribute("data-type", peliculas[id].Tipo);
+    li.setAttribute("data-id", pelicula.Id);
+    li.setAttribute("data-type", pelicula.Tipo);
 
     li.innerHTML = `
       <div class="pelicula-container">
-        <h2><strong>${peliculas[id].Nombre.split(" (")[0]}${
-      peliculas[id].Lanzamiento !== "9999"
-        ? ` (${peliculas[id].Lanzamiento})`
-        : ""
+        <h2><strong>${pelicula.Nombre.split(" (")[0]}${
+      pelicula.Lanzamiento !== "9999" ? ` (${pelicula.Lanzamiento})` : ""
     }</strong></h2>
-        <img src="https://image.tmdb.org/t/p/w500${
-          peliculas[id].Poster
-        }" alt="${peliculas[id].Nombre}">
-        <p>${peliculas[id].Duracion}</p>
+        <img src="https://image.tmdb.org/t/p/w500${pelicula.Poster}" alt="${
+      pelicula.Nombre
+    }">
+        <p>${pelicula.Duracion}</p>
       </div>
       `;
 
     ul.appendChild(li);
-  });
+  }
 
   coleccion.appendChild(ul);
   content.appendChild(coleccion);
@@ -415,17 +392,6 @@ document.querySelectorAll(".bookmark-item").forEach((item) => {
     // Alternar la clase "filled" para cambiar el color
     this.classList.toggle("filled");
   });
-});
-
-document.addEventListener("click", function (event) {
-  const card = event.target.closest(".card");
-  if (!card) return;
-
-  const type = card.getAttribute("data-type");
-  const id = card.getAttribute("data-id");
-  const aleatorio = { Tipo: type, Id: id };
-  guardarDatos(aleatorio);
-  window.location.href = "pelicula.html";
 });
 
 function detectarOrientacion() {

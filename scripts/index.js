@@ -16,12 +16,8 @@ const EXPIRATION_DAYS = 30;
 
 const dropdownMenu = document.getElementById("dropdown-menu");
 
-let todasLasPeliculas = new Set();
-let todasLasSeries = new Set();
-let peliculas = {};
-let series = {};
-let colecciones = {};
-let data = {};
+let todasLasPeliculas = {};
+let todasLasSeries = {};
 
 function crearlistaInicio(elemento, datos) {
   const ulExistente = elemento.querySelector("ul");
@@ -33,7 +29,7 @@ function crearlistaInicio(elemento, datos) {
   const ul = document.createElement("ul");
   ul.className = "lista";
 
-  datos.forEach((pelicula) => {
+  for (const pelicula of Object.values(datos)) {
     const li = document.createElement("li");
     li.className = "card";
     li.setAttribute("data-id", pelicula.Id);
@@ -54,7 +50,7 @@ function crearlistaInicio(elemento, datos) {
             `;
 
     ul.appendChild(li);
-  });
+  }
 
   elemento.appendChild(ul);
 }
@@ -96,46 +92,21 @@ function guardarDatos(data) {
   localStorage.setItem("aleatorio", JSON.stringify(data));
 }
 
-function getSizeInMB(str) {
-  const bytes = new Blob([str]).size;
-  return (bytes / (1024 * 1024)).toFixed(3); // Redondeado a 3 decimales
-}
-
-function medirPesos(data) {
-  const compressed = localStorage.getItem(data);
-  const jsonString = LZString.decompressFromUTF16(compressed);
-
-  alert(
-    "Tamaño JSON.stringify: " +
-      getSizeInMB(jsonString) +
-      " MB\n" +
-      "Tamaño LZString.compressToUTF16: " +
-      getSizeInMB(compressed) +
-      " MB"
-  );
-}
-
 async function cargarDatosGuardados() {
   const fecha = JSON.parse(localStorage.getItem("expirationDate"));
 
   if (fecha && new Date(fecha) > new Date()) {
-    peliculas = JSON.parse(localStorage.getItem("peliculas"));
-    series = JSON.parse(localStorage.getItem("series"));
-    colecciones = JSON.parse(localStorage.getItem("colecciones"));
-    todasLasPeliculas = new Set(
-      JSON.parse(localStorage.getItem("peliculasCard"))
-    );
-    todasLasSeries = new Set(JSON.parse(localStorage.getItem("seriesCard")));
+    todasLasPeliculas = JSON.parse(localStorage.getItem("peliculasCard"));
+    todasLasSeries = JSON.parse(localStorage.getItem("seriesCard"));
   } else {
     window.location = "actualizar.html";
   }
-  medirPesos("peliculas");
-  medirPesos("series");
-  medirPesos("colecciones");
-  medirPesos("peliculasCard");
-  medirPesos("seriesCard");
   alert(
-    `0 peliculas y 0 series guardadas \n 0 colecciones guardadas \n ${todasLasPeliculas.size} peliculas en la lista de inicio \n ${todasLasSeries.size} series en la lista de inicio`
+    `${
+      Object.keys(todasLasPeliculas).length
+    } peliculas en la lista de inicio \n ${
+      Object.keys(todasLasSeries).length
+    } series en la lista de inicio`
   );
 }
 
@@ -152,7 +123,7 @@ document.addEventListener("click", function (event) {
 
   const type = card.getAttribute("data-type");
   const id = card.getAttribute("data-id");
-  const aleatorio = { Tipo: type, Id: id };
+  const aleatorio = id;
   guardarDatos(aleatorio);
   if (type === "tv") {
     window.location.href = "serie.html";
@@ -172,12 +143,12 @@ buscador.addEventListener("input", function () {
     return;
   }
 
-  const peliculasFiltradas = Array.from(todasLasPeliculas).filter((p) =>
+  const peliculasFiltradas = Object.values(todasLasPeliculas).filter((p) =>
     p.Nombre.toLowerCase().includes(texto)
   );
 
-  const seriesFiltradas = Array.from(todasLasSeries).filter((s) =>
-    s.Nombre.toLowerCase().includes(texto)
+  const seriesFiltradas = Object.values(todasLasSeries).filter((p) =>
+    p.Nombre.toLowerCase().includes(texto)
   );
 
   crearlistaInicio(elementos.peliculas, peliculasFiltradas);

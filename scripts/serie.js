@@ -24,32 +24,20 @@ const PROVEEDORES_VALIDOS = {
   Crunchyroll: "https://www.crunchyroll.com/es-es/search",
 };
 
-let todasLasPeliculas = new Set();
-let todasLasSeries = new Set();
-let peliculas = {};
-let series = {};
-let colecciones = {};
-let data = {};
+let todasLasSeries = {};
 let aleatorio;
 
 async function cargarDatosGuardados() {
-  series = JSON.parse(
-    LZString.decompressFromUTF16(localStorage.getItem("series"))
-  );
-  todasLasSeries = JSON.parse(
-    LZString.decompressFromUTF16(localStorage.getItem("seriesCard"))
-  );
-  aleatorio = localStorage.getItem("aleatorio");
-  if (aleatorio) {
-    aleatorio = JSON.parse(aleatorio);
-  }
+  todasLasSeries = JSON.parse(localStorage.getItem("seriesCard"));
+  aleatorio = JSON.parse(localStorage.getItem("aleatorio"));
   let titulo;
   if (!aleatorio) {
-    aleatorio = seleccionarElementosAleatorios(todasLasSeries.length);
+    const claves = Object.keys(todasLasSeries);
+    aleatorio = claves[Math.floor(Math.random() * claves.length)];
     titulo = todasLasSeries[aleatorio];
   } else {
-    titulo = series[aleatorio.Id];
-    guardarDatos(data);
+    localStorage.removeItem("aleatorio");
+    titulo = todasLasSeries[aleatorio];
   }
   localStorage.removeItem("aleatorio");
   crearSerie(elementos.serie, titulo);
