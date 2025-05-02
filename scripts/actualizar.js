@@ -498,7 +498,7 @@ async function buscarColeccion(id) {
 function guardarDatos(data) {
   localStorage.clear();
   //localStorage.setItem("peliculas", JSON.stringify(data["peliculas"]));
-  //localStorage.setItem("series", JSON.stringify(data["series"]));
+  localStorage.setItem("series", JSON.stringify(data["series"]));
   //localStorage.setItem("colecciones", JSON.stringify(data["colecciones"]));
   localStorage.setItem("peliculasCard", JSON.stringify(data["peliculasCard"]));
   localStorage.setItem("seriesCard", JSON.stringify(data["seriesCard"]));
@@ -530,7 +530,7 @@ for (const id in peliculas) {
 }
 
 //data["peliculas"] = peliculas;
-//data["series"] = series;
+data["series"] = series;
 //data["colecciones"] = colecciones;
 data["peliculasCard"] = [...todasLasPeliculas];
 data["seriesCard"] = [...todasLasSeries];
