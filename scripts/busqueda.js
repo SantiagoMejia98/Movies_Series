@@ -293,18 +293,41 @@ async function buscar() {
   coleccionesID.forEach(async (id) => {
     if (colecciones[id] === undefined) {
       await buscarDetallesColeccion(id);
-      colecciones[id] = coleccion;
-      nuevas[id] = coleccion;
+    } else {
+      presentes[id] = todasLasPeliculas[id];
     }
   });
-
+  console.log(
+    "--------------------------------------------------------------------------------------"
+  );
   await busqueda(query, "movie");
   console.log(peliculasBuscadas);
   console.log(peliculasID);
 
+  peliculasID.forEach((id) => {
+    if (peliculas[id] === undefined) {
+      nuevas[id] = peliculasBuscadas[id];
+    } else if (peliculas[id] === null) {
+      presentes[id] = todasLasPeliculas[id];
+    } else {
+      presentes[id] = todasLasPeliculas[peliculas[id]];
+    }
+  });
+
+  console.log(nuevas);
+  console.log(presentes);
+
+  console.log(
+    "--------------------------------------------------------------------------------------"
+  );
+
   await busqueda(query, "tv");
   console.log(seriesBuscadas);
   console.log(seriesID);
+
+  console.log(
+    "--------------------------------------------------------------------------------------"
+  );
 
   if (coleccionesID.length > 0) {
   }
