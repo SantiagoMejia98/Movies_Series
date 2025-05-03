@@ -193,6 +193,7 @@ function JSONcoleccion(data) {
     Poster: data.poster_path || null,
     Id: data.id,
     Tipo: "collection",
+    Partes: data.parts?.map((parte) => parte.id),
   };
 }
 
@@ -265,7 +266,7 @@ async function buscarDetallesColeccion(id) {
 
     const data = await res.json();
     if (data) {
-      return JSONcoleccion(data);
+      nuevas[data.id] = JSONcoleccion(data);
     }
   } catch (err) {
     console.error("Error al cargar datos:", err);
@@ -288,6 +289,14 @@ async function buscar() {
   await buscarColeccion(query);
   console.log(coleccionesBuscadas);
   console.log(coleccionesID);
+
+  coleccionesID.forEach(async (id) => {
+    if (colecciones[id] === undefined) {
+      await buscarDetallesColeccion(id);
+      colecciones[id] = coleccion;
+      nuevas[id] = coleccion;
+    }
+  });
 
   await busqueda(query, "movie");
   console.log(peliculasBuscadas);
