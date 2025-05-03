@@ -16,13 +16,23 @@ const get = {
 let peliculas = [];
 let series = [];
 let colecciones = [];
+let coleccionesID = {};
+let peliculasID = {};
+let seriesID = new Set();
+let coleccionesBuscadas = {};
+let peliculasBuscadas = {};
+let seriesBuscadas = {};
+let todasLasPeliculas = {};
+let todasLasSeries = {};
 let nuevas = {};
 let presentes = {};
 
 async function cargarDatosGuardados() {
   peliculas = JSON.parse(localStorage.getItem("peliculasId"));
-  series = JSON.parse(localStorage.getItem("seriesId"));
+  series = new Set(JSON.parse(localStorage.getItem("seriesId")));
   colecciones = JSON.parse(localStorage.getItem("coleccionesId"));
+  todasLasPeliculas = JSON.parse(localStorage.getItem("peliculasCard"));
+  todasLasSeries = JSON.parse(localStorage.getItem("seriesCard"));
 }
 
 await cargarDatosGuardados();
@@ -179,32 +189,14 @@ function JSONserie(titulo) {
 function JSONcoleccion(data) {
   return {
     Nombre: data.original_name || data.name,
-    Lanzamiento: (() => {
-      let years = data.parts
-        .map(
-          (i) => i.release_date?.split(/[-/]/).find((p) => p.length === 4) || ""
-        )
-        .filter(Boolean)
-        .sort((a, b) => a - b);
-
-      return years.length
-        ? `${years[0]} - ${
-            data.parts.some((p) => !p.release_date)
-              ? "Presente"
-              : years[years.length - 1]
-          }`
-        : "Desconocido";
-    })(),
+    Lanzamiento: null,
     Poster: data.poster_path || null,
     Id: data.id,
-    Duracion: `${data.parts.length} películas`,
     Tipo: "collection",
-    Peliculas: data.parts.map((item) => item.id),
   };
 }
 
 async function buscarColeccion(query) {
-  let coleccionesID = [];
   try {
     const res = await fetch(
       `https://api.themoviedb.org/3/search/collection?query=${query} collection`,
@@ -218,9 +210,11 @@ async function buscarColeccion(query) {
     const data = await res.json();
     if (data.results) {
       console.log(data.results);
-      coleccionesID = data.results
-        .filter((item) => item.poster_path !== null)
-        .map((item) => item.id);
+      data.results.forEach((coleccion) => {
+        if (coleccion.poster_path === null) return;
+        coleccionesBuscadas[coleccion.id] = JSONcoleccion(coleccion);
+        coleccionesID.push(coleccion.id);
+      });
       return coleccionesID;
     }
   } catch (err) {
@@ -228,10 +222,10 @@ async function buscarColeccion(query) {
   }
 }
 
-async function busqueda(id, tipo) {
+async function busqueda(query, tipo) {
   try {
     const res = await fetch(
-      `https://api.themoviedb.org/3/search/${tipo}?query=${id}`,
+      `https://api.themoviedb.org/3/search/${tipo}?query=${query}`,
       get
     );
 
@@ -240,7 +234,18 @@ async function busqueda(id, tipo) {
     }
     const data = await res.json();
     if (data.results) {
-      return data.results.filter((item) => item.poster_path !== null);
+      console.log(data.results);
+      data.results.forEach((titulo) => {
+        if (tipo === "movie") {
+          if (titulo.poster_path === null) return;
+          peliculasBuscadas[titulo.id] = JSONpelicula(titulo);
+          peliculasID.push(titulo.id);
+        } else if (tipo === "tv") {
+          if (titulo.poster_path === null) return;
+          seriesBuscadas[titulo.id] = JSONserie(titulo);
+          seriesID.push(titulo.id);
+        }
+      });
     }
   } catch (err) {
     console.error("Error al cargar datos:", err);
@@ -270,82 +275,36 @@ async function buscarDetallesColeccion(id) {
 async function buscar() {
   nuevas = {};
   presentes = {};
+  coleccionesBuscadas = {};
+  peliculasBuscadas = {};
+  seriesBuscadas = {};
+  coleccionesID = [];
+  peliculasID = [];
+  seriesID = [];
+
   const query = document.getElementById("search-input").value;
   document.getElementById("search-input").value = "";
 
-  let collection = await buscarColeccion(query);
+  await buscarColeccion(query);
+  console.log(coleccionesBuscadas);
+  console.log(coleccionesID);
 
-  if (Array.isArray(collection) && collection.length > 0) {
-    const detalles = await Promise.allSettled(
-      collection.map(async (id) => {
-        if (!colecciones[id]) {
-          const coleccion = await buscarDetallesColeccion(id);
-          return { id, coleccion, esNueva: true };
-        } else {
-          return { id, coleccion: colecciones[id], esNueva: false };
-        }
-      })
-    );
+  await busqueda(query, "movie");
+  console.log(peliculasBuscadas);
+  console.log(peliculasID);
 
-    detalles.forEach((resultado) => {
-      if (resultado.status === "fulfilled") {
-        const { id, coleccion, esNueva } = resultado.value;
-        if (coleccion && Array.isArray(coleccion.Peliculas)) {
-          if (esNueva) {
-            nuevas[id] = coleccion;
-          } else {
-            presentes[id] = coleccion;
-          }
-        }
-      } else {
-        console.warn("Fallo al obtener una colección:", resultado.reason);
-      }
-    });
+  await busqueda(query, "tv");
+  console.log(seriesBuscadas);
+  console.log(seriesID);
+
+  if (coleccionesID.length > 0) {
   }
 
-  let pelisEncontradas = await busqueda(query, "movie");
-  let seriesEncontradas = await busqueda(query, "tv");
+  if (peliculasID.length > 0) {
+  }
 
-  let idsExcluidos = new Set();
-
-  Object.values(nuevas).forEach((coleccion) => {
-    if (Array.isArray(coleccion.Peliculas)) {
-      coleccion.Peliculas.forEach((id) => idsExcluidos.add(id));
-    }
-  });
-
-  Object.values(presentes).forEach((coleccion) => {
-    if (Array.isArray(coleccion.Peliculas)) {
-      coleccion.Peliculas.forEach((id) => idsExcluidos.add(id));
-    }
-  });
-
-  let pelisFiltradas = pelisEncontradas.filter(
-    (titulo) => !idsExcluidos.has(titulo.id)
-  );
-
-  let seriesFiltradas = seriesEncontradas.filter(
-    (titulo) => !idsExcluidos.has(titulo.id)
-  );
-
-  pelisFiltradas.forEach((titulo) => {
-    if (!peliculas[titulo.id]) {
-      nuevas[titulo.id] = JSONpelicula(titulo);
-    } else {
-      presentes[titulo.id] = peliculas[titulo.id];
-    }
-  });
-
-  seriesFiltradas.forEach((titulo) => {
-    if (!series[titulo.id]) {
-      nuevas[titulo.id] = JSONserie(titulo);
-    } else {
-      presentes[titulo.id] = series[titulo.id];
-    }
-  });
-
-  crearListaBusquedaPresente(elementos.presentes, presentes);
-  crearListaBusquedaNueva(elementos.nuevas, nuevas);
+  if (seriesID.length > 0) {
+  }
 }
 
 function modificarWatchlist(body) {

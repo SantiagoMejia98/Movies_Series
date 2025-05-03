@@ -26,8 +26,8 @@ let peliculas = {};
 let colecciones = {};
 let data = {};
 let seriesId = new Set();
-let peliculasId = new Set();
-let coleccionesId = new Set();
+let peliculasId = {};
+let coleccionesId = {};
 
 function manejarSeleccion(event) {
   const valorSeleccionado = event.target.value;
@@ -440,12 +440,13 @@ async function buscarDetallesPeliculas(id) {
     const data = await res.json();
     if (data) {
       peliculas[id] = JSONpelicula(data);
-      peliculasId.add(id);
       if (data.belongs_to_collection) {
+        peliculasId[id] = data.belongs_to_collection.id;
         if (!colecciones[data.belongs_to_collection.id]) {
           await buscarColeccion(data.belongs_to_collection.id);
         }
       } else {
+        peliculasId[id] = null;
         todasLasPeliculas[id] = peliculas[id];
       }
     }
@@ -489,7 +490,9 @@ async function buscarColeccion(id) {
     const data = await res.json();
     if (data) {
       colecciones[id] = JSONcoleccion(data);
-      coleccionesId.add(id);
+      const partes = data.parts.map((item) => item.id);
+      coleccionesId[id] = partes;
+
       for (const pelicula of data.parts) {
         if (!peliculas[pelicula.id]) {
           await buscarDetallesPeliculas(pelicula.id);
@@ -526,9 +529,9 @@ for (const coleccion in colecciones) {
 
 data["peliculasCard"] = todasLasPeliculas;
 data["seriesCard"] = todasLasSeries;
-data["peliculasId"] = Array.from(peliculasId);
+data["peliculasId"] = peliculasId;
 data["seriesId"] = Array.from(seriesId);
-data["coleccionesId"] = Array.from(coleccionesId);
+data["coleccionesId"] = coleccionesId;
 const expirationDate = new Date();
 expirationDate.setDate(expirationDate.getDate() + EXPIRATION_DAYS);
 data["expirationDate"] = expirationDate;
