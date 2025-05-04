@@ -58,10 +58,10 @@ portatil: width = 1440 height = 791 pixel ratio = 1.5
 https://image.tmdb.org/t/p/original
 
 
-peliculas -> 1.989 1.208  951
-series -> 0.417 0.288   172
+peliculas -> 1.989 1.208  949
+series -> 0.417 0.288   170
 colecciones -> 0.06 0.048   103
-peliculascard -> 1.368 0.923  723
-series card -> 0.415 0.287    172
+peliculascard -> 1.368 0.923  721
+series card -> 0.415 0.287    170
 
 

@@ -12,20 +12,31 @@ const get = {
       "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzMGUxNDBmYzcyNGQ1OTFjMzAwMWJlNDQ4NDg4MjcxMiIsIm5iZiI6MTcyNTQ3NzAyMS40NzcsInN1YiI6IjY2ZDhiMDlkM2E5NGE0OWMxNjI2ZjAzZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.RdYktkxjOZERUNw2BaaX_ew5YAGVx2pJzAy5kHzi3RI",
   },
 };
+const PROVEEDORES_VALIDOS = [
+  "Disney Plus",
+  "Amazon Prime Video",
+  "Netflix",
+  "Apple TV+",
+  "Max",
+  "Paramount Plus",
+  "Crunchyroll",
+];
 
-let peliculas = [];
-let series = [];
-let colecciones = [];
-let coleccionesID = {};
-let peliculasID = {};
-let seriesID = new Set();
-let coleccionesBuscadas = {};
-let peliculasBuscadas = {};
-let seriesBuscadas = {};
-let todasLasPeliculas = {};
-let todasLasSeries = {};
-let nuevas = {};
-let presentes = {};
+let peliculas;
+let series;
+let colecciones;
+let coleccionesID;
+let peliculasID;
+let seriesID;
+let coleccionesBuscadas;
+let peliculasBuscadas;
+let seriesBuscadas;
+let todasLasPeliculas;
+let todasLasSeries;
+let nuevas;
+let presentes;
+let peliculasAgregar = {};
+let coleccionAgregar = {};
 
 async function cargarDatosGuardados() {
   peliculas = JSON.parse(localStorage.getItem("peliculasId"));
@@ -33,6 +44,14 @@ async function cargarDatosGuardados() {
   colecciones = JSON.parse(localStorage.getItem("coleccionesId"));
   todasLasPeliculas = JSON.parse(localStorage.getItem("peliculasCard"));
   todasLasSeries = JSON.parse(localStorage.getItem("seriesCard"));
+}
+
+async function guardarDatosGuardados() {
+  localStorage.setItem("peliculasId", JSON.stringify(peliculas));
+  localStorage.setItem("seriesId", JSON.stringify(Array.from(series)));
+  localStorage.setItem("coleccionesId", JSON.stringify(colecciones));
+  localStorage.setItem("peliculasCard", JSON.stringify(todasLasPeliculas));
+  localStorage.setItem("seriesCard", JSON.stringify(todasLasSeries));
 }
 
 await cargarDatosGuardados();
@@ -197,6 +216,404 @@ function JSONcoleccion(data) {
   };
 }
 
+function JSONpeliculaAgregar(titulo) {
+  return {
+    Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
+    Id: titulo.id,
+    Nombre: `${titulo.title || titulo.name}${
+      titulo.original_name &&
+      titulo.original_name !== titulo.title &&
+      titulo.original_name !== titulo.name
+        ? ` (${titulo.original_name})`
+        : titulo.original_title &&
+          titulo.original_title !== titulo.title &&
+          titulo.original_title !== titulo.name
+        ? ` (${titulo.original_title})`
+        : ""
+    }`,
+    Coleccion: titulo.belongs_to_collection?.id || null,
+    Descripcion:
+      (
+        titulo.translations.translations.find(
+          (item) =>
+            item.iso_639_1 === "es" &&
+            item.iso_3166_1 === "MX" &&
+            item.data?.overview?.trim()
+        ) ||
+        titulo.translations.translations.find(
+          (item) =>
+            item.iso_639_1 === "es" &&
+            item.iso_3166_1 === "ES" &&
+            item.data?.overview?.trim()
+        )
+      )?.data.overview ||
+      titulo.overview ||
+      null,
+
+    Lanzamiento:
+      titulo.release_date?.split(/[-/]/).find((part) => part.length === 4) ||
+      "9999",
+    Duracion: `${Math.floor(titulo.runtime / 60)}h ${titulo.runtime % 60}min`,
+    Status: titulo.status || null,
+    Tagline: titulo.tagline || null,
+    Tipo: "movie",
+    Poster:
+      titulo.images?.posters.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1500 &&
+          item.aspect_ratio === 0.667
+      )[0]?.file_path ||
+      titulo.poster_path ||
+      null,
+    Portada:
+      titulo.images?.backdrops.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1080 &&
+          item.aspect_ratio === 1.778
+      )[0]?.file_path ||
+      titulo.backdrop_path ||
+      titulo.poster_path ||
+      null,
+    Movil:
+      titulo.images?.posters.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1500 &&
+          item.aspect_ratio === 0.667
+      )[1]?.file_path ||
+      titulo.poster_path ||
+      null,
+    Logo:
+      titulo.images?.logos.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.width >= 400
+      )[0]?.file_path || null,
+    Reparto:
+      titulo.credits?.cast
+        .filter((item) => item.profile_path !== null)
+        .slice(0, 15)
+        .map((item) => {
+          return {
+            Nombre: item.name,
+            Foto: item.profile_path,
+            Personaje: item.character.split("/")[0].split("(")[0],
+          };
+        }) || null,
+    Directores:
+      titulo.credits?.crew
+        .filter((item) => item.job === "Director" && item.profile_path !== null)
+        .map((item) => {
+          return {
+            Nombre: item.name,
+            Foto: item.profile_path,
+          };
+        }) || null,
+    Proveedores:
+      titulo["watch/providers"]?.results?.CO?.flatrate
+        ?.filter((prov) => PROVEEDORES_VALIDOS.includes(prov.provider_name))
+        .map((item) => {
+          return {
+            Logo: item.logo_path,
+            Nombre: item.provider_name,
+          };
+        }) || [],
+  };
+}
+
+function JSONserieAgregar(titulo) {
+  return {
+    Nombre: `${titulo.title || titulo.name}${
+      titulo.original_name &&
+      titulo.original_name !== titulo.title &&
+      titulo.original_name !== titulo.name
+        ? ` (${titulo.original_name})`
+        : titulo.original_title &&
+          titulo.original_title !== titulo.title &&
+          titulo.original_title !== titulo.name
+        ? ` (${titulo.original_title})`
+        : ""
+    }`,
+    Lanzamiento: titulo.first_air_date
+      ? `${titulo.first_air_date.split(/[-/]/).find((p) => p.length === 4)}${
+          titulo.status !== "Ended" && titulo.status !== "Canceled"
+            ? " - Presente"
+            : titulo.last_air_date
+            ? ` - ${titulo.last_air_date
+                .split(/[-/]/)
+                .find((p) => p.length === 4)}`
+            : ""
+        }`
+      : "Desconocido",
+    Id: titulo.id,
+    Tipo: "tv",
+    Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
+    Status: titulo.status || null,
+    Tagline: titulo.tagline || null,
+    Poster:
+      titulo.images?.posters.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1500 &&
+          item.aspect_ratio === 0.667
+      )[0]?.file_path ||
+      titulo.poster_path ||
+      null,
+    Portada:
+      titulo.images?.backdrops.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1080 &&
+          item.aspect_ratio === 1.778
+      )[0]?.file_path ||
+      titulo.backdrop_path ||
+      titulo.poster_path ||
+      null,
+    Movil:
+      titulo.images?.posters.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1500 &&
+          item.aspect_ratio === 0.667
+      )[1]?.file_path ||
+      titulo.poster_path ||
+      null,
+    Logo:
+      titulo.images?.logos.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.width >= 400
+      )[0]?.file_path || null,
+    Directores:
+      titulo.created_by
+        .filter((item) => item.profile_path !== null)
+        .map((item) => {
+          return {
+            Nombre: item.name,
+            Foto: item.profile_path,
+          };
+        }) || null,
+    Reparto:
+      titulo.aggregate_credits?.cast
+        .filter((item) => item.profile_path !== null)
+        .slice(0, 15)
+        .map((item) => {
+          return {
+            Nombre: item.name,
+            Foto: item.profile_path,
+            Personaje: item.roles[0].character.split("/")[0].split("(")[0],
+          };
+        }) || null,
+    Proveedores:
+      titulo["watch/providers"]?.results?.CO?.flatrate
+        ?.filter((prov) => PROVEEDORES_VALIDOS.includes(prov.provider_name))
+        .map((item) => {
+          return {
+            Logo: item.logo_path,
+            Nombre: item.provider_name,
+          };
+        }) || [],
+    Duracion: `${titulo.number_of_seasons} ${
+      titulo.number_of_seasons === 1 ? "temporada" : "temporadas"
+    } - ${titulo.number_of_episodes} capítulos`,
+    Descripcion:
+      (
+        titulo.translations.translations.find(
+          (item) =>
+            item.iso_639_1 === "es" &&
+            item.iso_3166_1 === "MX" &&
+            item.data?.overview?.trim()
+        ) ||
+        titulo.translations.translations.find(
+          (item) =>
+            item.iso_639_1 === "es" &&
+            item.iso_3166_1 === "ES" &&
+            item.data?.overview?.trim()
+        )
+      )?.data.overview ||
+      titulo.overview ||
+      null,
+    Temporadas: titulo.seasons
+      .filter(
+        (season) => season.name !== "Specials" && season.poster_path !== null
+      )
+      .map((season) => ({
+        Nombre: season.name,
+        Poster: season.poster_path,
+        Duracion: `${season.episode_count} capitulos`,
+        Lanzamiento:
+          season.air_date?.split(/[-/]/).find((p) => p.length === 4) || "9999",
+      })),
+  };
+}
+
+function JSONcoleccionAgregar(titulo) {
+  return {
+    Nombre: `${titulo.title || titulo.name} ${
+      titulo.original_name
+        ? `(${titulo.original_name})`
+        : "" || titulo.original_title
+        ? `(${titulo.original_title})`
+        : ""
+    }`,
+    Lanzamiento: (() => {
+      let years = titulo.parts
+        .map(
+          (i) => i.release_date?.split(/[-/]/).find((p) => p.length === 4) || ""
+        )
+        .filter(Boolean)
+        .sort((a, b) => a - b);
+
+      return years.length
+        ? `${years[0]} - ${
+            titulo.parts.some((p) => !p.release_date)
+              ? "Presente"
+              : years[years.length - 1]
+          }`
+        : "Desconocido";
+    })(),
+    Poster:
+      titulo.images?.posters.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1500 &&
+          item.aspect_ratio === 0.667
+      )[0]?.file_path ||
+      titulo.poster_path?.poster_path ||
+      titulo.parts.filter((item) => item.poster_path !== null)[0]
+        ?.poster_path ||
+      null,
+    Portada:
+      titulo.images?.backdrops.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1080 &&
+          item.aspect_ratio === 1.778
+      )[0]?.file_path ||
+      titulo.backdrop_path?.backdrop_path ||
+      titulo.parts.filter((item) => item.backdrop_path !== null)[0]
+        ?.backdrop_path ||
+      titulo.poster_path ||
+      null,
+    Movil:
+      titulo.images?.posters.filter(
+        (item) =>
+          (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
+          item.height >= 1500 &&
+          item.aspect_ratio === 0.667
+      )[1]?.file_path ||
+      titulo.poster_path?.poster_path ||
+      titulo.parts.filter((item) => item.poster_path !== null)[1]
+        ?.poster_path ||
+      null,
+    Id: titulo.id,
+    Duracion: `${titulo.parts.length} películas`,
+    Tipo: "collection",
+    Descripcion:
+      (
+        titulo.translations.translations.find(
+          (item) =>
+            item.iso_639_1 === "es" &&
+            item.iso_3166_1 === "MX" &&
+            item.data?.overview?.trim()
+        ) ||
+        titulo.translations.translations.find(
+          (item) =>
+            item.iso_639_1 === "es" &&
+            item.iso_3166_1 === "ES" &&
+            item.data?.overview?.trim()
+        )
+      )?.data.overview ||
+      titulo.overview ||
+      null,
+    Partes: titulo.parts
+      .filter((item) => item.poster_path !== null)
+      .sort((a, b) => new Date(a.release_date) - new Date(b.release_date))
+      .map((item) => item.id),
+    Peliculas: {},
+  };
+}
+
+async function buscarPeliculasAgregar(id) {
+  try {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/movie/${id}?append_to_response=credits,watch/providers,translations,images`,
+      get
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error al realizar la solicitud: ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (data) {
+      peliculasAgregar[id] = JSONpeliculaAgregar(data);
+      /*if (data.belongs_to_collection) {
+        peliculasId[id] = data.belongs_to_collection.id;
+        if (!colecciones[data.belongs_to_collection.id]) {
+          await buscarColeccion(data.belongs_to_collection.id);
+        }
+      } else {
+        peliculasId[id] = null;
+        todasLasPeliculas[id] = peliculas[id];
+      }*/
+    }
+  } catch (err) {
+    console.error("Error al cargar datos:", err);
+  }
+}
+
+async function buscarSeriesAgregar(id) {
+  try {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/tv/${id}?append_to_response=aggregate_credits,watch/providers,translations,images`,
+      get
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error al realizar la solicitud: ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (data) {
+      todasLasSeries[id] = JSONserie(data);
+      seriesId.add(id);
+    }
+  } catch (err) {
+    console.error("Error al cargar datos:", err);
+  }
+}
+
+async function buscarColeccionAgregar(id) {
+  try {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/collection/${id}?append_to_response=translations,images`,
+      get
+    );
+
+    if (!res.ok) {
+      throw new Error(`Error al realizar la solicitud: ${res.status}`);
+    }
+
+    const data = await res.json();
+    if (data) {
+      coleccionAgregar[id] = JSONcoleccionAgregar(data);
+      /*const partes = data.parts.map((item) => item.id);
+      coleccionesId[id] = partes;
+
+      for (const pelicula of data.parts) {
+        if (!peliculas[pelicula.id]) {
+          await buscarDetallesPeliculas(pelicula.id);
+        }
+      }*/
+    }
+  } catch (err) {
+    console.error("Error al cargar datos:", err);
+  }
+}
+
 async function buscarColeccion(query) {
   try {
     const res = await fetch(
@@ -214,7 +631,7 @@ async function buscarColeccion(query) {
       data.results.forEach((coleccion) => {
         if (coleccion.poster_path === null) return;
         coleccionesBuscadas[coleccion.id] = JSONcoleccion(coleccion);
-        coleccionesID.push(coleccion.id);
+        coleccionesID.add(coleccion.id);
       });
       return coleccionesID;
     }
@@ -240,11 +657,11 @@ async function busqueda(query, tipo) {
         if (tipo === "movie") {
           if (titulo.poster_path === null) return;
           peliculasBuscadas[titulo.id] = JSONpelicula(titulo);
-          peliculasID.push(titulo.id);
+          peliculasID.add(titulo.id);
         } else if (tipo === "tv") {
           if (titulo.poster_path === null) return;
           seriesBuscadas[titulo.id] = JSONserie(titulo);
-          seriesID.push(titulo.id);
+          seriesID.add(titulo.id);
         }
       });
     }
@@ -279,9 +696,9 @@ async function buscar() {
   coleccionesBuscadas = {};
   peliculasBuscadas = {};
   seriesBuscadas = {};
-  coleccionesID = [];
-  peliculasID = [];
-  seriesID = [];
+  coleccionesID = new Set();
+  peliculasID = new Set();
+  seriesID = new Set();
 
   const query = document.getElementById("search-input").value;
   document.getElementById("search-input").value = "";
@@ -297,11 +714,21 @@ async function buscar() {
       presentes[id] = todasLasPeliculas[id];
     }
   });
+
   console.log(
     "--------------------------------------------------------------------------------------"
   );
   await busqueda(query, "movie");
   console.log(peliculasBuscadas);
+  console.log(peliculasID);
+
+  Object.values(nuevas).forEach((coleccion) => {
+    coleccion.Partes.forEach((id) => {
+      if (peliculasID.has(id)) {
+        peliculasID.delete(id);
+      }
+    });
+  });
   console.log(peliculasID);
 
   peliculasID.forEach((id) => {
@@ -310,7 +737,23 @@ async function buscar() {
     } else if (peliculas[id] === null) {
       presentes[id] = todasLasPeliculas[id];
     } else {
-      presentes[id] = todasLasPeliculas[peliculas[id]];
+      presentes[peliculas[id]] = todasLasPeliculas[peliculas[id]];
+    }
+  });
+
+  console.log(
+    "--------------------------------------------------------------------------------------"
+  );
+
+  await busqueda(query, "tv");
+  console.log(seriesBuscadas);
+  console.log(seriesID);
+
+  seriesID.forEach((id) => {
+    if (series.has(id)) {
+      presentes[id] = todasLasSeries[id];
+    } else {
+      nuevas[id] = seriesBuscadas[id];
     }
   });
 
@@ -321,22 +764,10 @@ async function buscar() {
     "--------------------------------------------------------------------------------------"
   );
 
-  await busqueda(query, "tv");
-  console.log(seriesBuscadas);
-  console.log(seriesID);
-
-  console.log(
-    "--------------------------------------------------------------------------------------"
-  );
-
-  if (coleccionesID.length > 0) {
-  }
-
-  if (peliculasID.length > 0) {
-  }
-
-  if (seriesID.length > 0) {
-  }
+  console.log(nuevas);
+  crearListaBusquedaNueva(elementos.nuevas, nuevas);
+  console.log(presentes);
+  crearListaBusquedaPresente(elementos.presentes, presentes);
 }
 
 function modificarWatchlist(body) {
@@ -358,7 +789,7 @@ function modificarWatchlist(body) {
 }
 
 document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
-  contenedor.addEventListener("click", function (event) {
+  contenedor.addEventListener("click", async function (event) {
     if (event.target.classList.contains("agregar-btn")) {
       const card = event.target.closest(".card");
       if (!card) return;
@@ -366,11 +797,23 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
       const tipo = card.getAttribute("data_type");
       const id = card.getAttribute("data_id");
       if (tipo === "collection") {
+        peliculasAgregar = {};
+        coleccionAgregar = {};
         const coleccion = nuevas[id];
-        colecciones[id] = coleccion;
-        console.log(coleccion);
+        colecciones[id] = coleccion.Partes;
+
+        coleccion.Partes.forEach(async (id) => {
+          await buscarPeliculasAgregar(id);
+        });
+
+        await buscarColeccionAgregar(id);
+        coleccionAgregar[id].Peliculas = peliculasAgregar;
+
+        console.log(peliculasAgregar);
+        console.log(coleccionAgregar);
+
         const body = {
-          media_id: coleccion.Peliculas[0],
+          media_id: coleccion.Partes[0],
           media_type: "movie",
           watchlist: true,
         };
@@ -395,7 +838,10 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
       const id = card.getAttribute("data_id");
       if (tipo === "collection") {
         const coleccion = colecciones[id];
-        coleccion.Peliculas.forEach((id) => {
+        delete colecciones[id];
+        console.log(coleccionesID);
+        console.log(coleccion);
+        coleccion.forEach((id) => {
           const body = {
             media_id: id,
             media_type: "movie",
