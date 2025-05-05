@@ -554,7 +554,7 @@ async function buscarPeliculasAgregar(id) {
         if (!colecciones[data.belongs_to_collection.id]) {
           peliculas[id] = data.belongs_to_collection.id;
 
-          await buscarColeccion(data.belongs_to_collection.id);
+          await buscarColeccionAgregar(data.belongs_to_collection.id);
         }
       } else {
         peliculas[id] = null;
