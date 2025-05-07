@@ -67,6 +67,59 @@ function guardarDatos(data) {
 await cargarDatosGuardados();
 
 function crearColeccion(elemento, datos) {
+  let reparto = Object.values(datos.Peliculas).reduce((acc, pelicula) => {
+    return acc.concat(pelicula.Reparto);
+  }, []);
+  let directores = Object.values(datos.Peliculas).reduce((acc, pelicula) => {
+    return acc.concat(pelicula.Directores);
+  }, []);
+  let generos = Object.values(datos.Peliculas).reduce((acc, pelicula) => {
+    return acc.concat(pelicula.Generos.split(", "));
+  }, []);
+  console.log(reparto);
+  let repartoUnico = [];
+  let visitadoR = new Set();
+  reparto.forEach((actor) => {
+    if (!visitadoR.has(actor.Nombre)) {
+      visitadoR.add(actor.Nombre);
+      repartoUnico.push(actor);
+    }
+  });
+  console.log(repartoUnico);
+  console.log(directores);
+  let visitado = new Set();
+  let directoresUnicos = [];
+  directores.forEach((director) => {
+    if (!visitado.has(director.Nombre)) {
+      visitado.add(director.Nombre);
+      directoresUnicos.push(director);
+    }
+  });
+
+  console.log(directoresUnicos);
+  console.log(generos);
+  const generosUnicos = [...new Set(generos)].join(", ");
+  console.log(generosUnicos);
+
+  const peliculas = datos.Peliculas;
+  console.log(peliculas);
+  const maxActores = Math.max(
+    ...Object.values(peliculas).map((p) => p.Reparto.length)
+  );
+  console.log(maxActores);
+
+  repartoUnico = [];
+
+  for (let i = 0; i < maxActores; i++) {
+    for (const pelicula of Object.values(peliculas)) {
+      const actor = pelicula.Reparto[i];
+      if (actor) {
+        repartoUnico.push(actor);
+      }
+    }
+  }
+  console.log(repartoUnico);
+
   const containerExistente = elemento.querySelector(".container");
 
   if (containerExistente) {
@@ -94,9 +147,9 @@ function crearColeccion(elemento, datos) {
   }">
       <div class="details">
         <h2>${datos.Nombre.split(" (")[0]}</h2>
-        <p>${datos.Peliculas[Object.keys(datos.Peliculas)[0]].Genero} &bull; (${
-    datos.Lanzamiento
-  }) &bull; ${datos.Duracion}</p>
+        <p>${
+          datos.Peliculas[Object.keys(datos.Peliculas)[0]].Generos
+        } &bull; (${datos.Lanzamiento}) &bull; ${datos.Duracion}</p>
         <ul>
           <li class="bookmark-item">
             <i class="fa-regular fa-bookmark" id="${datos.Id}"></i>
@@ -106,6 +159,62 @@ function crearColeccion(elemento, datos) {
         <p>${datos.Descripcion}</p>
       </div>
     </div>`;
+
+  const cardcast = document.createElement("div");
+  cardcast.className = "card-cast";
+
+  const director = document.createElement("div");
+  director.className = "reparto";
+
+  if (directoresUnicos.length > 1) {
+    director.innerHTML = `<h3>Directores</h3>`;
+  } else if (directoresUnicos.length === 1) {
+    director.innerHTML = `<h3>Director</h3>`;
+  }
+  const ulDirector = document.createElement("ul");
+  ulDirector.className = "director-list";
+
+  directoresUnicos.forEach((director) => {
+    const li = document.createElement("li");
+    li.className = "director";
+
+    li.innerHTML = `
+        <img src="https://image.tmdb.org/t/p/w185${director.Foto}" alt="${director.Nombre}">
+        <p class="director-name">${director.Nombre}</p>
+        `;
+
+    ulDirector.appendChild(li);
+  });
+
+  director.appendChild(ulDirector);
+  cardcast.appendChild(director);
+
+  const cast = document.createElement("div");
+  cast.className = "reparto";
+
+  if (repartoUnico.length > 0) {
+    cast.innerHTML = `<h3>Reparto</h3>`;
+  }
+
+  const ulCast = document.createElement("ul");
+  ulCast.className = "cast-list";
+
+  repartoUnico.forEach((actor) => {
+    const li = document.createElement("li");
+    li.className = "actor";
+
+    li.innerHTML = `
+        <img src="https://image.tmdb.org/t/p/w185${actor.Foto}" alt="${director.Nombre}">
+        <p class="actor-name">${actor.Nombre}</p>
+        <p>${actor.Personaje}</p>
+        `;
+
+    ulCast.appendChild(li);
+  });
+
+  cast.appendChild(ulCast);
+  cardcast.appendChild(cast);
+  content.appendChild(cardcast);
 
   const coleccion = document.createElement("div");
   coleccion.className = "coleccion";
