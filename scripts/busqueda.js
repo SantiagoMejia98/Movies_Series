@@ -551,14 +551,14 @@ async function buscarPeliculasAgregar(id) {
     const data = await res.json();
     if (data) {
       if (data.belongs_to_collection) {
+        peliculas[id] = data.belongs_to_collection.id;
+        peliculasAgregar[id] = JSONpeliculaAgregar(data);
         if (!colecciones[data.belongs_to_collection.id]) {
-          peliculas[id] = data.belongs_to_collection.id;
-
           await buscarColeccionAgregar(data.belongs_to_collection.id);
         }
       } else {
         peliculas[id] = null;
-        peliculasAgregar[id] = JSONpeliculaAgregar(data);
+        peliculasAgregar = JSONpeliculaAgregar(data);
       }
     }
   } catch (err) {
@@ -579,6 +579,8 @@ async function buscarSeriesAgregar(id) {
 
     const data = await res.json();
     if (data) {
+      series.add(parseInt(id));
+
       seriesAgregar = JSONserieAgregar(data);
     }
   } catch (err) {
@@ -600,14 +602,14 @@ async function buscarColeccionAgregar(id) {
     const data = await res.json();
     if (data) {
       coleccionAgregar = JSONcoleccionAgregar(data);
-      /*const partes = data.parts.map((item) => item.id);
-      coleccionesId[id] = partes;
+      const partes = data.parts.map((item) => item.id);
+      colecciones[id] = partes;
 
       for (const pelicula of data.parts) {
-        if (!peliculas[pelicula.id]) {
-          await buscarDetallesPeliculas(pelicula.id);
+        if (!peliculasAgregar[pelicula.id]) {
+          await buscarPeliculasAgregar(pelicula.id);
         }
-      }*/
+      }
     }
   } catch (err) {
     console.error("Error al cargar datos:", err);
@@ -627,7 +629,6 @@ async function buscarColeccion(query) {
 
     const data = await res.json();
     if (data.results) {
-      //console.log(data.results);
       data.results.forEach((coleccion) => {
         if (coleccion.poster_path === null) return;
         coleccionesBuscadas[coleccion.id] = JSONcoleccion(coleccion);
@@ -652,7 +653,6 @@ async function busqueda(query, tipo) {
     }
     const data = await res.json();
     if (data.results) {
-      //console.log(data.results);
       data.results.forEach((titulo) => {
         if (tipo === "movie") {
           if (titulo.poster_path === null) return;
@@ -704,8 +704,6 @@ async function buscar() {
   document.getElementById("search-input").value = "";
 
   await buscarColeccion(query);
-  //console.log(coleccionesBuscadas);
-  //console.log(coleccionesID);
 
   coleccionesID.forEach(async (id) => {
     if (colecciones[id] === undefined) {
@@ -715,12 +713,7 @@ async function buscar() {
     }
   });
 
-  /*console.log(
-    "--------------------------------------------------------------------------------------"
-  );*/
   await busqueda(query, "movie");
-  //console.log(peliculasBuscadas);
-  //console.log(peliculasID);
 
   Object.values(nuevas).forEach((coleccion) => {
     coleccion.Partes.forEach((id) => {
@@ -729,7 +722,6 @@ async function buscar() {
       }
     });
   });
-  //console.log(peliculasID);
 
   peliculasID.forEach((id) => {
     if (peliculas[id] === undefined) {
@@ -741,14 +733,7 @@ async function buscar() {
     }
   });
 
-  /*console.log(
-    "--------------------------------------------------------------------------------------"
-  );*/
-
   await busqueda(query, "tv");
-  //console.log(seriesBuscadas);
-  //console.log(seriesID);
-
   seriesID.forEach((id) => {
     if (series.has(id)) {
       presentes[id] = todasLasSeries[id];
@@ -757,16 +742,7 @@ async function buscar() {
     }
   });
 
-  //console.log(nuevas);
-  //console.log(presentes);
-
-  /*console.log(
-    "--------------------------------------------------------------------------------------"
-  );*/
-
-  //console.log(nuevas);
   crearListaBusquedaNueva(elementos.nuevas, nuevas);
-  //console.log(presentes);
   crearListaBusquedaPresente(elementos.presentes, presentes);
 }
 
@@ -799,40 +775,39 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
       if (tipo === "collection") {
         peliculasAgregar = {};
         coleccionAgregar = {};
-        const coleccion = nuevas[id];
-        colecciones[id] = coleccion.Partes;
-
-        coleccion.Partes.forEach(async (id) => {
-          await buscarPeliculasAgregar(id);
-        });
-
         await buscarColeccionAgregar(id);
         coleccionAgregar.Peliculas = peliculasAgregar;
 
-        console.log(peliculasAgregar);
-        console.log(coleccionAgregar);
-        console.log(Object.keys(todasLasPeliculas).length);
         todasLasPeliculas[id] = coleccionAgregar;
-        console.log(Object.keys(todasLasPeliculas).length);
         const body = {
-          media_id: coleccion.Partes[0],
+          media_id: coleccionAgregar.Partes[0],
           media_type: "movie",
           watchlist: true,
         };
         modificarWatchlist(body);
+        presentes[id] = nuevas[id];
+        delete nuevas[id];
       } else {
         if (tipo === "movie") {
           peliculasAgregar = {};
           coleccionAgregar = {};
           await buscarPeliculasAgregar(id);
-          console.log(peliculasAgregar);
-          console.log(coleccionAgregar);
+          if (Object.keys(coleccionAgregar).length > 0) {
+            todasLasPeliculas[coleccionAgregar.Id] = coleccionAgregar;
+            presentes[coleccionAgregar.Id] = coleccionAgregar;
+            delete nuevas[id];
+          } else {
+            todasLasPeliculas[id] = peliculasAgregar;
+            presentes[id] = nuevas[id];
+            delete nuevas[id];
+          }
         } else if (tipo === "tv") {
           seriesAgregar = {};
-          series.add(id);
-          console.log(series);
+
           await buscarSeriesAgregar(id);
-          console.log(seriesAgregar);
+          todasLasSeries[id] = seriesAgregar;
+          presentes[id] = nuevas[id];
+          delete nuevas[id];
         }
         const body = {
           media_id: id,
@@ -841,10 +816,10 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
         };
         modificarWatchlist(body);
       }
-      presentes[id] = nuevas[id];
       delete nuevas[id];
       crearListaBusquedaPresente(elementos.presentes, presentes);
       crearListaBusquedaNueva(elementos.nuevas, nuevas);
+      guardarDatosGuardados();
     } else if (event.target.classList.contains("eliminar-btn")) {
       const card = event.target.closest(".card");
       if (!card) return;
@@ -854,8 +829,11 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
       if (tipo === "collection") {
         const coleccion = colecciones[id];
         delete colecciones[id];
-        console.log(coleccionesID);
-        console.log(coleccion);
+        delete todasLasPeliculas[id];
+        coleccion.forEach((id) => {
+          delete peliculas[id];
+        });
+
         coleccion.forEach((id) => {
           const body = {
             media_id: id,
@@ -865,6 +843,13 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
           modificarWatchlist(body);
         });
       } else {
+        if (tipo === "movie") {
+          delete peliculas[id];
+          delete todasLasPeliculas[id];
+        } else if (tipo === "tv") {
+          series.delete(id);
+          delete todasLasSeries[id];
+        }
         const body = {
           media_id: id,
           media_type: tipo,
@@ -876,6 +861,7 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
       delete presentes[id];
       crearListaBusquedaPresente(elementos.presentes, presentes);
       crearListaBusquedaNueva(elementos.nuevas, nuevas);
+      guardarDatosGuardados();
     }
   });
 });
