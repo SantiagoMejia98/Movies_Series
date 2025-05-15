@@ -146,6 +146,7 @@ function JSONpelicula(titulo) {
             Nombre: item.name,
             Foto: item.profile_path,
             Personaje: item.character.split("/")[0].split("(")[0],
+            Orden: item.order,
           };
         }) || null,
     Directores:
@@ -521,9 +522,38 @@ await cargarDatos("movies");
 await cargarDatos("tv");
 
 for (const coleccion in colecciones) {
+  let reparto = [];
+  let directores = [];
   for (const movieId of colecciones[coleccion].Partes) {
     colecciones[coleccion].Peliculas[movieId] = peliculas[movieId];
+    if (peliculas[movieId].Reparto) {
+      reparto.push(...peliculas[movieId].Reparto);
+    }
+    if (peliculas[movieId].Directores) {
+      directores.push(...peliculas[movieId].Directores);
+    }
   }
+  const mapaUnico = new Map();
+  for (const actor of reparto) {
+    const nombre = actor.Nombre;
+    if (!mapaUnico.has(nombre) || actor.Orden < mapaUnico.get(nombre).Orden) {
+      mapaUnico.set(nombre, actor);
+    }
+  }
+  const repartoUnico = [...mapaUnico.values()];
+
+  repartoUnico.sort((a, b) => a.Orden - b.Orden);
+  colecciones[coleccion].Reparto = repartoUnico;
+
+  const mapaUnicoDirectores = new Map();
+  for (const director of directores) {
+    const nombre = director.Nombre;
+    if (!mapaUnicoDirectores.has(nombre)) {
+      mapaUnicoDirectores.set(nombre, director);
+    }
+  }
+  const directoresUnicos = [...mapaUnicoDirectores.values()];
+  colecciones[coleccion].Directores = directoresUnicos;
   todasLasPeliculas[coleccion] = colecciones[coleccion];
 }
 

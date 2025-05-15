@@ -67,59 +67,6 @@ function guardarDatos(data) {
 await cargarDatosGuardados();
 
 function crearColeccion(elemento, datos) {
-  let reparto = Object.values(datos.Peliculas).reduce((acc, pelicula) => {
-    return acc.concat(pelicula.Reparto);
-  }, []);
-  let directores = Object.values(datos.Peliculas).reduce((acc, pelicula) => {
-    return acc.concat(pelicula.Directores);
-  }, []);
-  let generos = Object.values(datos.Peliculas).reduce((acc, pelicula) => {
-    return acc.concat(pelicula.Generos.split(", "));
-  }, []);
-  console.log(reparto);
-  let repartoUnico = [];
-  let visitadoR = new Set();
-  reparto.forEach((actor) => {
-    if (!visitadoR.has(actor.Nombre)) {
-      visitadoR.add(actor.Nombre);
-      repartoUnico.push(actor);
-    }
-  });
-  console.log(repartoUnico);
-  console.log(directores);
-  let visitado = new Set();
-  let directoresUnicos = [];
-  directores.forEach((director) => {
-    if (!visitado.has(director.Nombre)) {
-      visitado.add(director.Nombre);
-      directoresUnicos.push(director);
-    }
-  });
-
-  console.log(directoresUnicos);
-  console.log(generos);
-  const generosUnicos = [...new Set(generos)].join(", ");
-  console.log(generosUnicos);
-
-  const peliculas = datos.Peliculas;
-  console.log(peliculas);
-  const maxActores = Math.max(
-    ...Object.values(peliculas).map((p) => p.Reparto.length)
-  );
-  console.log(maxActores);
-
-  repartoUnico = [];
-
-  for (let i = 0; i < maxActores; i++) {
-    for (const pelicula of Object.values(peliculas)) {
-      const actor = pelicula.Reparto[i];
-      if (actor) {
-        repartoUnico.push(actor);
-      }
-    }
-  }
-  console.log(repartoUnico);
-
   const containerExistente = elemento.querySelector(".container");
 
   if (containerExistente) {
@@ -166,15 +113,15 @@ function crearColeccion(elemento, datos) {
   const director = document.createElement("div");
   director.className = "reparto";
 
-  if (directoresUnicos.length > 1) {
+  if (datos.Directores.length > 1) {
     director.innerHTML = `<h3>Directores</h3>`;
-  } else if (directoresUnicos.length === 1) {
+  } else if (datos.Directores.length === 1) {
     director.innerHTML = `<h3>Director</h3>`;
   }
   const ulDirector = document.createElement("ul");
   ulDirector.className = "director-list";
 
-  directoresUnicos.forEach((director) => {
+  datos.Directores.forEach((director) => {
     const li = document.createElement("li");
     li.className = "director";
 
@@ -192,14 +139,14 @@ function crearColeccion(elemento, datos) {
   const cast = document.createElement("div");
   cast.className = "reparto";
 
-  if (repartoUnico.length > 0) {
+  if (datos.Reparto.length > 0) {
     cast.innerHTML = `<h3>Reparto</h3>`;
   }
 
   const ulCast = document.createElement("ul");
   ulCast.className = "cast-list";
 
-  repartoUnico.forEach((actor) => {
+  datos.Reparto.forEach((actor) => {
     const li = document.createElement("li");
     li.className = "actor";
 
