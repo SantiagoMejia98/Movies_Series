@@ -107,62 +107,6 @@ function crearColeccion(elemento, datos) {
       </div>
     </div>`;
 
-  const cardcast = document.createElement("div");
-  cardcast.className = "card-cast";
-
-  const director = document.createElement("div");
-  director.className = "reparto";
-
-  if (datos.Directores.length > 1) {
-    director.innerHTML = `<h3>Directores</h3>`;
-  } else if (datos.Directores.length === 1) {
-    director.innerHTML = `<h3>Director</h3>`;
-  }
-  const ulDirector = document.createElement("ul");
-  ulDirector.className = "director-list";
-
-  datos.Directores.forEach((director) => {
-    const li = document.createElement("li");
-    li.className = "director";
-
-    li.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w185${director.Foto}" alt="${director.Nombre}">
-        <p class="director-name">${director.Nombre}</p>
-        `;
-
-    ulDirector.appendChild(li);
-  });
-
-  director.appendChild(ulDirector);
-  cardcast.appendChild(director);
-
-  const cast = document.createElement("div");
-  cast.className = "reparto";
-
-  if (datos.Reparto.length > 0) {
-    cast.innerHTML = `<h3>Reparto</h3>`;
-  }
-
-  const ulCast = document.createElement("ul");
-  ulCast.className = "cast-list";
-
-  datos.Reparto.forEach((actor) => {
-    const li = document.createElement("li");
-    li.className = "actor";
-
-    li.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w185${actor.Foto}" alt="${director.Nombre}">
-        <p class="actor-name">${actor.Nombre}</p>
-        <p>${actor.Personaje}</p>
-        `;
-
-    ulCast.appendChild(li);
-  });
-
-  cast.appendChild(ulCast);
-  cardcast.appendChild(cast);
-  content.appendChild(cardcast);
-
   const coleccion = document.createElement("div");
   coleccion.className = "coleccion";
   coleccion.innerHTML = `<h2>Colección</h2>`;
@@ -177,9 +121,9 @@ function crearColeccion(elemento, datos) {
 
     li.innerHTML = `
       <div class="pelicula-container">
-        <h2><strong>${pelicula.Nombre.split(" (")[0]}${
+        <h3><strong>${pelicula.Nombre.split(" (")[0]}${
       pelicula.Lanzamiento !== "9999" ? ` (${pelicula.Lanzamiento})` : ""
-    }</strong></h2>
+    }</strong></h3>
         <img src="https://image.tmdb.org/t/p/w500${pelicula.Poster}" alt="${
       pelicula.Nombre
     }">
@@ -225,6 +169,9 @@ function crearPelicula(elemento, datos) {
   const content = document.createElement("div");
   content.className = "content";
   content.setAttribute("data-id", datos.Id);
+  if (datos.Coleccion) {
+    content.setAttribute("data-collection", datos.Coleccion);
+  }
 
   if (datos.Logo) {
     content.innerHTML = `
@@ -274,10 +221,15 @@ function crearPelicula(elemento, datos) {
       datos.Nombre +
       " " +
       (datos.Lanzamiento !== "9999" ? datos.Lanzamiento : "") +
-      " trailer"
+      " trailer subtitulado español"
     }" target="_blank"><img src="https://image.tmdb.org/t/p/w92/pTnn5JwWr4p3pG8H6VrpiQo7Vs0.jpg">
     </a>
       </li>
+      ${
+        datos.Coleccion
+          ? `<li class="collection-item" data-collection="${datos.Coleccion}"><p>Ver Colección</p></li>`
+          : ""
+      }
     </ul>
     ${datos.Descripcion ? `<h3>Sinopsis</h3> ${datos.Descripcion}` : ""}
     `;
@@ -488,3 +440,12 @@ function copiarNombre() {
     });
   }
 }
+
+document
+  .querySelector(".collection-item")
+  ?.addEventListener("click", function () {
+    const coleccion = this.getAttribute("data-collection");
+    const aleatorio = [coleccion];
+    guardarDatos(aleatorio);
+    window.location.href = "pelicula.html";
+  });

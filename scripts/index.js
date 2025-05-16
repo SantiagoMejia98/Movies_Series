@@ -101,13 +101,13 @@ async function cargarDatosGuardados() {
   } else {
     window.location = "actualizar.html";
   }
-  /*alert(
+  alert(
     `${
       Object.keys(todasLasPeliculas).length
     } peliculas en la lista de inicio \n ${
       Object.keys(todasLasSeries).length
     } series en la lista de inicio`
-  );*/
+  );
 }
 
 await cargarDatosGuardados();
