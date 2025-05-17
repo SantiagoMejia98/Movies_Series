@@ -107,12 +107,15 @@ function crearColeccion(elemento, datos) {
       </div>
     </div>`;
 
+  const ordenado = Object.values(datos.Peliculas).sort(
+    (x, y) => x.Lanzamiento - y.Lanzamiento
+  );
   const coleccion = document.createElement("div");
   coleccion.className = "coleccion";
   coleccion.innerHTML = `<h2>Colección</h2>`;
   const ul = document.createElement("ul");
   ul.className = "lista";
-  for (const pelicula of Object.values(datos.Peliculas)) {
+  ordenado.forEach((pelicula) => {
     const li = document.createElement("li");
     li.className = "card";
     li.setAttribute("data-id", pelicula.Id);
@@ -132,7 +135,8 @@ function crearColeccion(elemento, datos) {
       `;
 
     ul.appendChild(li);
-  }
+  });
+  º;
 
   coleccion.appendChild(ul);
   content.appendChild(coleccion);
