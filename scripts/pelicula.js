@@ -227,7 +227,9 @@ function crearPelicula(elemento, datos) {
       </li>
       ${
         datos.Coleccion
-          ? `<li class="collection-item" data-collection="${datos.Coleccion}"><p>Ver Colección</p></li>`
+          ? `<li class="collection-item" data-collection="${
+              datos.Coleccion
+            }"><p>Ver ${todasLasPeliculas[datos.Coleccion].Nombre}</p></li>`
           : ""
       }
     </ul>
