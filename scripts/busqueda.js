@@ -88,7 +88,9 @@ function crearListaBusquedaPresente(elemento, datos) {
                     pelicula.Poster
                   }" alt="${pelicula.Nombre}">
                   <div class="informacion">
-                      <p class="fecha">${pelicula.Lanzamiento}</p>
+                      <p class="fecha">${
+                        pelicula.Lanzamiento ? pelicula.Lanzamiento : ""
+                      }</p>
                       <p class="tipo" id="tipo">${pelicula.Tipo}</p>
                       <button class="eliminar-btn">Eliminar</button>
                   </div>
@@ -128,7 +130,9 @@ function crearListaBusquedaNueva(elemento, datos) {
                     pelicula.Poster
                   }" alt="${pelicula.Nombre}">
                   <div class="informacion">
-                      <p class="fecha">${pelicula.Lanzamiento}</p>
+                      <p class="fecha">${
+                        pelicula.Lanzamiento ? pelicula.Lanzamiento : ""
+                      }</p>
                       <p class="tipo" id="tipo">${pelicula.Tipo}</p>
                       <button class="agregar-btn">Agregar</button>
                   </div>

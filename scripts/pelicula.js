@@ -103,7 +103,7 @@ function crearColeccion(elemento, datos) {
           </li>
         </ul>
         <h3>Sinopsis</h3>
-        <p>${datos.Descripcion}</p>
+        <p>${datos.Descripcion ? datos.Descripcion : ""}</p>
       </div>
     </div>`;
 
