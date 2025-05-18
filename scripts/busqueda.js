@@ -304,7 +304,11 @@ function JSONpeliculaAgregar(titulo) {
           return {
             Nombre: item.name,
             Foto: item.profile_path,
-            Personaje: item.character.split(":")[0].split("/")[0].split("(")[0],
+            Personaje: item.character
+              .split(":")[0]
+              .split("-")[0]
+              .split("/")[0]
+              .split("(")[0],
             Orden: item.order,
           };
         }) || null,
@@ -346,7 +350,9 @@ function JSONserieAgregar(titulo) {
       ? `${titulo.first_air_date.split(/[-/]/).find((p) => p.length === 4)}${
           titulo.status !== "Ended" && titulo.status !== "Canceled"
             ? " - Presente"
-            : titulo.last_air_date
+            : titulo.last_air_date &&
+              titulo.last_air_date.split(/[-/]/).find((p) => p.length === 4) !==
+                titulo.first_air_date.split(/[-/]/).find((p) => p.length === 4)
             ? ` - ${titulo.last_air_date
                 .split(/[-/]/)
                 .find((p) => p.length === 4)}`
@@ -411,6 +417,7 @@ function JSONserieAgregar(titulo) {
             Foto: item.profile_path,
             Personaje: item.roles[0].character
               .split(":")[0]
+              .split("-")[0]
               .split("/")[0]
               .split("(")[0],
           };

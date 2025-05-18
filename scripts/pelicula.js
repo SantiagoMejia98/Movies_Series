@@ -238,13 +238,15 @@ function crearPelicula(elemento, datos) {
         datos.Coleccion
           ? `<li class="collection-item" data-collection="${
               datos.Coleccion
-            }"><p>Ver ${todasLasPeliculas[datos.Coleccion].Nombre}</p></li>`
+            }"><p>&#128218; ${
+              todasLasPeliculas[datos.Coleccion].Nombre
+            }</p></li>`
           : `<li class="bookmark-item">
             <i class="fa-regular fa-bookmark" id="${datos.Id}"></i>
           </li>`
       }
     </ul>
-    ${datos.Descripcion ? `<h3>Sinopsis</h3> ${datos.Descripcion}` : ""}
+    ${datos.Descripcion ? `<h3>Sinopsis</h3> <p>${datos.Descripcion}</p>` : ""}
     `;
 
   const proveedores = document.createElement("div");

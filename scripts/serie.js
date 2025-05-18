@@ -13,6 +13,15 @@ const elementos = {
   serie: document.querySelector('[data-name="serie"]'),
 };
 
+const traduccionesStatus = {
+  "Returning Series": "En emisión",
+  Planned: "Planeada",
+  "In Production": "En producción",
+  Ended: "Finalizada",
+  Canceled: "Cancelada",
+  Pilot: "Piloto",
+};
+
 const PROVEEDORES_VALIDOS = {
   "Disney Plus": "https://www.disneyplus.com",
   "Amazon Prime Video":
@@ -95,24 +104,27 @@ function crearSerie(elemento, datos) {
   details.className = "details";
 
   details.innerHTML = `
-    <h2>${datos.Nombre}
-  </h2>
-    <p>${datos.Generos} &bull;  ${
-    datos.Lanzamiento ? ` (${datos.Lanzamiento})` : ""
-  } &bull; ${datos.Duracion} &bull; ${datos.Status}</p>
-    <p><i>${datos.Tagline}</i></p> 
+    <h2>${datos.Nombre}</h2>
+    <p>${datos.Generos !== "" ? datos.Generos : ""}${
+    datos.Lanzamiento !== "Desconocido" ? ` &bull; ${datos.Lanzamiento}` : ""
+  }${datos.Duracion !== "0h 0min" ? ` &bull; ${datos.Duracion}` : ""} &bull; ${
+    traduccionesStatus[datos.Status]
+  }</p>
+    <p><i>${datos.Tagline ? datos.Tagline : ""}</i></p> 
     <ul>
     <li class="movie-item">
     <a href="https://www.youtube.com/results?search_query=${
-      datos.Nombre +
-      " " +
-      (datos.Lanzamiento !== "9999" ? datos.Lanzamiento : "") +
-      " trailer"
+      datos.Nombre + " season 1 trailer subtitulado español latino"
     }" target="_blank"><img src="https://image.tmdb.org/t/p/w92/pTnn5JwWr4p3pG8H6VrpiQo7Vs0.jpg">
     </a>
       </li>
+      <li class="bookmark-item">
+            <i class="fa-regular fa-bookmark" id="${datos.Id}"></i>
+          </li>
     </ul>
-    ${datos.Descripcion ? `<h3>Sinopsis</h3> ${datos.Descripcion}` : ""}`;
+    ${
+      datos.Descripcion ? `<h3>Sinopsis</h3> <p>${datos.Descripcion}</p>` : ""
+    }`;
 
   const proveedores = document.createElement("div");
   proveedores.className = "streaming-providers";
@@ -206,28 +218,38 @@ function crearSerie(elemento, datos) {
   content.appendChild(moviecard);
   content.appendChild(cardcast);
 
-  const coleccion = document.createElement("div");
-  coleccion.className = "coleccion";
-  coleccion.innerHTML = `<h2>Temporadas</h2>`;
-  const ulSeason = document.createElement("ul");
-  ulSeason.className = "lista";
-  datos.Temporadas.forEach((temporada) => {
-    const li = document.createElement("li");
-    li.className = "card";
+  if (
+    (datos.Status !== "Ended" && datos.Status !== "Canceled") ||
+    datos.Duracion.split(" -")[0] !== "1 temporada"
+  ) {
+    const coleccion = document.createElement("div");
+    coleccion.className = "coleccion";
+    coleccion.innerHTML = `<h2>Temporadas</h2>`;
+    const ulSeason = document.createElement("ul");
+    ulSeason.className = "lista";
+    datos.Temporadas.forEach((temporada) => {
+      const li = document.createElement("li");
+      li.className = "card";
 
-    li.innerHTML = `
+      li.innerHTML = `
       <div class="pelicula-container">
-        <h2><strong>${temporada.Nombre} (${temporada.Lanzamiento})</strong></h2>
-        <img src="https://image.tmdb.org/t/p/w500${temporada.Poster}" alt="${temporada.Nombre}">
+        <h3><strong>${temporada.Nombre} (${
+        temporada.Lanzamiento !== "9999" ? temporada.Lanzamiento : ""
+      })</strong></h3>
+        <img src="https://image.tmdb.org/t/p/w500${temporada.Poster}" alt="${
+        temporada.Nombre
+      }">
         <p>${temporada.Duracion}</p>
       </div>
       `;
 
-    ulSeason.appendChild(li);
-  });
+      ulSeason.appendChild(li);
+    });
 
-  coleccion.appendChild(ulSeason);
-  content.appendChild(coleccion);
+    coleccion.appendChild(ulSeason);
+    content.appendChild(coleccion);
+  }
+
   container.appendChild(content);
   elemento.appendChild(container);
 
