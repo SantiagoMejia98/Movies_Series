@@ -93,17 +93,21 @@ function crearColeccion(elemento, datos) {
     datos.Nombre
   }">
       <div class="details">
-        <h2>${datos.Nombre.split(" (")[0]}</h2>
-        <p>${datos.Generos} &bull; (${datos.Lanzamiento}) &bull; ${
-    datos.Duracion
-  }</p>
+        <h2>${datos.Nombre}</h2>
+        <p>${datos.Generos !== "" ? datos.Generos + " &bull; " : ""}${
+    datos.Lanzamiento !== "Desconocido" ? `(${datos.Lanzamiento}) &bull; ` : ""
+  }${datos.Duracion}</p>
         <ul>
           <li class="bookmark-item">
             <i class="fa-regular fa-bookmark" id="${datos.Id}"></i>
           </li>
         </ul>
-        <h3>Sinopsis</h3>
-        <p>${datos.Descripcion ? datos.Descripcion : ""}</p>
+        ${
+          datos.Descripcion
+            ? `<h3>Sinopsis</h3>
+          <p>${datos.Descripcion}</p>`
+            : ""
+        }
       </div>
     </div>`;
 
@@ -130,7 +134,9 @@ function crearColeccion(elemento, datos) {
         <img src="https://image.tmdb.org/t/p/w500${pelicula.Poster}" alt="${
       pelicula.Nombre
     }">
-        <p>${pelicula.Duracion}</p>
+        <p>${
+          pelicula.Duracion !== "0h 0min" ? pelicula.Duracion : "Sin estrenar"
+        }</p>
       </div>
       `;
 
@@ -212,9 +218,9 @@ function crearPelicula(elemento, datos) {
 
   details.innerHTML = `
     <h2>${datos.Nombre}</h2>
-    <p>${datos.Generos} ${
-    datos.Lanzamiento !== "9999" ? `&bull;${datos.Lanzamiento}` : ""
-  } ${datos.Duracion !== "0h 0min" ? `&bull;${datos.Duracion}` : ""} &bull; ${
+    <p>${datos.Generos !== "" ? datos.Generos : ""}${
+    datos.Lanzamiento !== "9999" ? ` &bull; ${datos.Lanzamiento}` : ""
+  }${datos.Duracion !== "0h 0min" ? ` &bull; ${datos.Duracion}` : ""} &bull; ${
     traduccionesStatus[datos.Status]
   }</p>
     <p><i>${datos.Tagline ? datos.Tagline : ""}</i></p> 
@@ -233,7 +239,9 @@ function crearPelicula(elemento, datos) {
           ? `<li class="collection-item" data-collection="${
               datos.Coleccion
             }"><p>Ver ${todasLasPeliculas[datos.Coleccion].Nombre}</p></li>`
-          : ""
+          : `<li class="bookmark-item">
+            <i class="fa-regular fa-bookmark" id="${datos.Id}"></i>
+          </li>`
       }
     </ul>
     ${datos.Descripcion ? `<h3>Sinopsis</h3> ${datos.Descripcion}` : ""}
