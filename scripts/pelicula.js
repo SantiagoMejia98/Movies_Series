@@ -94,9 +94,9 @@ function crearColeccion(elemento, datos) {
   }">
       <div class="details">
         <h2>${datos.Nombre.split(" (")[0]}</h2>
-        <p>${
-          datos.Peliculas[Object.keys(datos.Peliculas)[0]].Generos
-        } &bull; (${datos.Lanzamiento}) &bull; ${datos.Duracion}</p>
+        <p>${datos.Generos} &bull; (${datos.Lanzamiento}) &bull; ${
+    datos.Duracion
+  }</p>
         <ul>
           <li class="bookmark-item">
             <i class="fa-regular fa-bookmark" id="${datos.Id}"></i>
@@ -136,7 +136,6 @@ function crearColeccion(elemento, datos) {
 
     ul.appendChild(li);
   });
-  º;
 
   coleccion.appendChild(ul);
   content.appendChild(coleccion);

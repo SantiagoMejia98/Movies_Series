@@ -781,6 +781,14 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
         coleccionAgregar = {};
         await buscarColeccionAgregar(id);
         coleccionAgregar.Peliculas = peliculasAgregar;
+        let generos = new Set();
+        Object.values(peliculasAgregar).forEach((pelicula) => {
+          let genero = pelicula.Generos.split(", ");
+          for (const g of genero) {
+            generos.add(g);
+          }
+        });
+        coleccionAgregar.Generos = Array.from(generos).join(", ");
 
         todasLasPeliculas[id] = coleccionAgregar;
         const body = {
@@ -797,6 +805,15 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
           coleccionAgregar = {};
           await buscarPeliculasAgregar(id);
           if (Object.keys(coleccionAgregar).length > 0) {
+            let generos = new Set();
+            Object.values(peliculasAgregar).forEach((pelicula) => {
+              let genero = pelicula.Generos.split(", ");
+              for (const g of genero) {
+                generos.add(g);
+              }
+            });
+            coleccionAgregar.Generos = Array.from(generos).join(", ");
+            coleccionAgregar.Peliculas = peliculasAgregar;
             todasLasPeliculas[coleccionAgregar.Id] = coleccionAgregar;
             presentes[coleccionAgregar.Id] = coleccionAgregar;
             delete nuevas[id];

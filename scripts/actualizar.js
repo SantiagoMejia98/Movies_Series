@@ -525,9 +525,15 @@ await cargarDatos("movies");
 await cargarDatos("tv");
 
 for (const coleccion in colecciones) {
+  let generos = new Set();
   for (const movieId of colecciones[coleccion].Partes) {
     colecciones[coleccion].Peliculas[movieId] = peliculas[movieId];
+    let genero = peliculas[movieId].Generos.split(", ");
+    for (const g of genero) {
+      generos.add(g);
+    }
   }
+  colecciones[coleccion].Generos = Array.from(generos).join(", ");
   todasLasPeliculas[coleccion] = colecciones[coleccion];
 }
 
