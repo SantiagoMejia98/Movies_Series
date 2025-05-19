@@ -43,7 +43,6 @@ async function cargarDatosGuardados() {
   actores = JSON.parse(localStorage.getItem("actores"));
   directores = JSON.parse(localStorage.getItem("directores"));
   aleatorio = JSON.parse(localStorage.getItem("aleatorio"));
-  console.log(aleatorio);
   let titulo;
   if (!aleatorio) {
     const claves = Object.keys(todasLasSeries);

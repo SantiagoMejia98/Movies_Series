@@ -280,7 +280,7 @@ function JSONserie(titulo) {
             Foto: item.profile_path,
           };
           return {
-            ID: item.id,
+            Id: item.id,
             Personaje: item.roles[0].character
               .split(":")[0]
               .split("-")[0]
