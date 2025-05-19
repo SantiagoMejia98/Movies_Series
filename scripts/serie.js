@@ -34,10 +34,14 @@ const PROVEEDORES_VALIDOS = {
 };
 
 let todasLasSeries = {};
+let actores = {};
+let directores = {};
 let aleatorio;
 
 async function cargarDatosGuardados() {
   todasLasSeries = JSON.parse(localStorage.getItem("seriesCard"));
+  actores = JSON.parse(localStorage.getItem("actores"));
+  directores = JSON.parse(localStorage.getItem("directores"));
   aleatorio = JSON.parse(localStorage.getItem("aleatorio"));
   console.log(aleatorio);
   let titulo;
@@ -180,8 +184,10 @@ function crearSerie(elemento, datos) {
     li.className = "director";
 
     li.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w185${director.Foto}" alt="${director.Nombre}">
-        <p class="director-name">${director.Nombre}</p>
+        <img src="https://image.tmdb.org/t/p/w185${
+          directores[director.Id].Foto
+        }" alt="${directores[director.Id].Nombre}">
+        <p class="director-name">${directores[director.Id].Nombre}</p>
         `;
 
     ulDirector.appendChild(li);
@@ -205,8 +211,10 @@ function crearSerie(elemento, datos) {
     li.className = "actor";
 
     li.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w185${actor.Foto}" alt="${director.Nombre}">
-        <p class="actor-name">${actor.Nombre}</p>
+        <img src="https://image.tmdb.org/t/p/w185${
+          actores[actor.Id].Foto
+        }" alt="${actores[actor.Id].Nombre}">
+        <p class="actor-name">${actores[actor.Id].Nombre}</p>
         <p>${actor.Personaje}</p>
         `;
 

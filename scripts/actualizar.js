@@ -28,6 +28,12 @@ let data = {};
 let seriesId = new Set();
 let peliculasId = {};
 let coleccionesId = {};
+let actoresId = new Set();
+let actorestotales = [];
+let directoresID = new Set();
+let directoresTotales = [];
+let actores = {};
+let directores = {};
 
 function manejarSeleccion(event) {
   const valorSeleccionado = event.target.value;
@@ -140,26 +146,35 @@ function JSONpelicula(titulo) {
     Reparto:
       titulo.credits?.cast
         .filter((item) => item.profile_path !== null)
-        .slice(0, 14)
+        .slice(0, 15)
         .map((item) => {
-          return {
+          actoresId.add(item.id);
+          actorestotales.push(item.id);
+          actores[item.id] = {
             Nombre: item.name,
             Foto: item.profile_path,
+          };
+          return {
+            Id: item.id,
             Personaje: item.character
               .split(":")[0]
               .split("-")[0]
               .split("/")[0]
               .split("(")[0],
-            Orden: item.order,
           };
         }) || null,
     Directores:
       titulo.credits?.crew
         .filter((item) => item.job === "Director" && item.profile_path !== null)
         .map((item) => {
-          return {
+          directoresID.add(item.id);
+          directoresTotales.push(item.id);
+          directores[item.id] = {
             Nombre: item.name,
             Foto: item.profile_path,
+          };
+          return {
+            Id: item.id,
           };
         }) || null,
     Proveedores:
@@ -243,9 +258,14 @@ function JSONserie(titulo) {
       titulo.created_by
         .filter((item) => item.profile_path !== null)
         .map((item) => {
-          return {
+          directoresID.add(item.id);
+          directoresTotales.push(item.id);
+          directores[item.id] = {
             Nombre: item.name,
             Foto: item.profile_path,
+          };
+          return {
+            Id: item.id,
           };
         }) || null,
     Reparto:
@@ -253,9 +273,14 @@ function JSONserie(titulo) {
         .filter((item) => item.profile_path !== null)
         .slice(0, 15)
         .map((item) => {
-          return {
+          actoresId.add(item.id);
+          actorestotales.push(item.id);
+          actores[item.id] = {
             Nombre: item.name,
             Foto: item.profile_path,
+          };
+          return {
+            ID: item.id,
             Personaje: item.roles[0].character
               .split(":")[0]
               .split("-")[0]
@@ -522,6 +547,8 @@ function guardarDatos(data) {
   localStorage.setItem("peliculasId", JSON.stringify(data["peliculasId"]));
   localStorage.setItem("seriesId", JSON.stringify(data["seriesId"]));
   localStorage.setItem("coleccionesId", JSON.stringify(data["coleccionesId"]));
+  localStorage.setItem("actores", JSON.stringify(data["actores"]));
+  localStorage.setItem("directores", JSON.stringify(data["directores"]));
   localStorage.setItem(
     "expirationDate",
     JSON.stringify(data["expirationDate"])
@@ -552,6 +579,8 @@ data["coleccionesId"] = coleccionesId;
 const expirationDate = new Date();
 expirationDate.setDate(expirationDate.getDate() + EXPIRATION_DAYS);
 data["expirationDate"] = expirationDate;
+data["actores"] = actores;
+data["directores"] = directores;
 
 function getSizeInMB(str) {
   const bytes = new Blob([str]).size;
@@ -568,7 +597,25 @@ function medirPesos(data) {
       " MB\n" +
       "Tamaño LZString.compressToUTF16: " +
       getSizeInMB(compressed) +
-      " MB"
+      " MB\n" +
+      "actoresId: " +
+      actoresId.size +
+      "\n" +
+      "actoresTotales: " +
+      actorestotales.length +
+      "\n" +
+      "directoresID: " +
+      directoresID.size +
+      "\n" +
+      "directoresTotales: " +
+      directoresTotales.length +
+      "\n" +
+      "ACTORES: " +
+      Object.keys(actores).length +
+      "\n" +
+      "DIRECTORES: " +
+      Object.keys(directores).length +
+      "\n"
   );
 }
 medirPesos(data);
