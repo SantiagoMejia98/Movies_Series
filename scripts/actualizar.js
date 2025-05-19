@@ -140,7 +140,7 @@ function JSONpelicula(titulo) {
     Reparto:
       titulo.credits?.cast
         .filter((item) => item.profile_path !== null)
-        .slice(0, 13)
+        .slice(0, 14)
         .map((item) => {
           return {
             Nombre: item.name,
