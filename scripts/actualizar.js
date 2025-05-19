@@ -140,7 +140,7 @@ function JSONpelicula(titulo) {
     Reparto:
       titulo.credits?.cast
         .filter((item) => item.profile_path !== null)
-        .slice(0, 15)
+        .slice(0, 12)
         .map((item) => {
           return {
             Nombre: item.name,
@@ -251,7 +251,7 @@ function JSONserie(titulo) {
     Reparto:
       titulo.aggregate_credits?.cast
         .filter((item) => item.profile_path !== null)
-        .slice(0, 15)
+        .slice(0, 14)
         .map((item) => {
           return {
             Nombre: item.name,
