@@ -37,12 +37,16 @@ let todasLasSeries = {};
 let actores = {};
 let directores = {};
 let aleatorio;
+let generos = {};
+let proveedoresID = {};
 
 async function cargarDatosGuardados() {
   todasLasSeries = JSON.parse(localStorage.getItem("seriesCard"));
   actores = JSON.parse(localStorage.getItem("actores"));
   directores = JSON.parse(localStorage.getItem("directores"));
   aleatorio = JSON.parse(localStorage.getItem("aleatorio"));
+  generos = JSON.parse(localStorage.getItem("generos"));
+  proveedoresID = JSON.parse(localStorage.getItem("proveedores"));
   let titulo;
   if (!aleatorio) {
     const claves = Object.keys(todasLasSeries);
@@ -108,7 +112,11 @@ function crearSerie(elemento, datos) {
 
   details.innerHTML = `
     <h2>${datos.Nombre}</h2>
-    <p>${datos.Generos !== "" ? datos.Generos : ""}${
+    <p>${
+      datos.Generos.length > 0
+        ? datos.Generos.map((genero) => generos[genero]).join(", ")
+        : ""
+    }${
     datos.Lanzamiento !== "Desconocido" ? ` &bull; ${datos.Lanzamiento}` : ""
   }${datos.Duracion !== "0h 0min" ? ` &bull; ${datos.Duracion}` : ""} &bull; ${
     traduccionesStatus[datos.Status]
@@ -149,10 +157,12 @@ function crearSerie(elemento, datos) {
 
       li.innerHTML = `
         <a class="pro" href="${
-          PROVEEDORES_VALIDOS[proveedor.Nombre]
+          PROVEEDORES_VALIDOS[proveedoresID[proveedor].Nombre]
+            ? PROVEEDORES_VALIDOS[proveedoresID[proveedor].Nombre]
+            : "#"
         }" target="_blank"><img src="https://image.tmdb.org/t/p/w92${
-        proveedor.Logo
-      }" alt="${proveedor.Nombre}"></a>
+        proveedoresID[proveedor].Logo
+      }" alt="${proveedoresID[proveedor].Nombre}"></a>
       `;
 
       ulProvider.appendChild(li);
@@ -183,10 +193,8 @@ function crearSerie(elemento, datos) {
     li.className = "director";
 
     li.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w185${
-          directores[director.Id].Foto
-        }" alt="${directores[director.Id].Nombre}">
-        <p class="director-name">${directores[director.Id].Nombre}</p>
+        <img src="https://image.tmdb.org/t/p/w185${directores[director].Foto}" alt="${directores[director].Nombre}">
+        <p class="director-name">${directores[director].Nombre}</p>
         `;
 
     ulDirector.appendChild(li);
@@ -210,11 +218,8 @@ function crearSerie(elemento, datos) {
     li.className = "actor";
 
     li.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w185${
-          actores[actor.Id].Foto
-        }" alt="${actores[actor.Id].Nombre}">
-        <p class="actor-name">${actores[actor.Id].Nombre}</p>
-        <p>${actor.Personaje}</p>
+        <img src="https://image.tmdb.org/t/p/w185${actores[actor].Foto}" alt="${actores[actor].Nombre}">
+        <p class="actor-name">${actores[actor].Nombre}</p>
         `;
 
     ulCast.appendChild(li);

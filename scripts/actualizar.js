@@ -6,14 +6,9 @@ const get = {
       "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzMGUxNDBmYzcyNGQ1OTFjMzAwMWJlNDQ4NDg4MjcxMiIsIm5iZiI6MTcyNTQ3NzAyMS40NzcsInN1YiI6IjY2ZDhiMDlkM2E5NGE0OWMxNjI2ZjAzZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.RdYktkxjOZERUNw2BaaX_ew5YAGVx2pJzAy5kHzi3RI",
   },
 };
-const PROVEEDORES_VALIDOS = [
-  "Disney Plus",
-  "Amazon Prime Video",
-  "Netflix",
-  "Apple TV+",
-  "Max",
-  "Paramount Plus",
-  "Crunchyroll",
+const EXCLUIDOS = [
+  167, 201, 315, 467, 582, 683, 701, 1853, 1866, 1968, 2106, 2107, 2142, 2167,
+  2243, 2472,
 ];
 
 const EXPIRATION_DAYS = 30;
@@ -34,6 +29,12 @@ let directoresID = new Set();
 let directoresTotales = [];
 let actores = {};
 let directores = {};
+let generos = {};
+let generosId = new Set();
+let generosTotales = [];
+let proveedores = {};
+let proveedoresId = new Set();
+let proveedoresTotales = [];
 
 function manejarSeleccion(event) {
   const valorSeleccionado = event.target.value;
@@ -70,7 +71,13 @@ function manejarSeleccion(event) {
 
 function JSONpelicula(titulo) {
   return {
-    Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
+    Generos:
+      titulo.genres?.map((genre) => {
+        generosId.add(genre.id);
+        generosTotales.push(genre.id);
+        generos[genre.id] = genre.name;
+        return genre.id;
+      }) || [],
     Id: titulo.id,
     Nombre: `${titulo.title || titulo.name}${
       titulo.original_name &&
@@ -154,14 +161,7 @@ function JSONpelicula(titulo) {
             Nombre: item.name,
             Foto: item.profile_path,
           };
-          return {
-            Id: item.id,
-            Personaje: item.character
-              .split(":")[0]
-              .split("-")[0]
-              .split("/")[0]
-              .split("(")[0],
-          };
+          return item.id;
         }) || null,
     Directores:
       titulo.credits?.crew
@@ -173,19 +173,18 @@ function JSONpelicula(titulo) {
             Nombre: item.name,
             Foto: item.profile_path,
           };
-          return {
-            Id: item.id,
-          };
+          return item.id;
         }) || null,
     Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate
-        ?.filter((prov) => PROVEEDORES_VALIDOS.includes(prov.provider_name))
-        .map((item) => {
-          return {
-            Logo: item.logo_path,
-            Nombre: item.provider_name,
-          };
-        }) || [],
+      titulo["watch/providers"]?.results?.CO?.flatrate?.map((item) => {
+        proveedoresId.add(item.provider_id);
+        proveedoresTotales.push(item.provider_id);
+        proveedores[item.provider_id] = {
+          Nombre: item.provider_name,
+          Logo: item.logo_path,
+        };
+        return item.provider_id;
+      }) || [],
   };
 }
 
@@ -217,7 +216,13 @@ function JSONserie(titulo) {
       : "Desconocido",
     Id: titulo.id,
     Tipo: "tv",
-    Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
+    Generos:
+      titulo.genres?.map((genre) => {
+        generosId.add(genre.id);
+        generosTotales.push(genre.id);
+        generos[genre.id] = genre.name;
+        return genre.id;
+      }) || [],
     Status: titulo.status || null,
     Tagline: titulo.tagline || null,
     Poster:
@@ -264,9 +269,7 @@ function JSONserie(titulo) {
             Nombre: item.name,
             Foto: item.profile_path,
           };
-          return {
-            Id: item.id,
-          };
+          return item.id;
         }) || null,
     Reparto:
       titulo.aggregate_credits?.cast
@@ -279,24 +282,18 @@ function JSONserie(titulo) {
             Nombre: item.name,
             Foto: item.profile_path,
           };
-          return {
-            Id: item.id,
-            Personaje: item.roles[0].character
-              .split(":")[0]
-              .split("-")[0]
-              .split("/")[0]
-              .split("(")[0],
-          };
+          return item.id;
         }) || null,
     Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate
-        ?.filter((prov) => PROVEEDORES_VALIDOS.includes(prov.provider_name))
-        .map((item) => {
-          return {
-            Logo: item.logo_path,
-            Nombre: item.provider_name,
-          };
-        }) || [],
+      titulo["watch/providers"]?.results?.CO?.flatrate?.map((item) => {
+        proveedoresId.add(item.provider_id);
+        proveedoresTotales.push(item.provider_id);
+        proveedores[item.provider_id] = {
+          Nombre: item.provider_name,
+          Logo: item.logo_path,
+        };
+        return item.provider_id;
+      }) || [],
     Duracion: `${titulo.number_of_seasons} ${
       titulo.number_of_seasons === 1 ? "temporada" : "temporadas"
     } - ${titulo.number_of_episodes} capítulos`,
@@ -549,6 +546,8 @@ function guardarDatos(data) {
   localStorage.setItem("coleccionesId", JSON.stringify(data["coleccionesId"]));
   localStorage.setItem("actores", JSON.stringify(data["actores"]));
   localStorage.setItem("directores", JSON.stringify(data["directores"]));
+  localStorage.setItem("generos", JSON.stringify(data["generos"]));
+  localStorage.setItem("proveedores", JSON.stringify(data["proveedores"]));
   localStorage.setItem(
     "expirationDate",
     JSON.stringify(data["expirationDate"])
@@ -559,15 +558,15 @@ await cargarDatos("movies");
 await cargarDatos("tv");
 
 for (const coleccion in colecciones) {
-  let generos = new Set();
+  let generosColeccion = new Set();
   for (const movieId of colecciones[coleccion].Partes) {
     colecciones[coleccion].Peliculas[movieId] = peliculas[movieId];
-    let genero = peliculas[movieId].Generos.split(", ");
-    for (const g of genero) {
-      generos.add(g);
-    }
+    let genero = peliculas[movieId].Generos;
+    genero.forEach((g) => {
+      generosColeccion.add(g);
+    });
   }
-  colecciones[coleccion].Generos = Array.from(generos).join(", ");
+  colecciones[coleccion].Generos = Array.from(generosColeccion);
   todasLasPeliculas[coleccion] = colecciones[coleccion];
 }
 
@@ -581,6 +580,8 @@ expirationDate.setDate(expirationDate.getDate() + EXPIRATION_DAYS);
 data["expirationDate"] = expirationDate;
 data["actores"] = actores;
 data["directores"] = directores;
+data["generos"] = generos;
+data["proveedores"] = proveedores;
 
 function getSizeInMB(str) {
   const bytes = new Blob([str]).size;
@@ -598,27 +599,16 @@ function medirPesos(data) {
       "Tamaño LZString.compressToUTF16: " +
       getSizeInMB(compressed) +
       " MB\n" +
-      "actoresId: " +
-      actoresId.size +
-      "\n" +
-      "actoresTotales: " +
-      actorestotales.length +
-      "\n" +
-      "directoresID: " +
-      directoresID.size +
-      "\n" +
-      "directoresTotales: " +
-      directoresTotales.length +
-      "\n" +
-      "ACTORES: " +
-      Object.keys(actores).length +
-      "\n" +
-      "DIRECTORES: " +
-      Object.keys(directores).length +
+      "proveedores: " +
+      Object.keys(proveedores).length +
+      "\ntodos los proveedores: " +
+      proveedoresTotales.length +
+      "\nproveedore id: " +
+      proveedoresId.size +
       "\n"
   );
 }
-medirPesos(data);
+medirPesos(data, actores, directores);
 
 guardarDatos(data);
 window.location = "index.html";
