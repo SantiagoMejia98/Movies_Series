@@ -6,6 +6,10 @@ const dropdownMenu = document.getElementById("dropdown-menu");
 
 let todasLasSeries = {};
 
+let generos = {};
+let actores = {};
+let directores = {};
+
 function crearlistaInicio(elemento, datos) {
   const ulExistente = elemento.querySelector("ul");
 
@@ -82,9 +86,24 @@ function guardarDatos(data) {
 async function cargarDatosGuardados() {
   todasLasSeries = JSON.parse(localStorage.getItem("seriesCard"));
   crearlistaInicio(elementos.series, todasLasSeries);
+  generos = JSON.parse(localStorage.getItem("generos"));
+  actores = JSON.parse(localStorage.getItem("actores"));
+  directores = JSON.parse(localStorage.getItem("directores"));
 }
 
 await cargarDatosGuardados();
+
+function desplegableGeneros() {
+  const select = document.getElementById("generos");
+  for (const [key, value] of Object.entries(generos)) {
+    const option = document.createElement("option");
+    option.value = key;
+    option.textContent = value;
+    select.appendChild(option);
+  }
+}
+
+desplegableGeneros();
 
 dropdownMenu.addEventListener("change", manejarSeleccion);
 
@@ -113,4 +132,26 @@ buscador.addEventListener("input", function () {
   );
 
   crearlistaInicio(elementos.series, seriesFiltradas);
+});
+
+const seleccionarGenero = document.getElementById("generos");
+seleccionarGenero.addEventListener("change", function () {
+  const generoSeleccionado = seleccionarGenero.value;
+
+  if (generoSeleccionado === "seleccionar") {
+    crearlistaInicio(elementos.peliculas, todasLasPeliculas);
+    crearlistaInicio(elementos.series, todasLasSeries);
+    return;
+  }
+
+  const seriesFiltradas = Object.values(todasLasSeries).filter((s) =>
+    s.Generos.includes(parseInt(generoSeleccionado))
+  );
+
+  crearlistaInicio(elementos.series, seriesFiltradas);
+});
+
+window.addEventListener("pageshow", () => {
+  seleccionarGenero.value = "seleccionar";
+  buscador.value = "";
 });

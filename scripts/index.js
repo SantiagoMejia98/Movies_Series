@@ -18,6 +18,9 @@ const dropdownMenu = document.getElementById("dropdown-menu");
 
 let todasLasPeliculas = {};
 let todasLasSeries = {};
+let generos = {};
+let actores = {};
+let directores = {};
 
 function crearlistaInicio(elemento, datos) {
   const ulExistente = elemento.querySelector("ul");
@@ -98,6 +101,9 @@ async function cargarDatosGuardados() {
   if (fecha && new Date(fecha) > new Date()) {
     todasLasPeliculas = JSON.parse(localStorage.getItem("peliculasCard"));
     todasLasSeries = JSON.parse(localStorage.getItem("seriesCard"));
+    generos = JSON.parse(localStorage.getItem("generos"));
+    actores = JSON.parse(localStorage.getItem("actores"));
+    directores = JSON.parse(localStorage.getItem("directores"));
   } else {
     window.location = "actualizar.html";
   }
@@ -111,6 +117,18 @@ async function cargarDatosGuardados() {
 }
 
 await cargarDatosGuardados();
+
+function desplegableGeneros() {
+  const select = document.getElementById("generos");
+  for (const [key, value] of Object.entries(generos)) {
+    const option = document.createElement("option");
+    option.value = key;
+    option.textContent = value;
+    select.appendChild(option);
+  }
+}
+
+desplegableGeneros();
 
 crearlistaInicio(elementos.peliculas, todasLasPeliculas);
 crearlistaInicio(elementos.series, todasLasSeries);
@@ -143,14 +161,41 @@ buscador.addEventListener("input", function () {
     return;
   }
 
-  const peliculasFiltradas = Object.values(todasLasPeliculas).filter((p) =>
+  let peliculasFiltradas = Object.values(todasLasPeliculas).filter((p) =>
     p.Nombre.toLowerCase().includes(texto)
   );
 
-  const seriesFiltradas = Object.values(todasLasSeries).filter((p) =>
+  let seriesFiltradas = Object.values(todasLasSeries).filter((p) =>
     p.Nombre.toLowerCase().includes(texto)
   );
 
   crearlistaInicio(elementos.peliculas, peliculasFiltradas);
   crearlistaInicio(elementos.series, seriesFiltradas);
+});
+
+const seleccionarGenero = document.getElementById("generos");
+seleccionarGenero.addEventListener("change", function () {
+  const generoSeleccionado = seleccionarGenero.value;
+
+  if (generoSeleccionado === "seleccionar") {
+    crearlistaInicio(elementos.peliculas, todasLasPeliculas);
+    crearlistaInicio(elementos.series, todasLasSeries);
+    return;
+  }
+
+  const peliculasFiltradas = Object.values(todasLasPeliculas).filter((p) =>
+    p.Generos.includes(parseInt(generoSeleccionado))
+  );
+
+  const seriesFiltradas = Object.values(todasLasSeries).filter((s) =>
+    s.Generos.includes(parseInt(generoSeleccionado))
+  );
+
+  crearlistaInicio(elementos.peliculas, peliculasFiltradas);
+  crearlistaInicio(elementos.series, seriesFiltradas);
+});
+
+window.addEventListener("pageshow", () => {
+  seleccionarGenero.value = "seleccionar";
+  buscador.value = "";
 });

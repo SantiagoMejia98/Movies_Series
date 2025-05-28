@@ -101,7 +101,8 @@ main {
 }
 
 /* Estilo para el dropdown menu */
-.dropdown-menu {
+.dropdown-menu,
+.generos {
   background-image: linear-gradient(
     to right,
     #2c3e50 0%,
