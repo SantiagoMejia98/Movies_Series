@@ -23,18 +23,10 @@ let data = {};
 let seriesId = new Set();
 let peliculasId = {};
 let coleccionesId = {};
-let actoresId = new Set();
-let actorestotales = [];
-let directoresID = new Set();
-let directoresTotales = [];
 let actores = {};
 let directores = {};
 let generos = {};
-let generosId = new Set();
-let generosTotales = [];
 let proveedores = {};
-let proveedoresId = new Set();
-let proveedoresTotales = [];
 
 function manejarSeleccion(event) {
   const valorSeleccionado = event.target.value;
@@ -73,8 +65,6 @@ function JSONpelicula(titulo) {
   return {
     Generos:
       titulo.genres?.map((genre) => {
-        generosId.add(genre.id);
-        generosTotales.push(genre.id);
         generos[genre.id] = genre.name;
         return genre.id;
       }) || [],
@@ -155,8 +145,6 @@ function JSONpelicula(titulo) {
         .filter((item) => item.profile_path !== null)
         .slice(0, 15)
         .map((item) => {
-          actoresId.add(item.id);
-          actorestotales.push(item.id);
           actores[item.id] = {
             Nombre: item.name,
             Foto: item.profile_path,
@@ -167,8 +155,6 @@ function JSONpelicula(titulo) {
       titulo.credits?.crew
         .filter((item) => item.job === "Director" && item.profile_path !== null)
         .map((item) => {
-          directoresID.add(item.id);
-          directoresTotales.push(item.id);
           directores[item.id] = {
             Nombre: item.name,
             Foto: item.profile_path,
@@ -177,8 +163,6 @@ function JSONpelicula(titulo) {
         }) || null,
     Proveedores:
       titulo["watch/providers"]?.results?.CO?.flatrate?.map((item) => {
-        proveedoresId.add(item.provider_id);
-        proveedoresTotales.push(item.provider_id);
         proveedores[item.provider_id] = {
           Nombre: item.provider_name,
           Logo: item.logo_path,
@@ -218,8 +202,6 @@ function JSONserie(titulo) {
     Tipo: "tv",
     Generos:
       titulo.genres?.map((genre) => {
-        generosId.add(genre.id);
-        generosTotales.push(genre.id);
         generos[genre.id] = genre.name;
         return genre.id;
       }) || [],
@@ -263,8 +245,6 @@ function JSONserie(titulo) {
       titulo.created_by
         .filter((item) => item.profile_path !== null)
         .map((item) => {
-          directoresID.add(item.id);
-          directoresTotales.push(item.id);
           directores[item.id] = {
             Nombre: item.name,
             Foto: item.profile_path,
@@ -276,8 +256,6 @@ function JSONserie(titulo) {
         .filter((item) => item.profile_path !== null)
         .slice(0, 15)
         .map((item) => {
-          actoresId.add(item.id);
-          actorestotales.push(item.id);
           actores[item.id] = {
             Nombre: item.name,
             Foto: item.profile_path,
@@ -286,8 +264,6 @@ function JSONserie(titulo) {
         }) || null,
     Proveedores:
       titulo["watch/providers"]?.results?.CO?.flatrate?.map((item) => {
-        proveedoresId.add(item.provider_id);
-        proveedoresTotales.push(item.provider_id);
         proveedores[item.provider_id] = {
           Nombre: item.provider_name,
           Logo: item.logo_path,
@@ -598,14 +574,7 @@ function medirPesos(data) {
       " MB\n" +
       "Tamaño LZString.compressToUTF16: " +
       getSizeInMB(compressed) +
-      " MB\n" +
-      "proveedores: " +
-      Object.keys(proveedores).length +
-      "\ntodos los proveedores: " +
-      proveedoresTotales.length +
-      "\nproveedore id: " +
-      proveedoresId.size +
-      "\n"
+      " MB\n"
   );
 }
 medirPesos(data, actores, directores);

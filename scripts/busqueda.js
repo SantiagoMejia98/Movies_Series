@@ -38,6 +38,10 @@ let presentes;
 let peliculasAgregar = {};
 let coleccionAgregar = {};
 let seriesAgregar = {};
+let actores = {};
+let directores = {};
+let generos = {};
+let proveedores = {};
 
 async function cargarDatosGuardados() {
   peliculas = JSON.parse(localStorage.getItem("peliculasId"));
@@ -45,6 +49,10 @@ async function cargarDatosGuardados() {
   colecciones = JSON.parse(localStorage.getItem("coleccionesId"));
   todasLasPeliculas = JSON.parse(localStorage.getItem("peliculasCard"));
   todasLasSeries = JSON.parse(localStorage.getItem("seriesCard"));
+  actores = JSON.parse(localStorage.getItem("actores"));
+  directores = JSON.parse(localStorage.getItem("directores"));
+  generos = JSON.parse(localStorage.getItem("generos"));
+  proveedores = JSON.parse(localStorage.getItem("proveedores"));
 }
 
 async function guardarDatosGuardados() {
@@ -53,6 +61,10 @@ async function guardarDatosGuardados() {
   localStorage.setItem("coleccionesId", JSON.stringify(colecciones));
   localStorage.setItem("peliculasCard", JSON.stringify(todasLasPeliculas));
   localStorage.setItem("seriesCard", JSON.stringify(todasLasSeries));
+  localStorage.setItem("actores", JSON.stringify(actores));
+  localStorage.setItem("directores", JSON.stringify(directores));
+  localStorage.setItem("generos", JSON.stringify(generos));
+  localStorage.setItem("proveedores", JSON.stringify(proveedores));
 }
 
 await cargarDatosGuardados();
@@ -223,7 +235,11 @@ function JSONcoleccion(data) {
 
 function JSONpeliculaAgregar(titulo) {
   return {
-    Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
+    Generos:
+      titulo.genres?.map((genre) => {
+        generos[genre.id] = genre.name;
+        return genre.id;
+      }) || [],
     Id: titulo.id,
     Nombre: `${titulo.title || titulo.name}${
       titulo.original_name &&
@@ -301,35 +317,30 @@ function JSONpeliculaAgregar(titulo) {
         .filter((item) => item.profile_path !== null)
         .slice(0, 15)
         .map((item) => {
-          return {
+          actores[item.id] = {
             Nombre: item.name,
             Foto: item.profile_path,
-            Personaje: item.character
-              .split(":")[0]
-              .split("-")[0]
-              .split("/")[0]
-              .split("(")[0],
-            Orden: item.order,
           };
+          return item.id;
         }) || null,
     Directores:
       titulo.credits?.crew
         .filter((item) => item.job === "Director" && item.profile_path !== null)
         .map((item) => {
-          return {
+          directores[item.id] = {
             Nombre: item.name,
             Foto: item.profile_path,
           };
+          return item.id;
         }) || null,
     Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate
-        ?.filter((prov) => PROVEEDORES_VALIDOS.includes(prov.provider_name))
-        .map((item) => {
-          return {
-            Logo: item.logo_path,
-            Nombre: item.provider_name,
-          };
-        }) || [],
+      titulo["watch/providers"]?.results?.CO?.flatrate?.map((item) => {
+        proveedores[item.provider_id] = {
+          Nombre: item.provider_name,
+          Logo: item.logo_path,
+        };
+        return item.provider_id;
+      }) || [],
   };
 }
 
@@ -361,7 +372,11 @@ function JSONserieAgregar(titulo) {
       : "Desconocido",
     Id: titulo.id,
     Tipo: "tv",
-    Generos: titulo.genres?.map((genre) => genre.name).join(", ") || "",
+    Generos:
+      titulo.genres?.map((genre) => {
+        generos[genre.id] = genre.name;
+        return genre.id;
+      }) || [],
     Status: titulo.status || null,
     Tagline: titulo.tagline || null,
     Poster:
@@ -402,35 +417,31 @@ function JSONserieAgregar(titulo) {
       titulo.created_by
         .filter((item) => item.profile_path !== null)
         .map((item) => {
-          return {
+          directores[item.id] = {
             Nombre: item.name,
             Foto: item.profile_path,
           };
+          return item.id;
         }) || null,
     Reparto:
       titulo.aggregate_credits?.cast
         .filter((item) => item.profile_path !== null)
         .slice(0, 15)
         .map((item) => {
-          return {
+          actores[item.id] = {
             Nombre: item.name,
             Foto: item.profile_path,
-            Personaje: item.roles[0].character
-              .split(":")[0]
-              .split("-")[0]
-              .split("/")[0]
-              .split("(")[0],
           };
+          return item.id;
         }) || null,
     Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate
-        ?.filter((prov) => PROVEEDORES_VALIDOS.includes(prov.provider_name))
-        .map((item) => {
-          return {
-            Logo: item.logo_path,
-            Nombre: item.provider_name,
-          };
-        }) || [],
+      titulo["watch/providers"]?.results?.CO?.flatrate?.map((item) => {
+        proveedores[item.provider_id] = {
+          Nombre: item.provider_name,
+          Logo: item.logo_path,
+        };
+        return item.provider_id;
+      }) || [],
     Duracion: `${titulo.number_of_seasons} ${
       titulo.number_of_seasons === 1 ? "temporada" : "temporadas"
     } - ${titulo.number_of_episodes} capítulos`,
@@ -794,12 +805,12 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
         coleccionAgregar.Peliculas = peliculasAgregar;
         let generos = new Set();
         Object.values(peliculasAgregar).forEach((pelicula) => {
-          let genero = pelicula.Generos.split(", ");
+          let genero = pelicula.Generos;
           for (const g of genero) {
             generos.add(g);
           }
         });
-        coleccionAgregar.Generos = Array.from(generos).join(", ");
+        coleccionAgregar.Generos = Array.from(generos);
 
         todasLasPeliculas[id] = coleccionAgregar;
         const body = {
@@ -818,12 +829,12 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
           if (Object.keys(coleccionAgregar).length > 0) {
             let generos = new Set();
             Object.values(peliculasAgregar).forEach((pelicula) => {
-              let genero = pelicula.Generos.split(", ");
+              let genero = pelicula.Generos;
               for (const g of genero) {
                 generos.add(g);
               }
             });
-            coleccionAgregar.Generos = Array.from(generos).join(", ");
+            coleccionAgregar.Generos = Array.from(generos);
             coleccionAgregar.Peliculas = peliculasAgregar;
             todasLasPeliculas[coleccionAgregar.Id] = coleccionAgregar;
             presentes[coleccionAgregar.Id] = coleccionAgregar;
