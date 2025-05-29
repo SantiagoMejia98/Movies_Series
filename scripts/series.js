@@ -155,3 +155,10 @@ window.addEventListener("pageshow", () => {
   seleccionarGenero.value = "seleccionar";
   buscador.value = "";
 });
+
+window.addEventListener("pageshow", () => {
+  dropdownMenu.value = "series";
+  seleccionarGenero.value = "seleccionar";
+  buscador.value = "";
+  selectPlataforma.value = "seleccionar";
+});

@@ -109,13 +109,6 @@ async function cargarDatosGuardados() {
   } else {
     window.location = "actualizar.html";
   }
-  /*alert(
-    `${
-      Object.keys(todasLasPeliculas).length
-    } peliculas en la lista de inicio \n ${
-      Object.keys(todasLasSeries).length
-    } series en la lista de inicio`
-  );*/
 }
 
 await cargarDatosGuardados();
@@ -175,11 +168,11 @@ buscador.addEventListener("input", function () {
     return;
   }
 
-  let peliculasFiltradas = Object.values(todasLasPeliculas).filter((p) =>
+  const peliculasFiltradas = Object.values(todasLasPeliculas).filter((p) =>
     p.Nombre.toLowerCase().includes(texto)
   );
 
-  let seriesFiltradas = Object.values(todasLasSeries).filter((p) =>
+  const seriesFiltradas = Object.values(todasLasSeries).filter((p) =>
     p.Nombre.toLowerCase().includes(texto)
   );
 
@@ -215,8 +208,26 @@ selectPlataforma.addEventListener("change", () => {
   const plataformaSeleccionada = selectPlataforma.value;
 
   if (plataformaSeleccionada === "seleccionar") {
+    const cantidad =
+      Object.keys(todasLasPeliculas).length +
+      Object.keys(todasLasSeries).length;
+    console.log(`Todas las plataformas: ${cantidad} elementos`);
     crearlistaInicio(elementos.peliculas, todasLasPeliculas);
     crearlistaInicio(elementos.series, todasLasSeries);
+    return;
+  }
+
+  if (plataformaSeleccionada === "ninguno") {
+    const peliculasFiltradas = Object.values(todasLasPeliculas).filter(
+      (p) => p.Proveedores.length === 0
+    );
+    const seriesFiltradas = Object.values(todasLasSeries).filter(
+      (s) => s.Proveedores.length === 0
+    );
+    const cantidad = peliculasFiltradas.length + seriesFiltradas.length;
+    console.log(`No disponible en ninguna plataforma: ${cantidad} elementos`);
+    crearlistaInicio(elementos.peliculas, peliculasFiltradas);
+    crearlistaInicio(elementos.series, seriesFiltradas);
     return;
   }
 
@@ -228,11 +239,34 @@ selectPlataforma.addEventListener("change", () => {
     s.Proveedores.includes(parseInt(plataformaSeleccionada))
   );
 
-  crearlistaInicio(elementos.peliculas, peliculasFiltradas);
-  crearlistaInicio(elementos.series, seriesFiltradas);
+  const peliculasUnicas = Object.values(todasLasPeliculas).filter(
+    (p) =>
+      p.Proveedores.length === 1 &&
+      p.Proveedores.includes(parseInt(plataformaSeleccionada))
+  );
+
+  const seriesUnicas = Object.values(todasLasSeries).filter(
+    (s) =>
+      s.Proveedores.length === 1 &&
+      s.Proveedores.includes(parseInt(plataformaSeleccionada))
+  );
+
+  const cantidad = peliculasFiltradas.length + seriesFiltradas.length;
+  const cantidadUnicas = peliculasUnicas.length + seriesUnicas.length;
+  console.log(
+    `Plataforma ${proveedores[plataformaSeleccionada].Nombre}: ${cantidad} elementos`
+  );
+  console.log(
+    `Plataforma ${proveedores[plataformaSeleccionada].Nombre} (únicos): ${cantidadUnicas} elementos`
+  );
+
+  crearlistaInicio(elementos.peliculas, peliculasUnicas);
+  crearlistaInicio(elementos.series, seriesUnicas);
 });
 
 window.addEventListener("pageshow", () => {
+  dropdownMenu.value = "seleccionar";
   seleccionarGenero.value = "seleccionar";
   buscador.value = "";
+  selectPlataforma.value = "seleccionar";
 });

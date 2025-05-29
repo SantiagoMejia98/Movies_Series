@@ -152,6 +152,8 @@ seleccionarGenero.addEventListener("change", function () {
 });
 
 window.addEventListener("pageshow", () => {
+  dropdownMenu.value = "peliculas";
   seleccionarGenero.value = "seleccionar";
   buscador.value = "";
+  selectPlataforma.value = "seleccionar";
 });

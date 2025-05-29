@@ -481,3 +481,7 @@ document
     guardarDatos(aleatorio);
     window.location.href = "pelicula.html";
   });
+
+window.addEventListener("pageshow", () => {
+  dropdownMenu.value = "pelicula";
+});

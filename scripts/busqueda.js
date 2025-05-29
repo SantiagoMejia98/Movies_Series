@@ -12,15 +12,7 @@ const get = {
       "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzMGUxNDBmYzcyNGQ1OTFjMzAwMWJlNDQ4NDg4MjcxMiIsIm5iZiI6MTcyNTQ3NzAyMS40NzcsInN1YiI6IjY2ZDhiMDlkM2E5NGE0OWMxNjI2ZjAzZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.RdYktkxjOZERUNw2BaaX_ew5YAGVx2pJzAy5kHzi3RI",
   },
 };
-const PROVEEDORES_VALIDOS = [
-  "Disney Plus",
-  "Amazon Prime Video",
-  "Netflix",
-  "Apple TV+",
-  "Max",
-  "Paramount Plus",
-  "Crunchyroll",
-];
+const INCLUIDOS = [8, 119, 337, 1899, 350, 531, 11, 283, 339, 1889, 2141];
 
 let peliculas;
 let series;
@@ -334,13 +326,15 @@ function JSONpeliculaAgregar(titulo) {
           return item.id;
         }) || null,
     Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate?.map((item) => {
-        proveedores[item.provider_id] = {
-          Nombre: item.provider_name,
-          Logo: item.logo_path,
-        };
-        return item.provider_id;
-      }) || [],
+      titulo["watch/providers"]?.results?.CO?.flatrate
+        ?.filter((item) => INCLUIDOS.includes(item.provider_id))
+        .map((item) => {
+          proveedores[item.provider_id] = {
+            Nombre: item.provider_name,
+            Logo: item.logo_path,
+          };
+          return item.provider_id;
+        }) || [],
   };
 }
 
@@ -435,13 +429,15 @@ function JSONserieAgregar(titulo) {
           return item.id;
         }) || null,
     Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate?.map((item) => {
-        proveedores[item.provider_id] = {
-          Nombre: item.provider_name,
-          Logo: item.logo_path,
-        };
-        return item.provider_id;
-      }) || [],
+      titulo["watch/providers"]?.results?.CO?.flatrate
+        ?.filter((item) => INCLUIDOS.includes(item.provider_id))
+        .map((item) => {
+          proveedores[item.provider_id] = {
+            Nombre: item.provider_name,
+            Logo: item.logo_path,
+          };
+          return item.provider_id;
+        }) || [],
     Duracion: `${titulo.number_of_seasons} ${
       titulo.number_of_seasons === 1 ? "temporada" : "temporadas"
     } - ${titulo.number_of_episodes} capítulos`,
@@ -804,13 +800,19 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
         await buscarColeccionAgregar(id);
         coleccionAgregar.Peliculas = peliculasAgregar;
         let generos = new Set();
+        let proveedoresColeccion = new Set();
         Object.values(peliculasAgregar).forEach((pelicula) => {
           let genero = pelicula.Generos;
+          let proveedoresPelicula = pelicula.Proveedores;
           for (const g of genero) {
             generos.add(g);
           }
+          for (const p of proveedoresPelicula) {
+            proveedoresColeccion.add(p);
+          }
         });
         coleccionAgregar.Generos = Array.from(generos);
+        coleccionAgregar.Proveedores = Array.from(proveedoresColeccion);
 
         todasLasPeliculas[id] = coleccionAgregar;
         const body = {
@@ -828,13 +830,19 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
           await buscarPeliculasAgregar(id);
           if (Object.keys(coleccionAgregar).length > 0) {
             let generos = new Set();
+            let proveedoresColeccion = new Set();
             Object.values(peliculasAgregar).forEach((pelicula) => {
               let genero = pelicula.Generos;
+              let proveedoresPelicula = pelicula.Proveedores;
               for (const g of genero) {
                 generos.add(g);
               }
+              for (const p of proveedoresPelicula) {
+                proveedoresColeccion.add(p);
+              }
             });
             coleccionAgregar.Generos = Array.from(generos);
+            coleccionAgregar.Proveedores = Array.from(proveedoresColeccion);
             coleccionAgregar.Peliculas = peliculasAgregar;
             todasLasPeliculas[coleccionAgregar.Id] = coleccionAgregar;
             presentes[coleccionAgregar.Id] = coleccionAgregar;
@@ -911,3 +919,7 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
 
 dropdownMenu.addEventListener("change", manejarSeleccion);
 boton.addEventListener("click", buscar);
+
+window.addEventListener("pageshow", () => {
+  dropdownMenu.value = "busqueda";
+});

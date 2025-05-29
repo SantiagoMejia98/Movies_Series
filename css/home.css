@@ -154,7 +154,9 @@ main {
   box-shadow: 0 0 10px #eee;
 }
 
-.dropdown-menu option {
+.dropdown-menu option,
+.generos option,
+.filtro-plataforma option {
   background-color: black;
   color: white;
   font-size: 16px;

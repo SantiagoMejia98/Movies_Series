@@ -419,3 +419,7 @@ function copiarNombre() {
     });
   }
 }
+
+window.addEventListener("pageshow", () => {
+  dropdownMenu.value = "serie";
+});
