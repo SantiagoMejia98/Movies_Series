@@ -231,59 +231,6 @@ main {
   margin-left: 10px;
 }
 
-.modal-content {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 15vw;
-  top: 0;
-  width: 70vw;
-  aspect-ratio: 16 / 9;
-  margin-top: 10vh;
-}
-
-.trailer {
-  width: 100%;
-  height: 100%;
-  justify-self: center;
-  border-radius: 15px;
-  margin: 0;
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  -ms-border-radius: 15px;
-  -o-border-radius: 15px;
-}
-
-.close {
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  color: white;
-  background-color: black;
-  font-size: 20px;
-  font-weight: bold;
-  border: none;
-  outline: none;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
-}
-
-.close:hover,
-.close:focus {
-  background-color: red;
-  text-decoration: none;
-  cursor: pointer;
-}
-
 .cast-list,
 .director-list {
   list-style: none;

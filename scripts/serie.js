@@ -34,11 +34,13 @@ const PROVEEDORES_VALIDOS = {
 };
 
 let todasLasSeries = {};
+let seriesId = [];
 let actores = {};
 let directores = {};
 let aleatorio;
 let generos = {};
 let proveedoresID = {};
+let titulo;
 
 async function cargarDatosGuardados() {
   todasLasSeries = JSON.parse(localStorage.getItem("seriesCard"));
@@ -47,7 +49,7 @@ async function cargarDatosGuardados() {
   aleatorio = JSON.parse(localStorage.getItem("aleatorio"));
   generos = JSON.parse(localStorage.getItem("generos"));
   proveedoresID = JSON.parse(localStorage.getItem("proveedores"));
-  let titulo;
+  seriesId = JSON.parse(localStorage.getItem("seriesId"));
   if (!aleatorio) {
     const claves = Object.keys(todasLasSeries);
     aleatorio = claves[Math.floor(Math.random() * claves.length)];
@@ -130,7 +132,7 @@ function crearSerie(elemento, datos) {
     </a>
       </li>
       <li class="bookmark-item">
-            <i class="fa-regular fa-bookmark" id="${datos.Id}"></i>
+            <i class="fa-solid fa-bookmark" id="${datos.Id}"></i>
           </li>
     </ul>
     ${
@@ -324,25 +326,69 @@ function manejarSeleccion(event) {
   }
 }
 
-function guardarDatos(data) {
-  const jsonString = JSON.stringify(data);
-  const datos = LZString.compressToUTF16(jsonString);
-  localStorage.setItem("datos", datos);
+function modificarWatchlist(body) {
+  const post = {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json",
+      Authorization:
+        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzMGUxNDBmYzcyNGQ1OTFjMzAwMWJlNDQ4NDg4MjcxMiIsIm5iZiI6MTcyNTQ3NzAyMS40NzcsInN1YiI6IjY2ZDhiMDlkM2E5NGE0OWMxNjI2ZjAzZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.RdYktkxjOZERUNw2BaaX_ew5YAGVx2pJzAy5kHzi3RI",
+    },
+    body: JSON.stringify(body),
+  };
+
+  fetch("https://api.themoviedb.org/3/account/21500820/watchlist", post)
+    .then((res) => res.json())
+    .then((res) => console.log(res))
+    .catch((err) => console.error(err));
 }
 
 dropdownMenu.addEventListener("change", manejarSeleccion);
 
+function guardarDatos() {
+  localStorage.setItem("seriesCard", JSON.stringify(todasLasSeries));
+  localStorage.setItem("seriesId", JSON.stringify(seriesId));
+}
+
 document.querySelectorAll(".bookmark-item").forEach((item) => {
   item.addEventListener("click", function () {
     const icon = this.querySelector("i");
+    const id = parseInt(icon.id);
+    console.log(id);
+    console.log(typeof id);
 
     // Alternar entre icono vacío y relleno
     if (icon.classList.contains("fa-regular")) {
       icon.classList.remove("fa-regular");
       icon.classList.add("fa-solid");
+
+      const body = {
+        media_type: "tv",
+        media_id: id,
+        watchlist: true,
+      };
+      modificarWatchlist(body);
+      todasLasSeries[id] = titulo;
+      console.log(todasLasSeries[id]);
+      seriesId.push(id);
+      console.log(seriesId.includes(id));
+      guardarDatos();
     } else {
       icon.classList.remove("fa-solid");
       icon.classList.add("fa-regular");
+
+      const body = {
+        media_type: "tv",
+        media_id: id,
+        watchlist: false,
+      };
+      modificarWatchlist(body);
+      delete todasLasSeries[id];
+      console.log(todasLasSeries[id]);
+      seriesId = seriesId.filter((serieId) => serieId !== id);
+      console.log(seriesId.includes(id));
+      guardarDatos();
     }
 
     // Alternar la clase "filled" para cambiar el color

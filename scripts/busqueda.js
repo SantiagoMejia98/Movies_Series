@@ -797,7 +797,7 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
       if (!card) return;
 
       const tipo = card.getAttribute("data_type");
-      const id = card.getAttribute("data_id");
+      const id = parseInt(card.getAttribute("data_id"));
       if (tipo === "collection") {
         peliculasAgregar = {};
         coleccionAgregar = {};
@@ -868,7 +868,7 @@ document.querySelectorAll('[data-name="busqueda"]').forEach((contenedor) => {
       if (!card) return;
 
       const tipo = card.getAttribute("data_type");
-      const id = card.getAttribute("data_id");
+      const id = parseInt(card.getAttribute("data_id"));
       if (tipo === "collection") {
         const coleccion = colecciones[id];
         delete colecciones[id];
