@@ -21,6 +21,7 @@ let todasLasSeries = {};
 let generos = {};
 let actores = {};
 let directores = {};
+let proveedores = {};
 
 function crearlistaInicio(elemento, datos) {
   const ulExistente = elemento.querySelector("ul");
@@ -104,6 +105,7 @@ async function cargarDatosGuardados() {
     generos = JSON.parse(localStorage.getItem("generos"));
     actores = JSON.parse(localStorage.getItem("actores"));
     directores = JSON.parse(localStorage.getItem("directores"));
+    proveedores = JSON.parse(localStorage.getItem("proveedores"));
   } else {
     window.location = "actualizar.html";
   }
@@ -129,6 +131,18 @@ function desplegableGeneros() {
 }
 
 desplegableGeneros();
+
+function desplegableProveedores() {
+  const select = document.getElementById("filtro-plataforma");
+  for (const [key, value] of Object.entries(proveedores)) {
+    const option = document.createElement("option");
+    option.value = key;
+    option.textContent = value.Nombre;
+    select.appendChild(option);
+  }
+}
+
+desplegableProveedores();
 
 crearlistaInicio(elementos.peliculas, todasLasPeliculas);
 crearlistaInicio(elementos.series, todasLasSeries);
@@ -189,6 +203,29 @@ seleccionarGenero.addEventListener("change", function () {
 
   const seriesFiltradas = Object.values(todasLasSeries).filter((s) =>
     s.Generos.includes(parseInt(generoSeleccionado))
+  );
+
+  crearlistaInicio(elementos.peliculas, peliculasFiltradas);
+  crearlistaInicio(elementos.series, seriesFiltradas);
+});
+
+const selectPlataforma = document.getElementById("filtro-plataforma");
+
+selectPlataforma.addEventListener("change", () => {
+  const plataformaSeleccionada = selectPlataforma.value;
+
+  if (plataformaSeleccionada === "seleccionar") {
+    crearlistaInicio(elementos.peliculas, todasLasPeliculas);
+    crearlistaInicio(elementos.series, todasLasSeries);
+    return;
+  }
+
+  const peliculasFiltradas = Object.values(todasLasPeliculas).filter((p) =>
+    p.Proveedores.includes(parseInt(plataformaSeleccionada))
+  );
+
+  const seriesFiltradas = Object.values(todasLasSeries).filter((s) =>
+    s.Proveedores.includes(parseInt(plataformaSeleccionada))
   );
 
   crearlistaInicio(elementos.peliculas, peliculasFiltradas);

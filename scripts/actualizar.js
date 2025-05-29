@@ -535,14 +535,22 @@ await cargarDatos("tv");
 
 for (const coleccion in colecciones) {
   let generosColeccion = new Set();
+  let proveedoresColeccion = new Set();
   for (const movieId of colecciones[coleccion].Partes) {
     colecciones[coleccion].Peliculas[movieId] = peliculas[movieId];
     let genero = peliculas[movieId].Generos;
+    let proveedor = peliculas[movieId].Proveedores;
     genero.forEach((g) => {
       generosColeccion.add(g);
     });
+    proveedor.forEach((p) => {
+      {
+        proveedoresColeccion.add(p);
+      }
+    });
   }
   colecciones[coleccion].Generos = Array.from(generosColeccion);
+  colecciones[coleccion].Proveedores = Array.from(proveedoresColeccion);
   todasLasPeliculas[coleccion] = colecciones[coleccion];
 }
 
