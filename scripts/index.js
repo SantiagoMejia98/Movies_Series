@@ -208,10 +208,6 @@ selectPlataforma.addEventListener("change", () => {
   const plataformaSeleccionada = selectPlataforma.value;
 
   if (plataformaSeleccionada === "seleccionar") {
-    const cantidad =
-      Object.keys(todasLasPeliculas).length +
-      Object.keys(todasLasSeries).length;
-    console.log(`Todas las plataformas: ${cantidad} elementos`);
     crearlistaInicio(elementos.peliculas, todasLasPeliculas);
     crearlistaInicio(elementos.series, todasLasSeries);
     return;
@@ -224,8 +220,19 @@ selectPlataforma.addEventListener("change", () => {
     const seriesFiltradas = Object.values(todasLasSeries).filter(
       (s) => s.Proveedores.length === 0
     );
-    const cantidad = peliculasFiltradas.length + seriesFiltradas.length;
-    console.log(`No disponible en ninguna plataforma: ${cantidad} elementos`);
+    crearlistaInicio(elementos.peliculas, peliculasFiltradas);
+    crearlistaInicio(elementos.series, seriesFiltradas);
+    return;
+  }
+
+  if (plataformaSeleccionada === "streaming") {
+    const peliculasFiltradas = Object.values(todasLasPeliculas).filter(
+      (p) => p.Proveedores.length > 0
+    );
+    const seriesFiltradas = Object.values(todasLasSeries).filter(
+      (s) => s.Proveedores.length > 0
+    );
+
     crearlistaInicio(elementos.peliculas, peliculasFiltradas);
     crearlistaInicio(elementos.series, seriesFiltradas);
     return;
@@ -239,29 +246,8 @@ selectPlataforma.addEventListener("change", () => {
     s.Proveedores.includes(parseInt(plataformaSeleccionada))
   );
 
-  const peliculasUnicas = Object.values(todasLasPeliculas).filter(
-    (p) =>
-      p.Proveedores.length === 1 &&
-      p.Proveedores.includes(parseInt(plataformaSeleccionada))
-  );
-
-  const seriesUnicas = Object.values(todasLasSeries).filter(
-    (s) =>
-      s.Proveedores.length === 1 &&
-      s.Proveedores.includes(parseInt(plataformaSeleccionada))
-  );
-
-  const cantidad = peliculasFiltradas.length + seriesFiltradas.length;
-  const cantidadUnicas = peliculasUnicas.length + seriesUnicas.length;
-  console.log(
-    `Plataforma ${proveedores[plataformaSeleccionada].Nombre}: ${cantidad} elementos`
-  );
-  console.log(
-    `Plataforma ${proveedores[plataformaSeleccionada].Nombre} (únicos): ${cantidadUnicas} elementos`
-  );
-
-  crearlistaInicio(elementos.peliculas, peliculasUnicas);
-  crearlistaInicio(elementos.series, seriesUnicas);
+  crearlistaInicio(elementos.peliculas, peliculasFiltradas);
+  crearlistaInicio(elementos.series, seriesFiltradas);
 });
 
 window.addEventListener("pageshow", () => {
