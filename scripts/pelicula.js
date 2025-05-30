@@ -35,6 +35,9 @@ const elementos = {
 };
 
 let todasLasPeliculas = {};
+let coleccionesId = {};
+let peliculasId = {};
+let titulo;
 let actores = {};
 let directores = {};
 let aleatorio;
@@ -43,13 +46,15 @@ let proveedoresID = {};
 
 async function cargarDatosGuardados() {
   todasLasPeliculas = JSON.parse(localStorage.getItem("peliculasCard"));
+  coleccionesId = JSON.parse(localStorage.getItem("coleccionesId"));
+  peliculasId = JSON.parse(localStorage.getItem("peliculasId"));
   actores = JSON.parse(localStorage.getItem("actores"));
   directores = JSON.parse(localStorage.getItem("directores"));
   generos = JSON.parse(localStorage.getItem("generos"));
   proveedoresID = JSON.parse(localStorage.getItem("proveedores"));
 
   aleatorio = JSON.parse(localStorage.getItem("aleatorio"));
-  let titulo;
+
   if (!aleatorio) {
     const claves = Object.keys(todasLasPeliculas);
     aleatorio = claves[Math.floor(Math.random() * claves.length)];
@@ -67,10 +72,6 @@ async function cargarDatosGuardados() {
   } else {
     crearPelicula(elementos.pelicula, titulo);
   }
-}
-
-function guardarDatos(data) {
-  localStorage.setItem("aleatorio", JSON.stringify(data));
 }
 
 await cargarDatosGuardados();
@@ -112,8 +113,8 @@ function crearColeccion(elemento, datos) {
     datos.Lanzamiento !== "Desconocido" ? `(${datos.Lanzamiento}) &bull; ` : ""
   }${datos.Duracion}</p>
         <ul>
-          <li class="bookmark-item">
-            <i class="fa-regular fa-bookmark" id="${datos.Id}"></i>
+          <li class="bookmark-item filled">
+            <i class="fa-solid fa-bookmark" id="${datos.Id}"></i>
           </li>
         </ul>
         ${
@@ -257,8 +258,8 @@ function crearPelicula(elemento, datos) {
             }"><p>&#128218; ${
               todasLasPeliculas[datos.Coleccion].Nombre
             }</p></li>`
-          : `<li class="bookmark-item">
-            <i class="fa-regular fa-bookmark" id="${datos.Id}"></i>
+          : `<li class="bookmark-item filled">
+            <i class="fa-solid fa-bookmark" id="${datos.Id}"></i>
           </li>`
       }
     </ul>
@@ -418,19 +419,94 @@ function manejarSeleccion(event) {
   }
 }
 
+function modificarWatchlist(body) {
+  const post = {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/json",
+      Authorization:
+        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzMGUxNDBmYzcyNGQ1OTFjMzAwMWJlNDQ4NDg4MjcxMiIsIm5iZiI6MTcyNTQ3NzAyMS40NzcsInN1YiI6IjY2ZDhiMDlkM2E5NGE0OWMxNjI2ZjAzZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.RdYktkxjOZERUNw2BaaX_ew5YAGVx2pJzAy5kHzi3RI",
+    },
+    body: JSON.stringify(body),
+  };
+
+  fetch("https://api.themoviedb.org/3/account/21500820/watchlist", post)
+    .then((res) => res.json())
+    .then((res) => console.log(res))
+    .catch((err) => console.error(err));
+}
+
 dropdownMenu.addEventListener("change", manejarSeleccion);
+
+function guardarDatos() {
+  localStorage.setItem("peliculasCard", JSON.stringify(todasLasPeliculas));
+  localStorage.setItem("coleccionesId", JSON.stringify(coleccionesId));
+  localStorage.setItem("peliculasId", JSON.stringify(peliculasId));
+}
 
 document.querySelectorAll(".bookmark-item").forEach((item) => {
   item.addEventListener("click", function () {
     const icon = this.querySelector("i");
+    const id = parseInt(icon.id);
 
     // Alternar entre icono vacío y relleno
     if (icon.classList.contains("fa-regular")) {
       icon.classList.remove("fa-regular");
       icon.classList.add("fa-solid");
+
+      if (titulo.Tipo === "collection") {
+        coleccionesId[id] = titulo.Partes;
+        coleccionesId[id].forEach((peliculaId) => {
+          peliculasId[peliculaId] = id;
+        });
+        todasLasPeliculas[id] = titulo;
+        const body = {
+          media_type: "movie",
+          media_id: coleccionesId[id][0],
+          watchlist: true,
+        };
+        modificarWatchlist(body);
+        guardarDatos();
+      } else {
+        peliculasId[id] = titulo.Coleccion;
+        todasLasPeliculas[id] = titulo;
+        const body = {
+          media_type: "movie",
+          media_id: id,
+          watchlist: true,
+        };
+        modificarWatchlist(body);
+        guardarDatos();
+      }
     } else {
       icon.classList.remove("fa-solid");
       icon.classList.add("fa-regular");
+
+      if (titulo.Tipo === "collection") {
+        coleccionesId[id].forEach((peliculaId) => {
+          delete peliculasId[peliculaId];
+          const body = {
+            media_type: "movie",
+            media_id: peliculaId,
+            watchlist: false,
+          };
+          modificarWatchlist(body);
+        });
+        delete coleccionesId[id];
+        delete todasLasPeliculas[id];
+        guardarDatos();
+      } else {
+        delete peliculasId[id];
+        delete todasLasPeliculas[id];
+        const body = {
+          media_type: "movie",
+          media_id: id,
+          watchlist: false,
+        };
+        modificarWatchlist(body);
+        guardarDatos();
+      }
     }
 
     // Alternar la clase "filled" para cambiar el color
@@ -445,7 +521,7 @@ document.addEventListener("click", function (event) {
   const id = card.getAttribute("data-id");
   const coleccion = card.getAttribute("data-collection");
   const aleatorio = [coleccion, id];
-  guardarDatos(aleatorio);
+  localStorage.setItem("aleatorio", JSON.stringify(aleatorio));
   window.location.href = "pelicula.html";
 });
 
@@ -478,7 +554,7 @@ document
   ?.addEventListener("click", function () {
     const coleccion = this.getAttribute("data-collection");
     const aleatorio = [coleccion];
-    guardarDatos(aleatorio);
+    localStorage.setItem("aleatorio", JSON.stringify(aleatorio));
     window.location.href = "pelicula.html";
   });
 

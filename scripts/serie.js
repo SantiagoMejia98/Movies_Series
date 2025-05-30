@@ -131,7 +131,7 @@ function crearSerie(elemento, datos) {
     }" target="_blank"><img src="https://image.tmdb.org/t/p/w92/pTnn5JwWr4p3pG8H6VrpiQo7Vs0.jpg">
     </a>
       </li>
-      <li class="bookmark-item">
+      <li class="bookmark-item filled">
             <i class="fa-solid fa-bookmark" id="${datos.Id}"></i>
           </li>
     </ul>
