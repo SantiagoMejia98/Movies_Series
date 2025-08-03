@@ -227,10 +227,10 @@ selectPlataforma.addEventListener("change", () => {
 
   if (plataformaSeleccionada === "streaming") {
     const peliculasFiltradas = Object.values(todasLasPeliculas).filter(
-      (p) => p.Proveedores.length > 0
+      (p) => p.Proveedores.length === 1
     );
     const seriesFiltradas = Object.values(todasLasSeries).filter(
-      (s) => s.Proveedores.length > 0
+      (s) => s.Proveedores.length === 1
     );
 
     crearlistaInicio(elementos.peliculas, peliculasFiltradas);
