@@ -6,7 +6,20 @@ const get = {
       "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzMGUxNDBmYzcyNGQ1OTFjMzAwMWJlNDQ4NDg4MjcxMiIsIm5iZiI6MTcyNTQ3NzAyMS40NzcsInN1YiI6IjY2ZDhiMDlkM2E5NGE0OWMxNjI2ZjAzZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.RdYktkxjOZERUNw2BaaX_ew5YAGVx2pJzAy5kHzi3RI",
   },
 };
-const INCLUIDOS = [8, 119, 337, 1899, 350, 531, 283, 339];
+
+const INCLUIDOS = [
+  119, //Prime Video
+  350, //Apple TV Plus
+  283, //Crunchyroll
+  337, //Disney Plus
+  1899, //HBO Max
+  2358, //Lionsgate+ Amazon Channels
+  2141, //MGM Amazon Channels
+  11, //MUBI
+  8, //Netflix
+  531, //Paramount Plus
+  1889, //Universal Plus Amazon Channels
+];
 
 const EXPIRATION_DAYS = 30;
 
@@ -72,10 +85,10 @@ function JSONpelicula(titulo) {
       titulo.original_name !== titulo.name
         ? ` (${titulo.original_name})`
         : titulo.original_title &&
-          titulo.original_title !== titulo.title &&
-          titulo.original_title !== titulo.name
-        ? ` (${titulo.original_title})`
-        : ""
+            titulo.original_title !== titulo.title &&
+            titulo.original_title !== titulo.name
+          ? ` (${titulo.original_title})`
+          : ""
     }`,
     Coleccion: titulo.belongs_to_collection?.id || null,
     Descripcion:
@@ -84,13 +97,13 @@ function JSONpelicula(titulo) {
           (item) =>
             item.iso_639_1 === "es" &&
             item.iso_3166_1 === "MX" &&
-            item.data?.overview?.trim()
+            item.data?.overview?.trim(),
         ) ||
         titulo.translations.translations.find(
           (item) =>
             item.iso_639_1 === "es" &&
             item.iso_3166_1 === "ES" &&
-            item.data?.overview?.trim()
+            item.data?.overview?.trim(),
         )
       )?.data.overview ||
       titulo.overview ||
@@ -108,7 +121,7 @@ function JSONpelicula(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1500 &&
-          item.aspect_ratio === 0.667
+          item.aspect_ratio === 0.667,
       )[0]?.file_path ||
       titulo.poster_path ||
       null,
@@ -117,7 +130,7 @@ function JSONpelicula(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1080 &&
-          item.aspect_ratio === 1.778
+          item.aspect_ratio === 1.778,
       )[0]?.file_path ||
       titulo.backdrop_path ||
       titulo.poster_path ||
@@ -127,7 +140,7 @@ function JSONpelicula(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1500 &&
-          item.aspect_ratio === 0.667
+          item.aspect_ratio === 0.667,
       )[1]?.file_path ||
       titulo.poster_path ||
       null,
@@ -135,7 +148,7 @@ function JSONpelicula(titulo) {
       titulo.images?.logos.filter(
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-          item.width >= 400
+          item.width >= 400,
       )[0]?.file_path || null,
     Reparto:
       titulo.credits?.cast
@@ -179,22 +192,26 @@ function JSONserie(titulo) {
       titulo.original_name !== titulo.name
         ? ` (${titulo.original_name})`
         : titulo.original_title &&
-          titulo.original_title !== titulo.title &&
-          titulo.original_title !== titulo.name
-        ? ` (${titulo.original_title})`
-        : ""
+            titulo.original_title !== titulo.title &&
+            titulo.original_title !== titulo.name
+          ? ` (${titulo.original_title})`
+          : ""
     }`,
     Lanzamiento: titulo.first_air_date
       ? `${titulo.first_air_date.split(/[-/]/).find((p) => p.length === 4)}${
           titulo.status !== "Ended" && titulo.status !== "Canceled"
             ? " - Presente"
             : titulo.last_air_date &&
-              titulo.last_air_date.split(/[-/]/).find((p) => p.length === 4) !==
-                titulo.first_air_date.split(/[-/]/).find((p) => p.length === 4)
-            ? ` - ${titulo.last_air_date
-                .split(/[-/]/)
-                .find((p) => p.length === 4)}`
-            : ""
+                titulo.last_air_date
+                  .split(/[-/]/)
+                  .find((p) => p.length === 4) !==
+                  titulo.first_air_date
+                    .split(/[-/]/)
+                    .find((p) => p.length === 4)
+              ? ` - ${titulo.last_air_date
+                  .split(/[-/]/)
+                  .find((p) => p.length === 4)}`
+              : ""
         }`
       : "Desconocido",
     Id: titulo.id,
@@ -211,7 +228,7 @@ function JSONserie(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1500 &&
-          item.aspect_ratio === 0.667
+          item.aspect_ratio === 0.667,
       )[0]?.file_path ||
       titulo.poster_path ||
       null,
@@ -220,7 +237,7 @@ function JSONserie(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1080 &&
-          item.aspect_ratio === 1.778
+          item.aspect_ratio === 1.778,
       )[0]?.file_path ||
       titulo.backdrop_path ||
       titulo.poster_path ||
@@ -230,7 +247,7 @@ function JSONserie(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1500 &&
-          item.aspect_ratio === 0.667
+          item.aspect_ratio === 0.667,
       )[1]?.file_path ||
       titulo.poster_path ||
       null,
@@ -238,7 +255,7 @@ function JSONserie(titulo) {
       titulo.images?.logos.filter(
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-          item.width >= 400
+          item.width >= 400,
       )[0]?.file_path || null,
     Directores:
       titulo.created_by
@@ -280,20 +297,20 @@ function JSONserie(titulo) {
           (item) =>
             item.iso_639_1 === "es" &&
             item.iso_3166_1 === "MX" &&
-            item.data?.overview?.trim()
+            item.data?.overview?.trim(),
         ) ||
         titulo.translations.translations.find(
           (item) =>
             item.iso_639_1 === "es" &&
             item.iso_3166_1 === "ES" &&
-            item.data?.overview?.trim()
+            item.data?.overview?.trim(),
         )
       )?.data.overview ||
       titulo.overview ||
       null,
     Temporadas: titulo.seasons
       .filter(
-        (season) => season.name !== "Specials" && season.poster_path !== null
+        (season) => season.name !== "Specials" && season.poster_path !== null,
       )
       .map((season) => ({
         Nombre: season.name,
@@ -311,13 +328,14 @@ function JSONcoleccion(titulo) {
       titulo.original_name
         ? `(${titulo.original_name})`
         : "" || titulo.original_title
-        ? `(${titulo.original_title})`
-        : ""
+          ? `(${titulo.original_title})`
+          : ""
     }`,
     Lanzamiento: (() => {
       let years = titulo.parts
         .map(
-          (i) => i.release_date?.split(/[-/]/).find((p) => p.length === 4) || ""
+          (i) =>
+            i.release_date?.split(/[-/]/).find((p) => p.length === 4) || "",
         )
         .filter(Boolean)
         .sort((a, b) => a - b);
@@ -335,7 +353,7 @@ function JSONcoleccion(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1500 &&
-          item.aspect_ratio === 0.667
+          item.aspect_ratio === 0.667,
       )[0]?.file_path ||
       titulo.poster_path?.poster_path ||
       titulo.parts.filter((item) => item.poster_path !== null)[0]
@@ -346,7 +364,7 @@ function JSONcoleccion(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1080 &&
-          item.aspect_ratio === 1.778
+          item.aspect_ratio === 1.778,
       )[0]?.file_path ||
       titulo.backdrop_path?.backdrop_path ||
       titulo.parts.filter((item) => item.backdrop_path !== null)[0]
@@ -358,7 +376,7 @@ function JSONcoleccion(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1500 &&
-          item.aspect_ratio === 0.667
+          item.aspect_ratio === 0.667,
       )[1]?.file_path ||
       titulo.poster_path?.poster_path ||
       titulo.parts.filter((item) => item.poster_path !== null)[1]
@@ -373,13 +391,13 @@ function JSONcoleccion(titulo) {
           (item) =>
             item.iso_639_1 === "es" &&
             item.iso_3166_1 === "MX" &&
-            item.data?.overview?.trim()
+            item.data?.overview?.trim(),
         ) ||
         titulo.translations.translations.find(
           (item) =>
             item.iso_639_1 === "es" &&
             item.iso_3166_1 === "ES" &&
-            item.data?.overview?.trim()
+            item.data?.overview?.trim(),
         )
       )?.data.overview ||
       titulo.overview ||
@@ -400,7 +418,7 @@ async function cargarDatos(tipo) {
     do {
       const res = await fetch(
         `https://api.themoviedb.org/3/account/21500820/watchlist/${tipo}?page=${page}`,
-        get
+        get,
       );
 
       if (!res.ok) {
@@ -440,7 +458,7 @@ async function buscarDetallesPeliculas(id) {
   try {
     const res = await fetch(
       `https://api.themoviedb.org/3/movie/${id}?append_to_response=credits,watch/providers,translations,images`,
-      get
+      get,
     );
 
     if (!res.ok) {
@@ -469,7 +487,7 @@ async function buscarDetallesSeries(id) {
   try {
     const res = await fetch(
       `https://api.themoviedb.org/3/tv/${id}?append_to_response=aggregate_credits,watch/providers,translations,images`,
-      get
+      get,
     );
 
     if (!res.ok) {
@@ -490,7 +508,7 @@ async function buscarColeccion(id) {
   try {
     const res = await fetch(
       `https://api.themoviedb.org/3/collection/${id}?append_to_response=translations,images`,
-      get
+      get,
     );
 
     if (!res.ok) {
@@ -527,7 +545,7 @@ function guardarDatos(data) {
   localStorage.setItem("proveedores", JSON.stringify(data["proveedores"]));
   localStorage.setItem(
     "expirationDate",
-    JSON.stringify(data["expirationDate"])
+    JSON.stringify(data["expirationDate"]),
   );
 }
 
@@ -583,7 +601,7 @@ function medirPesos(data) {
       " MB\n" +
       "Tamaño LZString.compressToUTF16: " +
       getSizeInMB(compressed) +
-      " MB\n"
+      " MB\n",
   );
 }
 medirPesos(data, actores, directores);

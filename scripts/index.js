@@ -169,11 +169,11 @@ buscador.addEventListener("input", function () {
   }
 
   const peliculasFiltradas = Object.values(todasLasPeliculas).filter((p) =>
-    p.Nombre.toLowerCase().includes(texto)
+    p.Nombre.toLowerCase().includes(texto),
   );
 
   const seriesFiltradas = Object.values(todasLasSeries).filter((p) =>
-    p.Nombre.toLowerCase().includes(texto)
+    p.Nombre.toLowerCase().includes(texto),
   );
 
   crearlistaInicio(elementos.peliculas, peliculasFiltradas);
@@ -191,11 +191,11 @@ seleccionarGenero.addEventListener("change", function () {
   }
 
   const peliculasFiltradas = Object.values(todasLasPeliculas).filter((p) =>
-    p.Generos.includes(parseInt(generoSeleccionado))
+    p.Generos.includes(parseInt(generoSeleccionado)),
   );
 
   const seriesFiltradas = Object.values(todasLasSeries).filter((s) =>
-    s.Generos.includes(parseInt(generoSeleccionado))
+    s.Generos.includes(parseInt(generoSeleccionado)),
   );
 
   crearlistaInicio(elementos.peliculas, peliculasFiltradas);
@@ -215,10 +215,10 @@ selectPlataforma.addEventListener("change", () => {
 
   if (plataformaSeleccionada === "ninguno") {
     const peliculasFiltradas = Object.values(todasLasPeliculas).filter(
-      (p) => p.Proveedores.length === 0
+      (p) => p.Proveedores.length === 0,
     );
     const seriesFiltradas = Object.values(todasLasSeries).filter(
-      (s) => s.Proveedores.length === 0
+      (s) => s.Proveedores.length === 0,
     );
     crearlistaInicio(elementos.peliculas, peliculasFiltradas);
     crearlistaInicio(elementos.series, seriesFiltradas);
@@ -227,10 +227,10 @@ selectPlataforma.addEventListener("change", () => {
 
   if (plataformaSeleccionada === "streaming") {
     const peliculasFiltradas = Object.values(todasLasPeliculas).filter(
-      (p) => p.Proveedores.length > 0
+      (p) => p.Proveedores.length > 0,
     );
     const seriesFiltradas = Object.values(todasLasSeries).filter(
-      (s) => s.Proveedores.length > 0
+      (s) => s.Proveedores.length > 0,
     );
 
     crearlistaInicio(elementos.peliculas, peliculasFiltradas);
@@ -238,12 +238,16 @@ selectPlataforma.addEventListener("change", () => {
     return;
   }
 
-  const peliculasFiltradas = Object.values(todasLasPeliculas).filter((p) =>
-    p.Proveedores.includes(parseInt(plataformaSeleccionada))
+  const peliculasFiltradas = Object.values(todasLasPeliculas).filter(
+    (p) =>
+      p.Proveedores.length === 1 &&
+      p.Proveedores.includes(parseInt(plataformaSeleccionada)),
   );
 
-  const seriesFiltradas = Object.values(todasLasSeries).filter((s) =>
-    s.Proveedores.includes(parseInt(plataformaSeleccionada))
+  const seriesFiltradas = Object.values(todasLasSeries).filter(
+    (s) =>
+      s.Proveedores.length === 1 &&
+      s.Proveedores.includes(parseInt(plataformaSeleccionada)),
   );
 
   crearlistaInicio(elementos.peliculas, peliculasFiltradas);
