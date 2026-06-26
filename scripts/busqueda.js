@@ -239,10 +239,10 @@ function JSONpeliculaAgregar(titulo) {
       titulo.original_name !== titulo.name
         ? ` (${titulo.original_name})`
         : titulo.original_title &&
-          titulo.original_title !== titulo.title &&
-          titulo.original_title !== titulo.name
-        ? ` (${titulo.original_title})`
-        : ""
+            titulo.original_title !== titulo.title &&
+            titulo.original_title !== titulo.name
+          ? ` (${titulo.original_title})`
+          : ""
     }`,
     Coleccion: titulo.belongs_to_collection?.id || null,
     Descripcion:
@@ -251,13 +251,13 @@ function JSONpeliculaAgregar(titulo) {
           (item) =>
             item.iso_639_1 === "es" &&
             item.iso_3166_1 === "MX" &&
-            item.data?.overview?.trim()
+            item.data?.overview?.trim(),
         ) ||
         titulo.translations.translations.find(
           (item) =>
             item.iso_639_1 === "es" &&
             item.iso_3166_1 === "ES" &&
-            item.data?.overview?.trim()
+            item.data?.overview?.trim(),
         )
       )?.data.overview ||
       titulo.overview ||
@@ -275,7 +275,7 @@ function JSONpeliculaAgregar(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1500 &&
-          item.aspect_ratio === 0.667
+          item.aspect_ratio === 0.667,
       )[0]?.file_path ||
       titulo.poster_path ||
       null,
@@ -284,7 +284,7 @@ function JSONpeliculaAgregar(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1080 &&
-          item.aspect_ratio === 1.778
+          item.aspect_ratio === 1.778,
       )[0]?.file_path ||
       titulo.backdrop_path ||
       titulo.poster_path ||
@@ -294,7 +294,7 @@ function JSONpeliculaAgregar(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1500 &&
-          item.aspect_ratio === 0.667
+          item.aspect_ratio === 0.667,
       )[1]?.file_path ||
       titulo.poster_path ||
       null,
@@ -302,7 +302,7 @@ function JSONpeliculaAgregar(titulo) {
       titulo.images?.logos.filter(
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-          item.width >= 400
+          item.width >= 400,
       )[0]?.file_path || null,
     Reparto:
       titulo.credits?.cast
@@ -326,15 +326,13 @@ function JSONpeliculaAgregar(titulo) {
           return item.id;
         }) || null,
     Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate
-        ?.filter((item) => INCLUIDOS.includes(item.provider_id))
-        .map((item) => {
-          proveedores[item.provider_id] = {
-            Nombre: item.provider_name,
-            Logo: item.logo_path,
-          };
-          return item.provider_id;
-        }) || [],
+      titulo["watch/providers"]?.results?.CO?.flatrate?.map((item) => {
+        proveedores[item.provider_id] = {
+          Nombre: item.provider_name,
+          Logo: item.logo_path,
+        };
+        return item.provider_id;
+      }) || [],
   };
 }
 
@@ -346,22 +344,26 @@ function JSONserieAgregar(titulo) {
       titulo.original_name !== titulo.name
         ? ` (${titulo.original_name})`
         : titulo.original_title &&
-          titulo.original_title !== titulo.title &&
-          titulo.original_title !== titulo.name
-        ? ` (${titulo.original_title})`
-        : ""
+            titulo.original_title !== titulo.title &&
+            titulo.original_title !== titulo.name
+          ? ` (${titulo.original_title})`
+          : ""
     }`,
     Lanzamiento: titulo.first_air_date
       ? `${titulo.first_air_date.split(/[-/]/).find((p) => p.length === 4)}${
           titulo.status !== "Ended" && titulo.status !== "Canceled"
             ? " - Presente"
             : titulo.last_air_date &&
-              titulo.last_air_date.split(/[-/]/).find((p) => p.length === 4) !==
-                titulo.first_air_date.split(/[-/]/).find((p) => p.length === 4)
-            ? ` - ${titulo.last_air_date
-                .split(/[-/]/)
-                .find((p) => p.length === 4)}`
-            : ""
+                titulo.last_air_date
+                  .split(/[-/]/)
+                  .find((p) => p.length === 4) !==
+                  titulo.first_air_date
+                    .split(/[-/]/)
+                    .find((p) => p.length === 4)
+              ? ` - ${titulo.last_air_date
+                  .split(/[-/]/)
+                  .find((p) => p.length === 4)}`
+              : ""
         }`
       : "Desconocido",
     Id: titulo.id,
@@ -378,7 +380,7 @@ function JSONserieAgregar(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1500 &&
-          item.aspect_ratio === 0.667
+          item.aspect_ratio === 0.667,
       )[0]?.file_path ||
       titulo.poster_path ||
       null,
@@ -387,7 +389,7 @@ function JSONserieAgregar(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1080 &&
-          item.aspect_ratio === 1.778
+          item.aspect_ratio === 1.778,
       )[0]?.file_path ||
       titulo.backdrop_path ||
       titulo.poster_path ||
@@ -397,7 +399,7 @@ function JSONserieAgregar(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1500 &&
-          item.aspect_ratio === 0.667
+          item.aspect_ratio === 0.667,
       )[1]?.file_path ||
       titulo.poster_path ||
       null,
@@ -405,7 +407,7 @@ function JSONserieAgregar(titulo) {
       titulo.images?.logos.filter(
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
-          item.width >= 400
+          item.width >= 400,
       )[0]?.file_path || null,
     Directores:
       titulo.created_by
@@ -429,15 +431,13 @@ function JSONserieAgregar(titulo) {
           return item.id;
         }) || null,
     Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate
-        ?.filter((item) => INCLUIDOS.includes(item.provider_id))
-        .map((item) => {
-          proveedores[item.provider_id] = {
-            Nombre: item.provider_name,
-            Logo: item.logo_path,
-          };
-          return item.provider_id;
-        }) || [],
+      titulo["watch/providers"]?.results?.CO?.flatrate?.map((item) => {
+        proveedores[item.provider_id] = {
+          Nombre: item.provider_name,
+          Logo: item.logo_path,
+        };
+        return item.provider_id;
+      }) || [],
     Duracion: `${titulo.number_of_seasons} ${
       titulo.number_of_seasons === 1 ? "temporada" : "temporadas"
     } - ${titulo.number_of_episodes} capítulos`,
@@ -447,20 +447,20 @@ function JSONserieAgregar(titulo) {
           (item) =>
             item.iso_639_1 === "es" &&
             item.iso_3166_1 === "MX" &&
-            item.data?.overview?.trim()
+            item.data?.overview?.trim(),
         ) ||
         titulo.translations.translations.find(
           (item) =>
             item.iso_639_1 === "es" &&
             item.iso_3166_1 === "ES" &&
-            item.data?.overview?.trim()
+            item.data?.overview?.trim(),
         )
       )?.data.overview ||
       titulo.overview ||
       null,
     Temporadas: titulo.seasons
       .filter(
-        (season) => season.name !== "Specials" && season.poster_path !== null
+        (season) => season.name !== "Specials" && season.poster_path !== null,
       )
       .map((season) => ({
         Nombre: season.name,
@@ -478,13 +478,14 @@ function JSONcoleccionAgregar(titulo) {
       titulo.original_name
         ? `(${titulo.original_name})`
         : "" || titulo.original_title
-        ? `(${titulo.original_title})`
-        : ""
+          ? `(${titulo.original_title})`
+          : ""
     }`,
     Lanzamiento: (() => {
       let years = titulo.parts
         .map(
-          (i) => i.release_date?.split(/[-/]/).find((p) => p.length === 4) || ""
+          (i) =>
+            i.release_date?.split(/[-/]/).find((p) => p.length === 4) || "",
         )
         .filter(Boolean)
         .sort((a, b) => a - b);
@@ -502,7 +503,7 @@ function JSONcoleccionAgregar(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1500 &&
-          item.aspect_ratio === 0.667
+          item.aspect_ratio === 0.667,
       )[0]?.file_path ||
       titulo.poster_path?.poster_path ||
       titulo.parts.filter((item) => item.poster_path !== null)[0]
@@ -513,7 +514,7 @@ function JSONcoleccionAgregar(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1080 &&
-          item.aspect_ratio === 1.778
+          item.aspect_ratio === 1.778,
       )[0]?.file_path ||
       titulo.backdrop_path?.backdrop_path ||
       titulo.parts.filter((item) => item.backdrop_path !== null)[0]
@@ -525,7 +526,7 @@ function JSONcoleccionAgregar(titulo) {
         (item) =>
           (item.iso_639_1 === "en" || item.iso_639_1 === null) &&
           item.height >= 1500 &&
-          item.aspect_ratio === 0.667
+          item.aspect_ratio === 0.667,
       )[1]?.file_path ||
       titulo.poster_path?.poster_path ||
       titulo.parts.filter((item) => item.poster_path !== null)[1]
@@ -540,13 +541,13 @@ function JSONcoleccionAgregar(titulo) {
           (item) =>
             item.iso_639_1 === "es" &&
             item.iso_3166_1 === "MX" &&
-            item.data?.overview?.trim()
+            item.data?.overview?.trim(),
         ) ||
         titulo.translations.translations.find(
           (item) =>
             item.iso_639_1 === "es" &&
             item.iso_3166_1 === "ES" &&
-            item.data?.overview?.trim()
+            item.data?.overview?.trim(),
         )
       )?.data.overview ||
       titulo.overview ||
@@ -563,7 +564,7 @@ async function buscarPeliculasAgregar(id) {
   try {
     const res = await fetch(
       `https://api.themoviedb.org/3/movie/${id}?append_to_response=credits,watch/providers,translations,images`,
-      get
+      get,
     );
 
     if (!res.ok) {
@@ -592,7 +593,7 @@ async function buscarSeriesAgregar(id) {
   try {
     const res = await fetch(
       `https://api.themoviedb.org/3/tv/${id}?append_to_response=aggregate_credits,watch/providers,translations,images`,
-      get
+      get,
     );
 
     if (!res.ok) {
@@ -614,7 +615,7 @@ async function buscarColeccionAgregar(id) {
   try {
     const res = await fetch(
       `https://api.themoviedb.org/3/collection/${id}?append_to_response=translations,images`,
-      get
+      get,
     );
 
     if (!res.ok) {
@@ -642,7 +643,7 @@ async function buscarColeccion(query) {
   try {
     const res = await fetch(
       `https://api.themoviedb.org/3/search/collection?query=${query} collection`,
-      get
+      get,
     );
 
     if (!res.ok) {
@@ -667,7 +668,7 @@ async function busqueda(query, tipo) {
   try {
     const res = await fetch(
       `https://api.themoviedb.org/3/search/${tipo}?query=${query}`,
-      get
+      get,
     );
 
     if (!res.ok) {
@@ -696,7 +697,7 @@ async function buscarDetallesColeccion(id) {
   try {
     const res = await fetch(
       `https://api.themoviedb.org/3/collection/${id}`,
-      get
+      get,
     );
 
     if (!res.ok) {
