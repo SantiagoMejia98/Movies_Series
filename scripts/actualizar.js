@@ -172,15 +172,13 @@ function JSONpelicula(titulo) {
           return item.id;
         }) || null,
     Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate
-        ?.filter((item) => INCLUIDOS.includes(item.provider_id))
-        .map((item) => {
-          proveedores[item.provider_id] = {
-            Nombre: item.provider_name,
-            Logo: item.logo_path,
-          };
-          return item.provider_id;
-        }) || [],
+      titulo["watch/providers"]?.results?.CO?.flatrate?.map((item) => {
+        proveedores[item.provider_id] = {
+          Nombre: item.provider_name,
+          Logo: item.logo_path,
+        };
+        return item.provider_id;
+      }) || [],
   };
 }
 
@@ -279,15 +277,13 @@ function JSONserie(titulo) {
           return item.id;
         }) || null,
     Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate
-        ?.filter((item) => INCLUIDOS.includes(item.provider_id))
-        .map((item) => {
-          proveedores[item.provider_id] = {
-            Nombre: item.provider_name,
-            Logo: item.logo_path,
-          };
-          return item.provider_id;
-        }) || [],
+      titulo["watch/providers"]?.results?.CO?.flatrate?.map((item) => {
+        proveedores[item.provider_id] = {
+          Nombre: item.provider_name,
+          Logo: item.logo_path,
+        };
+        return item.provider_id;
+      }) || [],
     Duracion: `${titulo.number_of_seasons} ${
       titulo.number_of_seasons === 1 ? "temporada" : "temporadas"
     } - ${titulo.number_of_episodes} capítulos`,
