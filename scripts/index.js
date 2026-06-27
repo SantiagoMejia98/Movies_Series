@@ -240,13 +240,13 @@ selectPlataforma.addEventListener("change", () => {
 
   const peliculasFiltradas = Object.values(todasLasPeliculas).filter(
     (p) =>
-      p.Proveedores.length > 0 &&
+      p.Proveedores.length === 1 &&
       p.Proveedores.includes(parseInt(plataformaSeleccionada)),
   );
 
   const seriesFiltradas = Object.values(todasLasSeries).filter(
     (s) =>
-      s.Proveedores.length > 0 &&
+      s.Proveedores.length === 1 &&
       s.Proveedores.includes(parseInt(plataformaSeleccionada)),
   );
 

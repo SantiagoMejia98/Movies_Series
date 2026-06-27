@@ -8,24 +8,23 @@ const get = {
 };
 
 const INCLUIDOS = [
-  8, // Netflix
+  //8, // Netflix
   11, // MUBI
-  119, // Amazon Prime Video
-  167, // Claro Video
-  283, // Crunchyroll
-  337, // Disney Plus
-  339, // MovistarTV
-  350, // Apple TV+
-  531, // Paramount Plus
+  //119, // Amazon Prime Video
+  //283, // Crunchyroll
+  //337, // Disney Plus
+  // 339, // MovistarTV
+  //350, // Apple TV+
+  //531, // Paramount Plus
   683, // Looke Amazon Channel
-  1889, // Universal+ Amazon Channel
-  1899, // HBO Max
+  //1889, // Universal+ Amazon Channel
+  //1899, // HBO Max
   2106, // Adrenalina Pura Amazon Channel
-  2141, // MGM Plus Amazon Channel
+  //2141, // MGM Plus Amazon Channel
   2161, // Sony One Amazon Channel
   2167, // Cindie Amazon Channel
   2356, // Filmelier Plus Amazon Channel
-  2358, // Lionsgate+ Amazon Channels
+  //2358, // Lionsgate+ Amazon Channels
   2605, // Diamond Films Amazon Channel
   2609, // Booh Amazon Channel
 ];

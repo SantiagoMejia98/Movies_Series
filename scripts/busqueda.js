@@ -16,12 +16,11 @@ const INCLUIDOS = [
   8, // Netflix
   11, // MUBI
   119, // Amazon Prime Video
-  167, // Claro Video
-  283, // Crunchyroll
+  //283, // Crunchyroll
   337, // Disney Plus
-  339, // MovistarTV
+  // 339, // MovistarTV
   350, // Apple TV+
-  531, // Paramount Plus
+  //531, // Paramount Plus
   683, // Looke Amazon Channel
   1889, // Universal+ Amazon Channel
   1899, // HBO Max
@@ -30,7 +29,7 @@ const INCLUIDOS = [
   2161, // Sony One Amazon Channel
   2167, // Cindie Amazon Channel
   2356, // Filmelier Plus Amazon Channel
-  2358, // Lionsgate+ Amazon Channels
+  //2358, // Lionsgate+ Amazon Channels
   2605, // Diamond Films Amazon Channel
   2609, // Booh Amazon Channel
 ];
