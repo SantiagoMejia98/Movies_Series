@@ -8,17 +8,26 @@ const get = {
 };
 
 const INCLUIDOS = [
-  119, //Prime Video
-  350, //Apple TV Plus
-  283, //Crunchyroll
-  337, //Disney Plus
-  1899, //HBO Max
-  2358, //Lionsgate+ Amazon Channels
-  2141, //MGM Amazon Channels
-  11, //MUBI
-  8, //Netflix
-  531, //Paramount Plus
-  1889, //Universal Plus Amazon Channels
+  8, // Netflix
+  11, // MUBI
+  119, // Amazon Prime Video
+  167, // Claro Video
+  283, // Crunchyroll
+  337, // Disney Plus
+  339, // MovistarTV
+  350, // Apple TV+
+  531, // Paramount Plus
+  683, // Looke Amazon Channel
+  1889, // Universal+ Amazon Channel
+  1899, // HBO Max
+  2106, // Adrenalina Pura Amazon Channel
+  2141, // MGM Plus Amazon Channel
+  2161, // Sony One Amazon Channel
+  2167, // Cindie Amazon Channel
+  2356, // Filmelier Plus Amazon Channel
+  2358, // Lionsgate+ Amazon Channels
+  2605, // Diamond Films Amazon Channel
+  2609, // Booh Amazon Channel
 ];
 
 const EXPIRATION_DAYS = 30;
@@ -172,13 +181,15 @@ function JSONpelicula(titulo) {
           return item.id;
         }) || null,
     Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate?.map((item) => {
-        proveedores[item.provider_id] = {
-          Nombre: item.provider_name,
-          Logo: item.logo_path,
-        };
-        return item.provider_id;
-      }) || [],
+      titulo["watch/providers"]?.results?.CO?.flatrate
+        ?.filter((item) => INCLUIDOS.includes(item.provider_id))
+        .map((item) => {
+          proveedores[item.provider_id] = {
+            Nombre: item.provider_name,
+            Logo: item.logo_path,
+          };
+          return item.provider_id;
+        }) || [],
   };
 }
 
@@ -277,13 +288,15 @@ function JSONserie(titulo) {
           return item.id;
         }) || null,
     Proveedores:
-      titulo["watch/providers"]?.results?.CO?.flatrate?.map((item) => {
-        proveedores[item.provider_id] = {
-          Nombre: item.provider_name,
-          Logo: item.logo_path,
-        };
-        return item.provider_id;
-      }) || [],
+      titulo["watch/providers"]?.results?.CO?.flatrate
+        ?.filter((item) => INCLUIDOS.includes(item.provider_id))
+        .map((item) => {
+          proveedores[item.provider_id] = {
+            Nombre: item.provider_name,
+            Logo: item.logo_path,
+          };
+          return item.provider_id;
+        }) || [],
     Duracion: `${titulo.number_of_seasons} ${
       titulo.number_of_seasons === 1 ? "temporada" : "temporadas"
     } - ${titulo.number_of_episodes} capítulos`,
